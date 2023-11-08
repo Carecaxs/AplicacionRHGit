@@ -9,5 +9,11 @@ namespace AplicacionRHGit.Controllers
             ViewData["Usuario"] = tipoUsuario;
             return View();
         }
+
+        public IActionResult Ingresar(string tipoUsuario)
+        {
+            ViewData["Usuario"] = tipoUsuario;
+            return View();
+        }
     }
 }

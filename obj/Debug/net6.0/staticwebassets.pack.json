@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\AplicacionRHGit.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondo.jpg",
+      "PackagePath": "staticwebassets\\Images\\fondo.jpg"
+    },
+    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\oferenteInicio.jpg",
       "PackagePath": "staticwebassets\\Images\\oferenteInicio.jpg"
     },
@@ -19,6 +23,10 @@
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Login\\login.js",
+      "PackagePath": "staticwebassets\\js\\Login\\login.js"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",
