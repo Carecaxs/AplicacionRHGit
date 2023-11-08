@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nWjYPyi7+GCbQCBXoDFjgNOjM8V2uLr/QjWrQQ4CpOQ=",
+  "Hash": "j0DJKDliWlJBat119gThpP/QAUSFkAXvEmmR6Vq6Yu0=",
   "Source": "AplicacionRHGit",
   "BasePath": "_content/AplicacionRHGit",
   "Mode": "Default",
@@ -85,6 +85,23 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondo.jpg",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "Images/fondo.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\fondo.jpg"
+    },
+    {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\oferenteInicio.jpg",
       "SourceId": "AplicacionRHGit",
       "SourceType": "Discovered",
@@ -117,6 +134,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Images\\reclutamiento.png"
+    },
+    {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Login\\login.js",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "js/Login/login.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Login\\login.js"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",
