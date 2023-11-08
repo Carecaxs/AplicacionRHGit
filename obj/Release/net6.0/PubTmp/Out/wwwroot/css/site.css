@@ -1,0 +1,31 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.same-height {
+    height: 30rem;
+}
+
+
+.tituloInicio {
+    font-family: "Arial", sans-serif; /* Cambia la fuente a tu elección */
+    font-size: 2.5rem; /* Ajusta el tamaño de la fuente según tus preferencias */
+    color: #333; /* Cambia el color del texto a tu elección */
+    text-align: center; /* Centra el texto horizontalmente */
+    text-transform: uppercase; /* Convierte el texto en mayúsculas si lo deseas */
+}
