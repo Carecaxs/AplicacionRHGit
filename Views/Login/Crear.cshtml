@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AplicacionRHGit</title>
+    <title>@ViewData["Creación de Perfil"] - AplicacionRHGit</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AplicacionRHGit.styles.css" asp-append-version="true" />
@@ -21,7 +21,7 @@
     <div class="container">
         <div class="bg-light p-3 rounded mt-4">
             <div class="d-flex flex-column align-items-center">
-                <h2 id="seccionInicioSesion">Registrarse como @ViewData["Usuario"]</h2>
+                <h2 id="seccionInicioSesion">Registrarse como @TempData["Usuario"]</h2>
 
                 <form id="registroForm" class="">
                     <div class="form-group col-md-12 mt-2">
@@ -81,12 +81,29 @@
                         <label for="provincias">Seleccione una provincia</label>
 
                         <select id="provincias" class="form-control mt-2">
-                            
+                            <option value="null">Seleccione una opción</option>
                         </select>
                     </div>
 
 
+                    <div class="form-group col-md-12 mt-2">
+                        <label for="cantones">Seleccione un cantón</label>
 
+                        <select id="cantones" class="form-control mt-2">
+                            <option value="null">Seleccione una opción</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="form-group col-md-12 mt-2">
+                        <label for="distritos">Seleccione un Distrito</label>
+
+                        <select id="distritos" class="form-control mt-2">
+                            <option value="null">Seleccione una opción</option>
+
+                        </select>
+                    </div>
 
 
 

@@ -23,7 +23,10 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <a asp-controller="Login" asp-action="Ingresar" asp-route-tipoUsuario="Reclutador" class="card-link">
+                        <form method="post" asp-controller="Login" asp-action="Ingresar">
+                            <input type="hidden" name="tipoUsuario" value="Reclutador" />
+                            <button type="submit" class="card-link">
+                   
                             <div class="card h-100 card-hover">
 
                                 <img src="~/images/reclutamiento.png" class="card-img-bottom img-fluid same-height" />
@@ -35,12 +38,15 @@
                                 </div>
 
                             </div>
-                        </a>
+                            </button>
+                        </form>
                     </div>
-
+     
 
                     <div class="col-md-6">
-                        <a asp-controller="Login" asp-action="Ingresar" asp-route-tipoUsuario="Oferente" class="card-link">
+                        <form method="post" asp-controller="Login" asp-action="Ingresar">
+                            <input type="hidden" name="tipoUsuario" value="Oferente" />
+                            <button type="submit" class="card-link">
                             <div class="card h-100 card-hover">
                                 <img src="~/images/oferenteinicio.jpg" class="card-img-bottom img-fluid same-height" />
                                 <div class="card-body d-flex flex-column text-center">
@@ -49,7 +55,9 @@
                                     <p class="card-text">Creación de currículum de forma profesional.</p>
                                 </div>
                             </div>
-                        </a>
+                     
+                            </button>
+                        </form>
                     </div>
                 </div>
 
