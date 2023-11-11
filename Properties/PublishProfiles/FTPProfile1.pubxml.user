@@ -7,21 +7,21 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAy7TPZOJVS0+RJ4aV/ODU9gAAAAACAAAAAAAQZgAAAAEAACAAAACGoWvYzjXeELqCAp6PZYKbRf7nskE6FaYI7s+1fOmLKQAAAAAOgAAAAAIAACAAAACrTSdl1+zhaLyUG3m4syvhtTLBHRowLZEJf9HCKvoZfSAAAAAR7v+IaLdPlJun+pX56pRZOtMUoxfWBaBjbCtQWs5eYUAAAABu+Be2Dg5FpH5wLPXkYePOAySEoSRvbFXS8EOivORMmeKklNgwO0AVWle5d5HfgVg5sFy3SBdqU0LtD89FZuHX</EncryptedPassword>
     <_PublishTargetUrl>ftp://155.254.244.28/www.reporte.somee.com</_PublishTargetUrl>
-    <History>True|2023-11-08T22:59:47.7465141Z;</History>
+    <History>True|2023-11-09T23:08:57.5931050Z;True|2023-11-08T16:59:47.7465141-06:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
     <File Include="AplicacionRHGit.deps.json">
-      <publishTime>11/08/2023 16:55:02</publishTime>
+      <publishTime>11/09/2023 17:04:44</publishTime>
     </File>
     <File Include="AplicacionRHGit.dll">
-      <publishTime>11/08/2023 16:54:59</publishTime>
+      <publishTime>11/09/2023 17:04:41</publishTime>
     </File>
     <File Include="AplicacionRHGit.exe">
-      <publishTime>11/08/2023 16:54:59</publishTime>
+      <publishTime>11/09/2023 17:04:41</publishTime>
     </File>
     <File Include="AplicacionRHGit.pdb">
-      <publishTime>11/08/2023 16:54:59</publishTime>
+      <publishTime>11/09/2023 17:04:41</publishTime>
     </File>
     <File Include="AplicacionRHGit.runtimeconfig.json">
       <publishTime>11/07/2023 15:26:27</publishTime>
@@ -183,13 +183,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/22/2021 18:49:44</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>11/08/2023 16:55:02</publishTime>
+      <publishTime>11/09/2023 17:04:44</publishTime>
     </File>
     <File Include="wwwroot/AplicacionRHGit.styles.css">
       <publishTime>11/07/2023 15:26:26</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
-      <publishTime>11/08/2023 13:01:59</publishTime>
+      <publishTime>11/09/2023 12:33:12</publishTime>
     </File>
     <File Include="wwwroot/favicon.ico">
       <publishTime>11/07/2023 13:41:49</publishTime>
@@ -204,7 +204,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/07/2023 09:59:19</publishTime>
     </File>
     <File Include="wwwroot/js/Login/login.js">
-      <publishTime>11/08/2023 16:45:08</publishTime>
+      <publishTime>11/09/2023 17:04:36</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>11/08/2023 11:34:11</publishTime>

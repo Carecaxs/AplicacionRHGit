@@ -19,7 +19,7 @@
 <body class="fondoImg">
 
     <div class="container">
-        <div class="bg-light p-3 rounded mt-4">
+        <div class="contenedorInicioSesion">
             <div class="d-flex flex-column align-items-center">
                 <h2 id="seccionInicioSesion">Registrarse como @TempData["Usuario"]</h2>
 
@@ -43,9 +43,10 @@
                         </div>
 
                         <button id="btnVerificarCedula" class="btn btn-primary mt-2">Verificar cédula</button>
+
                     </div>
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoNombre" class="form-group col-md-12 mt-2">
                         <label for="nombre">Nombre</label>
                         <div class="input-group">
                             <input type="text" id="nombre" class="form-control" disabled />
@@ -53,7 +54,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoApellidos" class="form-group col-md-12 mt-2">
                         <label for="apellidos">Apellidos</label>
                         <div class="input-group">
                             <input type="text" id="apellidos" class="form-control" disabled />
@@ -61,7 +62,15 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoNacimiento" class="form-group col-md-12 mt-2">
+                        <label for="nacimiento">Fecha Nacimiento</label>
+                        <div class="input-group">
+                            <input type="text" id="nacimiento" class="form-control" disabled />
+
+                        </div>
+                    </div>
+
+                    <div id="campoCorreo" class="form-group col-md-12 mt-2">
                         <label for="correo">Correo Electrónico</label>
                         <div class="input-group">
                             <input type="email" id="correo" class="form-control" placeholder="abc@gmail.com" />
@@ -69,7 +78,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoTelefono" class="form-group col-md-12 mt-2">
                         <label for="telefono">Teléfono</label>
                         <div class="input-group">
                             <input type="text" id="telefono" class="form-control" placeholder="8888-8888" />
@@ -77,7 +86,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoProvincia" class="form-group col-md-12 mt-2">
                         <label for="provincias">Seleccione una provincia</label>
 
                         <select id="provincias" class="form-control mt-2">
@@ -86,7 +95,7 @@
                     </div>
 
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoCantones" class="form-group col-md-12 mt-2">
                         <label for="cantones">Seleccione un cantón</label>
 
                         <select id="cantones" class="form-control mt-2">
@@ -96,7 +105,7 @@
                     </div>
 
 
-                    <div class="form-group col-md-12 mt-2">
+                    <div id="campoDistritos" class="form-group col-md-12 mt-2">
                         <label for="distritos">Seleccione un Distrito</label>
 
                         <select id="distritos" class="form-control mt-2">
@@ -104,6 +113,16 @@
 
                         </select>
                     </div>
+
+                    <div id="campoDireccion" class="form-group col-md-12 mt-2">
+                        <label for="direccion">Dirección Exacta</label>
+                        <div class="input-group">
+                            <input type="text" id="direccion" class="form-control" placeholder="Ingrese la dirección" />
+                        </div>
+                    </div>
+
+                    <button id="btnCrearUsuario" class="btn btn-primary mt-2">Crear</button>
+
 
 
 
@@ -119,12 +138,36 @@
 
 
 
+    <!-- Modal -->
+    <div class="modal fade" id="confirmacionModal" tabindex="-1" role="dialog" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmacionModalLabel">Confirmación de cuenta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/jquery.inputmask.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="~/js/login/login.js"></script>
 
 
-    }
+    
 
 </body>
 </html>
