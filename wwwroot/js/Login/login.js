@@ -329,6 +329,15 @@ $(document).ready(function () {
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
 
+        //obtener el valor si se accedio como oferente o reclutador 
+        var contenidoH2 = $("#seccionInicioSesion").text();
+        if (contenidoH2 == 'Registrarse como Oferente') {
+            var tipoUsuario = 'Oferente';
+        }
+        else {
+            var tipoUsuario = 'Reclutador';
+        }
+
 
         //campos para crear usuario
         var usuario = {
@@ -341,17 +350,17 @@ $(document).ready(function () {
             direccion: $('#direccion').val()
         };
 
-        var tipoUsuario = TempData["Usuario"];
 
         $.ajax({
-            url: '/Login/AgregarOferente',
+            url: '/Login/AgregarUsuario',
             method: 'POST',
             data: {
-                usuario,
-                tipoUsuario
+                usuario: usuario,
+                tipoUsuario: tipoUsuario
             },
             success: function (data) {
 
+                console.log(tipoUsuario);
                 if (data.exitoso == true) {
                     // Si no hay error, muestra el mensaje de éxito en el modal
                     $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");

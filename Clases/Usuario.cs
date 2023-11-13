@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AplicacionRHGit.Models
+namespace AplicacionRHGit.Clases
 {
     public class Usuario
     {

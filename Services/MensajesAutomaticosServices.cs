@@ -1,9 +1,13 @@
-﻿using AplicacionRHGit.Data;
+﻿using AplicacionRHGit.Clases;
+using AplicacionRHGit.Data;
 using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.Mensajeria;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using Proyecto.Models;
 using System.Net;
 using System.Net.Mail;
+using System.Runtime.Intrinsics.X86;
 
 namespace AplicacionRHGit.Services
 {
@@ -32,7 +36,7 @@ namespace AplicacionRHGit.Services
                         From = new MailAddress("plataformarh0@gmail.com"),
                         Subject = "Registro RH Bolsa de Empleo",
                         Body = MensajeCorreo(usuario, mensaje),
-                        IsBodyHtml = false,
+                        IsBodyHtml = true,
                     })
                     {
                         mailMessage.To.Add(usuario.correo);
@@ -97,8 +101,102 @@ namespace AplicacionRHGit.Services
 
             return date_completo + " a las " + hora;
         }
+
+
+
+        public void EnviarNotificacionPersona(Notificacion notificacion, Usuario usuario)
+        {
+
+            int celular = int.Parse(usuario.telefono);
+
+            Notificacionxpersona notificacion_persona = new Notificacionxpersona()
+            {
+
+
+                cod_Notificacion = notificacion.cod_Notificacion,
+                cedula = usuario.identificacion,
+                estado = 0,
+                telefono = celular,
+                tipo_Usuario = notificacion.tipo_Usuario
+
+
+            };
+
+            using (MensajeriaContext contextMensajeria = new MensajeriaContext())
+            {
+                contextMensajeria.Notificacionxpersona.Add(notificacion_persona);
+                contextMensajeria.SaveChanges();
+            }
+
+        }
+
+
+        public Notificacion EnviarNotificacion(Usuario usuario)
+        {
+            SMS sms = GenerarNotificacion(usuario);
+            Notificacion notificacion = new Notificacion()
+            {
+                ced_Funcionario = usuario.identificacion,
+                asunto = sms.asunto,
+                mensaje = sms.mensaje,
+                cod_Insti = "1189",
+                permiso_Envio = sms.permiso_envio,
+                hora_Envio = DateTime.Now,
+                hora_Creada = DateTime.Now,
+                tipo_Usuario = sms.tipo_usuario
+
+            };
+
+            using (MensajeriaContext db = new MensajeriaContext())
+            {
+                db.Notificacion.Add(notificacion);
+                db.SaveChanges();
+            }
+
+            // Agregar el nuevo código a la tabla
+            CODIGOS_SMS nuevoCodigo = new CODIGOS_SMS
+            {
+                identificacion = usuario.identificacion,
+                codigo = sms.codigo
+            };
+
+            _context.CodigosSms.Add(nuevoCodigo);
+            // Guardar los cambios en la base de datos
+            _context.SaveChanges();
+
+
+            return notificacion;
+        }
+
+
+
+        public SMS GenerarNotificacion(Usuario usuario)
+        {
+            SMS sms = new SMS();
+            Guid guid = Guid.NewGuid();
+            string codigo_validacion = (guid.ToString()).Substring(0, 6);
+
+            int celular = int.Parse(usuario.telefono);
+
+
+
+            sms.asunto = "Registro Bolsa de Empleo";
+            sms.codigo = codigo_validacion;
+            sms.permiso_envio = 1;
+            sms.mensaje = "Su codigo de activacion es: " + sms.codigo;
+            sms.tipo_usuario = "Registro";
+            sms.hora_creada = DateTime.Today;
+            sms.cedula = usuario.identificacion;
+            sms.telefono = celular;
+
+            return sms;
+        }
+
+
     }
 
+
+  
 
 
 

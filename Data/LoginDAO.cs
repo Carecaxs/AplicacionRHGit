@@ -1,4 +1,4 @@
-﻿using AplicacionRHGit.Models;
+﻿using AplicacionRHGit.Clases;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -37,8 +37,9 @@ namespace AplicacionRHGit.Data
 
             if(tipoUsuario == "Oferente") {
 
+
                 _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_OFERENTE @identificacion, @correo, @telefono, @provincia, @canton, @distrito, @direccion",
-               new SqlParameter("@identificacion", usuario.identificacion),
+               new SqlParameter("@identificacion", usuario.identificacion.Replace("-", "").Replace("_", "")),
                new SqlParameter("@correo", usuario.correo),
                new SqlParameter("@telefono", usuario.telefono),
                new SqlParameter("@provincia", usuario.provincia),
@@ -51,7 +52,7 @@ namespace AplicacionRHGit.Data
             {
 
                 _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_RECLUTADOR @identificacion, @correo, @telefono, @provincia, @canton, @distrito, @direccion",
-               new SqlParameter("@identificacion", usuario.identificacion),
+               new SqlParameter("@identificacion", usuario.identificacion.Replace("-", "").Replace("_", "")),
                new SqlParameter("@correo", usuario.correo),
                new SqlParameter("@telefono", usuario.telefono),
                new SqlParameter("@provincia", usuario.provincia),

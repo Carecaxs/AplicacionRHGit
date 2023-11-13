@@ -1,5 +1,6 @@
-﻿using AplicacionRHGit.Data;
-using AplicacionRHGit.Models;
+﻿using AplicacionRHGit.Clases;
+using AplicacionRHGit.Data;
+using AplicacionRHGit.Models.Mensajeria;
 using AplicacionRHGit.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -31,6 +32,23 @@ namespace AplicacionRHGit.Controllers
       
         public IActionResult Ingresar(string tipoUsuario)
         {
+            //codigo prueba
+            //MensajesAutomaticosServices aux = new MensajesAutomaticosServices(_context);
+            //Usuario usuario= new Usuario()
+            //{
+            //    identificacion="11111111",
+            //    correo="sd",
+            //    telefono="71173889",
+            //    provincia="s",
+            //    canton="s",
+            //    distrito="s",
+            //    direccion="jk"
+            //};
+
+            //Notificacion notificacion = aux.EnviarNotificacion(usuario);
+            //aux.EnviarNotificacionPersona(notificacion, usuario);
+            ////////////
+
             TempData["Usuario"] = tipoUsuario;
             return View();
         }
@@ -111,7 +129,7 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpPost]
-        public JsonResult AgregarOferente(Usuario usuario, string tipoUsuario)
+        public JsonResult AgregarUsuario(Usuario usuario, string tipoUsuario)
         {
             if(tipoUsuario == "Oferente")//si va crear un perfil en oferente se comprueba que no exista y si existe se le vuelve a mandar un correo al gmail y codigo al celular para que valide su cuenta
             {
@@ -183,6 +201,12 @@ namespace AplicacionRHGit.Controllers
             //envio del correo, si retorna 1 todo salio bien
             if (aux.EnviarCorreo(usuario, mensaje) == 1)
             {
+                //ahora vamos a enviar el codigo sms
+                //Notificacion notificacion = aux.EnviarNotificacion(usuario);
+                //aux.EnviarNotificacionPersona(notificacion, usuario);
+
+
+
                 return Json(new { exitoso = true });
 
             }

@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto.Models
 {
+    [Table("OFERENTES")]
 
     public class OFERENTE
     {
