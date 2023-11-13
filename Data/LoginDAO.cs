@@ -1,4 +1,8 @@
-﻿using Proyecto.Models;
+﻿using AplicacionRHGit.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Proyecto.Models;
 
 namespace AplicacionRHGit.Data
 {
@@ -25,6 +29,37 @@ namespace AplicacionRHGit.Data
             {
                 return null;
             }
+        }
+
+
+        public void AgregarUsuario(Usuario usuario, string tipoUsuario)
+        {
+
+            if(tipoUsuario == "Oferente") {
+
+                _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_OFERENTE @identificacion, @correo, @telefono, @provincia, @canton, @distrito, @direccion",
+               new SqlParameter("@identificacion", usuario.identificacion),
+               new SqlParameter("@correo", usuario.correo),
+               new SqlParameter("@telefono", usuario.telefono),
+               new SqlParameter("@provincia", usuario.provincia),
+               new SqlParameter("@canton", usuario.canton),
+               new SqlParameter("@distrito", usuario.distrito),
+               new SqlParameter("@direccion", usuario.direccion));
+
+            }
+            else
+            {
+
+                _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_RECLUTADOR @identificacion, @correo, @telefono, @provincia, @canton, @distrito, @direccion",
+               new SqlParameter("@identificacion", usuario.identificacion),
+               new SqlParameter("@correo", usuario.correo),
+               new SqlParameter("@telefono", usuario.telefono),
+               new SqlParameter("@provincia", usuario.provincia),
+               new SqlParameter("@canton", usuario.canton),
+               new SqlParameter("@distrito", usuario.distrito),
+               new SqlParameter("@direccion", usuario.direccion));
+            }
+           
         }
     }
 }

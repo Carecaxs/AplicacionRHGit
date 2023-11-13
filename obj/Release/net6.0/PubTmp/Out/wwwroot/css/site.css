@@ -18,6 +18,10 @@ body {
 
 }
 
+.same-width {
+    width: 52rem; /* Puedes ajustar el valor según tus necesidades */
+}
+
 
 .tituloInicio {
     font-family: "Arial", sans-serif; /* Cambia la fuente a tu elección */
@@ -27,6 +31,7 @@ body {
     text-transform: uppercase; /* Convierte el texto en mayúsculas si lo deseas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Agrega una sombra suave alrededor del título */
     background-color: rgba(255, 255, 255, 0.8); /* Agrega un fondo blanco suave al título */
+    
 }
 
 
@@ -57,4 +62,19 @@ button.card-link {
 
 .col-md-6 {
     margin-bottom: 3rem; /* Agrega espacio entre las columnas en pantallas más pequeñas */
+}
+
+
+.contenedorInicioSesion {
+
+    background-color: #f8f9fa;
+    margin-top: 4rem;
+    padding: 3rem;
+    max-width: 55rem; /* Ajusta el ancho máximo según tus necesidades */
+    margin: auto;
+    margin-top: 50px; /* Ajusta el margen superior según tus necesidades */
+    box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
+    border-radius: 8rem; /* Esquinas redondeadas */
+
+   
 }

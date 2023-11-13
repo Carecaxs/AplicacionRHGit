@@ -5,7 +5,11 @@ namespace AplicacionRHGit.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<TSE> TSE { get; set; }  
+
+        public DbSet<TSE> TSE { get; set; }
+        public DbSet<OFERENTE> Oferente { get; set; }
+        public DbSet<RECLUTADOR> Reclutador { get; set; }
+
 
 
         private readonly IConfiguration Configuration;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AplicacionRHGit.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionRHGit.Controllers
 {
@@ -6,6 +7,7 @@ namespace AplicacionRHGit.Controllers
     {
         public IActionResult MenuAcceso()
         {
+            MensajesAutomaticosServices emailService = new EmailService();
             return View();
         }
 

@@ -328,8 +328,7 @@ $(document).ready(function () {
     $("#btnCrearUsuario").click(function (event) {
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
-        // Muestra el modal
-        $("#confirmacionModal").modal("show");
+
 
         //campos para crear usuario
         var usuario = {
@@ -345,20 +344,32 @@ $(document).ready(function () {
         var tipoUsuario = TempData["Usuario"];
 
         $.ajax({
-            url: '/Login/TuAccion',
+            url: '/Login/AgregarOferente',
             method: 'POST',
             data: {
                 usuario,
                 tipoUsuario
             },
-            success: function (response) {
-                // Manejar la respuesta del servidor
-                console.log(response);
+            success: function (data) {
+
+                if (data.exitoso == true) {
+                    // Si no hay error, muestra el mensaje de éxito en el modal
+                    $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");
+                }
+                else {
+                    // Muestra el mensaje de error en el modal
+                    $("#contenidoModal").html('<p style="color: red;">' + data.error + '</p>');
+                }
+
+                
             },
-            error: function (error) {
+            error: function (xhr, status, error) { //error en la solicitud de ajax
                 console.error(error);
             }
         });
+
+        // Muestra el modal
+        $("#confirmacionModal").modal("show");
 
     });
 

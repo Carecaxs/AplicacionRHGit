@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
         var selectedType = $(this).val();
         var mask = "";
-
+        $("#identification").val('');
 
         if (selectedType === "null") {
             identificationField.prop("disabled", true); // Deshabilitar el campo
@@ -69,6 +69,41 @@ $(document).ready(function () {
 
 
     if ($("#registroForm").length > 0) { //si esta en el documento de creacion de perfil
+
+
+        $("#campoNombre").hide();//ocultar elemento que muestra el nombre
+        $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
+        $("#campoCorreo").hide();
+        $("#campoTelefono").hide();
+        $("#campoProvincia").hide();
+        $("#campoCantones").hide();
+        $("#campoDistritos").hide();
+        $("#campoNacimiento").hide();
+        $("#campoDireccion").hide();
+
+
+        $("#identificationType").change(function () {
+
+            $("#campoNombre").hide();//ocultar elemento que muestra el nombre
+            $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
+            $("#campoCorreo").hide();
+            $("#campoTelefono").hide();
+            $("#campoProvincia").hide();
+            $("#campoCantones").hide();
+            $("#campoDistritos").hide();
+            $("#campoNacimiento").hide();
+            $("#campoDireccion").hide();
+
+
+
+            if ($("#msjValidacionCedula").length) {
+                // Si existe, elimina el elemento
+                $("#msjValidacionCedula").remove();
+            }
+        });
+
+
+
 
         //cargar provincias
         // URL de tu API que devuelve las provincias
@@ -181,6 +216,160 @@ $(document).ready(function () {
 
     });
 
+
+
+    // Detectar la pulsación de la tecla "Enter" en el campo de entrada
+    $("#identification").keypress(function (event) {
+        if (event.keyCode === 13) { // 13 es el código de tecla para "Enter"
+            event.preventDefault(); // Evita que se realice la acción predeterminada (enviar el formulario)
+            $("#btnVerificarCedula").click(); // Desencadena el clic en el botón "Consultar"
+        }
+    });
+
+
+
+    //evento click
+    $("#btnVerificarCedula").click(function (event) {
+
+        // Evitar la recarga de la página
+        event.preventDefault();
+
+        var cedula = $("#identification").val();//obtener el valor de la cedula
+
+        var tipoIdentificacionSeleccionado = $("#identificationType").val();//acceder al tipo de identificacion seleccionado
+
+        $.ajax({
+            type: "Get",//tipo de solicitud
+            url: "/Login/GetPersona", //direccion del controlador
+            data: {//se envia el parametro
+                cedula: cedula,
+                tipoIdentificacion: tipoIdentificacionSeleccionado
+            }, 
+            success: function (data) {//en caso de que sale bien
+
+                if (data.error) { //si data.error contiene algo
+
+                    if ($("#msjValidacionCedula").length) {
+
+                        $("#msjValidacionCedula").remove();
+
+                        $("#btnVerificarCedula").after("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#btnVerificarCedula").after("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+
+                    }
+
+
+
+                } else {
+
+                    if ($("#msjValidacionCedula").length) {
+
+                        $("#msjValidacionCedula").remove();
+                    }
+
+                    // Actualizar el valor visual del campo #cedula
+                    $("#cedula").val(cedula.startsWith("0") ? cedula : "0" + cedula);// Verificar si la cédula tiene un 0 al inicio
+
+                    // asignar valores a los inputs de la consulta
+                    $("#nombre").val(data.nombre);
+                    $("#apellidos").val(data.apellido1 + " " + data.apellido2);
+                    $("#nacimiento").val(data.fechaNacimiento);
+               
+                    $("#campoNombre").show();//mostrar elemento que muestra el nombre
+                    $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
+                    $("#campoCorreo").show();
+                    $("#campoTelefono").show();
+                    $("#campoProvincia").show();
+                    $("#campoCantones").show();
+                    $("#campoDistritos").show();
+                    $("#campoNacimiento").show();
+                    $("#campoDireccion").show();
+
+
+
+
+                }
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+    });
+
+    //evento para enviar los datos al controlador del nuevo usuario
+    //$('#btnCrearUsuario').submit(function (event) {
+
+
+    //    // Seleccionar solo los campos necesarios
+    //    var datosAEnviar = {
+    //        correo: $('#correo').val(),
+    //        telefono: $('#telefono').val(),
+    //        // Otros campos necesarios
+    //    };
+
+    //    // Realizar la solicitud al servidor
+    //    $.ajax({
+    //        url: '/TuControlador/TuAccion',
+    //        method: 'POST',
+    //        data: datosAEnviar,
+    //        success: function (response) {
+    //            // Manejar la respuesta del servidor
+    //            console.log(response);
+    //        },
+    //        error: function (error) {
+    //            console.error(error);
+    //        }
+    //    });
+    //});
+
+
+    $("#btnCrearUsuario").click(function (event) {
+        // Deshabilitar la acción predeterminada del formulario
+        event.preventDefault();
+        // Muestra el modal
+        $("#confirmacionModal").modal("show");
+
+        //campos para crear usuario
+        var usuario = {
+            identificacion: $('#identification').val(),
+            correo: $('#correo').val(),
+            telefono: $('#telefono').val(),
+            provincia: $('#provincias').val(),
+            canton: $('#cantones').val(),
+            distrito: $('#distritos').val(),
+            direccion: $('#direccion').val()
+        };
+
+        var tipoUsuario = TempData["Usuario"];
+
+        $.ajax({
+            url: '/Login/TuAccion',
+            method: 'POST',
+            data: {
+                usuario,
+                tipoUsuario
+            },
+            success: function (response) {
+                // Manejar la respuesta del servidor
+                console.log(response);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+    });
+
+    // Espera a que el modal se cierre completamente
+    $('#confirmacionModal').on('hidden.bs.modal', function () {
+        // Redirige a la acción "Crear" del controlador "Login"
+        window.location.href = '/MenuPrincipal/MenuAcceso';
+    });
+
 });
+
+
 
 
