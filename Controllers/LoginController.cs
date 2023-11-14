@@ -32,24 +32,15 @@ namespace AplicacionRHGit.Controllers
       
         public IActionResult Ingresar(string tipoUsuario)
         {
-            //codigo prueba
-            //MensajesAutomaticosServices aux = new MensajesAutomaticosServices(_context);
-            //Usuario usuario= new Usuario()
-            //{
-            //    identificacion="11111111",
-            //    correo="sd",
-            //    telefono="71173889",
-            //    provincia="s",
-            //    canton="s",
-            //    distrito="s",
-            //    direccion="jk"
-            //};
-
-            //Notificacion notificacion = aux.EnviarNotificacion(usuario);
-            //aux.EnviarNotificacionPersona(notificacion, usuario);
-            ////////////
 
             TempData["Usuario"] = tipoUsuario;
+            return View();
+        }
+
+
+        public ActionResult ConfirmarCodigo(string identificacion)
+        {
+            ViewBag.id = identificacion;
             return View();
         }
 
@@ -131,7 +122,9 @@ namespace AplicacionRHGit.Controllers
         [HttpPost]
         public JsonResult AgregarUsuario(Usuario usuario, string tipoUsuario)
         {
-            if(tipoUsuario == "Oferente")//si va crear un perfil en oferente se comprueba que no exista y si existe se le vuelve a mandar un correo al gmail y codigo al celular para que valide su cuenta
+            LoginDAO DA = new LoginDAO(_context);
+
+            if (tipoUsuario == "Oferente")//si va crear un perfil en oferente se comprueba que no exista y si existe se le vuelve a mandar un correo al gmail y codigo al celular para que valide su cuenta
             {
                 bool existe = _context.Oferente.Any(o => o.identificacion == usuario.identificacion);
 
@@ -139,7 +132,7 @@ namespace AplicacionRHGit.Controllers
                 {
                     try
                     {
-                        LoginDAO DA = new LoginDAO(_context);
+
                         DA.AgregarUsuario(usuario, tipoUsuario);//se agregar el oferente
 
                     }
@@ -167,7 +160,7 @@ namespace AplicacionRHGit.Controllers
                 {
                     try
                     {
-                        LoginDAO DA = new LoginDAO(_context);
+
                         DA.AgregarUsuario(usuario, tipoUsuario);
                     }
                     catch (SqlException sqlEx)
@@ -181,7 +174,7 @@ namespace AplicacionRHGit.Controllers
                         return Json(new { exitoso = false, error = "Error desconocido: " + ex.Message });
                     }
 
-                    return Json(new { exitoso = true });
+                    
 
 
                 }
@@ -193,7 +186,7 @@ namespace AplicacionRHGit.Controllers
             MensajesAutomaticosServices aux = new MensajesAutomaticosServices(_context);
 
             //creacion del mensaje a enviar
-            var url = $"{this.Request.Scheme}://{this.Request.Host}{@Url.Action("ConfirmarCodigo", "Login", new { usuario.identificacion })}";
+            var url = $"{this.Request.Scheme}://{this.Request.Host}{@Url.Action("ConfirmarCodigo", "Login", new { identificacion = usuario.identificacion })}";
             string mensaje = "Su solicitud de ingreso a la bolsa de empleo se realizó el " + aux.ObtenerFechaCompleta() +
                 ". Para finalizar su registro ingrese el código enviado a su celular <a href ='" + url +
                 "'>AQUI</a>.<br /><hr />Este correo es generado automaticamente por lo cual no debe de responderlo.<br />RH.CO.CR";
@@ -202,8 +195,14 @@ namespace AplicacionRHGit.Controllers
             if (aux.EnviarCorreo(usuario, mensaje) == 1)
             {
                 //ahora vamos a enviar el codigo sms
-                //Notificacion notificacion = aux.EnviarNotificacion(usuario);
-                //aux.EnviarNotificacionPersona(notificacion, usuario);
+
+                //se busca y elimina los codigos enviados anteriormente a ese usuario si hay ya que solo debe de haber uno para cada usuario
+                //ya que con eso vamos a confirmar el codigo
+
+                DA.EliminarCodigosAnteriores(usuario.identificacion);
+
+                Notificacion notificacion = aux.EnviarNotificacion(usuario);
+                aux.EnviarNotificacionPersona(notificacion, usuario);
 
 
 
@@ -222,7 +221,20 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        [HttpGet]
+        public JsonResult ConfirmacionCuenta(string identificacion, string codigo)
+        {
 
+            LoginDAO acceso = new LoginDAO(_context);
+            
+            //si retorna true es que si se confirma el codigo
+            if(acceso.ConfirmarCuenta(identificacion, codigo))
+            {
+
+            }
+        
+        
+        }
 
 
 

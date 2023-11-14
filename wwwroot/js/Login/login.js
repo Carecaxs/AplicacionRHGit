@@ -70,29 +70,14 @@ $(document).ready(function () {
 
     if ($("#registroForm").length > 0) { //si esta en el documento de creacion de perfil
 
+        // Aplicar la máscara al campo de teléfono
+        $('#telefono').inputmask('9999-9999');
 
-        $("#campoNombre").hide();//ocultar elemento que muestra el nombre
-        $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
-        $("#campoCorreo").hide();
-        $("#campoTelefono").hide();
-        $("#campoProvincia").hide();
-        $("#campoCantones").hide();
-        $("#campoDistritos").hide();
-        $("#campoNacimiento").hide();
-        $("#campoDireccion").hide();
-
+        esconderForm();
 
         $("#identificationType").change(function () {
 
-            $("#campoNombre").hide();//ocultar elemento que muestra el nombre
-            $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
-            $("#campoCorreo").hide();
-            $("#campoTelefono").hide();
-            $("#campoProvincia").hide();
-            $("#campoCantones").hide();
-            $("#campoDistritos").hide();
-            $("#campoNacimiento").hide();
-            $("#campoDireccion").hide();
+            esconderForm();
 
 
 
@@ -180,7 +165,7 @@ $(document).ready(function () {
 
 
         }
-       
+
     });
 
 
@@ -192,7 +177,7 @@ $(document).ready(function () {
         $("#distritos").find("option:not(:first)").remove();
 
         var idCanton = $("#cantones").val();//agarrar el id del cannton elegido
- 
+
         const apiDistrito = 'https://www.apprh.somee.com/api/Ubicaciones/Distritos/';
 
         fetch(apiDistrito + (idCanton))
@@ -244,7 +229,7 @@ $(document).ready(function () {
             data: {//se envia el parametro
                 cedula: cedula,
                 tipoIdentificacion: tipoIdentificacionSeleccionado
-            }, 
+            },
             success: function (data) {//en caso de que sale bien
 
                 if (data.error) { //si data.error contiene algo
@@ -269,6 +254,10 @@ $(document).ready(function () {
                         $("#msjValidacionCedula").remove();
                     }
 
+                    //se muestra el boton de confirmar
+                    $('#btnCrearUsuario').show();
+
+
                     // Actualizar el valor visual del campo #cedula
                     $("#cedula").val(cedula.startsWith("0") ? cedula : "0" + cedula);// Verificar si la cédula tiene un 0 al inicio
 
@@ -276,16 +265,8 @@ $(document).ready(function () {
                     $("#nombre").val(data.nombre);
                     $("#apellidos").val(data.apellido1 + " " + data.apellido2);
                     $("#nacimiento").val(data.fechaNacimiento);
-               
-                    $("#campoNombre").show();//mostrar elemento que muestra el nombre
-                    $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
-                    $("#campoCorreo").show();
-                    $("#campoTelefono").show();
-                    $("#campoProvincia").show();
-                    $("#campoCantones").show();
-                    $("#campoDistritos").show();
-                    $("#campoNacimiento").show();
-                    $("#campoDireccion").show();
+
+                    mostrarForm();
 
 
 
@@ -298,89 +279,113 @@ $(document).ready(function () {
         });
     });
 
-    //evento para enviar los datos al controlador del nuevo usuario
-    //$('#btnCrearUsuario').submit(function (event) {
-
-
-    //    // Seleccionar solo los campos necesarios
-    //    var datosAEnviar = {
-    //        correo: $('#correo').val(),
-    //        telefono: $('#telefono').val(),
-    //        // Otros campos necesarios
-    //    };
-
-    //    // Realizar la solicitud al servidor
-    //    $.ajax({
-    //        url: '/TuControlador/TuAccion',
-    //        method: 'POST',
-    //        data: datosAEnviar,
-    //        success: function (response) {
-    //            // Manejar la respuesta del servidor
-    //            console.log(response);
-    //        },
-    //        error: function (error) {
-    //            console.error(error);
-    //        }
-    //    });
-    //});
 
 
     $("#btnCrearUsuario").click(function (event) {
+
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
 
-        //obtener el valor si se accedio como oferente o reclutador 
-        var contenidoH2 = $("#seccionInicioSesion").text();
-        if (contenidoH2 == 'Registrarse como Oferente') {
-            var tipoUsuario = 'Oferente';
-        }
-        else {
-            var tipoUsuario = 'Reclutador';
-        }
 
 
-        //campos para crear usuario
-        var usuario = {
-            identificacion: $('#identification').val(),
-            correo: $('#correo').val(),
-            telefono: $('#telefono').val(),
-            provincia: $('#provincias').val(),
-            canton: $('#cantones').val(),
-            distrito: $('#distritos').val(),
-            direccion: $('#direccion').val()
-        };
+        //si todos estan completados
+        if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#provincias').val() != "Seleccione una opción"
+            && $('#cantones').val() != "Seleccione una opción" && $('#distritos').val() != "Seleccione una opción" && $('#direccion').val() != "") {
 
+            //retorna true si se valida el correo y telefono
+            if (validarCorreoTelefono()) {
 
-        $.ajax({
-            url: '/Login/AgregarUsuario',
-            method: 'POST',
-            data: {
-                usuario: usuario,
-                tipoUsuario: tipoUsuario
-            },
-            success: function (data) {
+                //si se encuentra un mensaje de error se elimina
+                if ($("#msjFormulario").length) {
 
-                console.log(tipoUsuario);
-                if (data.exitoso == true) {
-                    // Si no hay error, muestra el mensaje de éxito en el modal
-                    $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");
+                    $("#msjFormulario").remove();
+
+                }
+
+                //obtener el valor si se accedio como oferente o reclutador 
+                var contenidoH2 = $("#seccionInicioSesion").text();
+                if (contenidoH2 == 'Registrarse como Oferente') {
+                    var tipoUsuario = 'Oferente';
                 }
                 else {
-                    // Muestra el mensaje de error en el modal
-                    $("#contenidoModal").html('<p style="color: red;">' + data.error + '</p>');
+                    var tipoUsuario = 'Reclutador';
                 }
 
-                
-            },
-            error: function (xhr, status, error) { //error en la solicitud de ajax
-                console.error(error);
-            }
-        });
 
-        // Muestra el modal
-        $("#confirmacionModal").modal("show");
+                //campos para crear usuario
+                var usuario = {
+                    identificacion: $('#identification').val().replace(/-/g, ""),
+                    correo: $('#correo').val(),
+                    telefono: $('#telefono').val().replace("-", ""),
+                    provincia: $('#provincias').val(),
+                    canton: $('#cantones').val(),
+                    distrito: $('#distritos').val(),
+                    direccion: $('#direccion').val()
+                };
+
+
+                $.ajax({
+                    url: '/Login/AgregarUsuario',
+                    method: 'POST',
+                    data: {
+                        usuario: usuario,
+                        tipoUsuario: tipoUsuario
+                    },
+                    success: function (data) {
+
+
+                        console.log(data.exitoso);
+                        console.log(data.error);
+
+                        console.log($("#confirmacionModal").html());
+                        if (data.exitoso == true) {
+                            // Si no hay error, muestra el mensaje de éxito en el modal
+
+                            // Muestra el modal
+                            $("#confirmacionModal").modal("show");
+
+                            $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");
+                        }
+                        else {
+                            // Muestra el modal
+                            $("#confirmacionModal").modal("show");
+                            // Muestra el mensaje de error en el modal
+                            $("#contenidoModal").html('<p style="color: red;">' + data.error + '</p>');
+                        }
+
+
+                    },
+                    error: function (xhr, status, error) { //error en la solicitud de ajax
+                        console.error(error);
+                    }
+                });
+            }
+
+
+
+
+        }
+        else {//si algun campo no esta completado se muestra un mensaje 
+
+            if ($("#msjFormulario").length) {
+
+                $("#msjFormulario").remove();
+
+                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+
+
+        }
+
+
 
     });
+
 
     // Espera a que el modal se cierre completamente
     $('#confirmacionModal').on('hidden.bs.modal', function () {
@@ -388,8 +393,148 @@ $(document).ready(function () {
         window.location.href = '/MenuPrincipal/MenuAcceso';
     });
 
+
+
+    $("#validarCodigo").click(function (event) {
+
+        //se valida que el input donde se ingresa el codigo no este vacio
+        if ($('#codigo').val() != "") {
+
+            $.ajax({
+                url: '/Login/ConfirmacionCuenta',
+                method: 'GET',
+                data: {
+                    identificacion: $('#identificacion').val(),
+                    codigo: $('#codigo').val()
+                },
+                success: function (data) {
+
+
+
+
+
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+
+
+        }
+        else {
+            if ($("#msjInformativo").length) {
+
+                $("#msjInformativo").remove();
+
+                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de ingresar el código" + "</p>");
+            }
+            else {
+                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de ingresar el código" + "</p>");
+
+            }
+        }
+
+    });
+
+       
+
+
+
 });
 
 
+function esconderForm() {
+    $("#campoNombre").hide();//ocultar elemento que muestra el nombre
+    $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
+    $("#campoCorreo").hide();
+    $("#campoTelefono").hide();
+    $("#campoProvincia").hide();
+    $("#campoCantones").hide();
+    $("#campoDistritos").hide();
+    $("#campoNacimiento").hide();
+    $("#campoDireccion").hide();
+    $('#btnCrearUsuario').hide();
+}
 
+function mostrarForm() {
+    $("#campoNombre").show();//mostrar elemento que muestra el nombre
+    $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
+    $("#campoCorreo").show();
+    $("#campoTelefono").show();
+    $("#campoProvincia").show();
+    $("#campoCantones").show();
+    $("#campoDistritos").show();
+    $("#campoNacimiento").show();
+    $("#campoDireccion").show();
+}
+
+function validarCorreo(){
+
+    var correo = $("#correo").val();
+
+    // Expresión regular para validar el formato de correo
+    var regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Devuelve true si el correo es válido, de lo contrario, devuelve false
+    return regexCorreo.test(correo);
+}
+
+
+function validarTelefono() {
+    var telefono = $("#telefono").val();
+    var regexTelefono = /^\d{4}-\d{4}$/;
+
+    // Devuelve true si el teléfono es válido, de lo contrario, devuelve false
+    return regexTelefono.test(telefono);
+}
+
+
+//retorna falso si esta incorrecto el correo o telefono
+function validarCorreoTelefono() {
+    if (!validarCorreo() && !validarTelefono()) {
+        if ($("#msjFormulario").length) {
+
+            $("#msjFormulario").remove();
+
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+        }
+        else {
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+
+        }
+        return false;
+
+    }
+    else if (!validarCorreo()) {
+        if ($("#msjFormulario").length) {
+
+            $("#msjFormulario").remove();
+
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+        }
+        else {
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+
+        }
+        return false;
+    }
+    else if (!validarTelefono()) {
+        if ($("#msjFormulario").length) {
+
+            $("#msjFormulario").remove();
+
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+        }
+        else {
+            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+
+        }
+        return false;
+
+    }
+    else {
+        return true;
+    }
+}
 
