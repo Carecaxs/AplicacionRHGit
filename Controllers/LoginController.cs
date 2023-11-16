@@ -38,35 +38,37 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public ActionResult ConfirmarCodigo(string identificacion)
+        public ActionResult ConfirmarCodigo(string identificacion, string tipoUsuario)
         {
             ViewBag.id = identificacion;
+            ViewBag.tipoUsuario = tipoUsuario;
+
             return View();
         }
 
         [HttpGet]
-        public JsonResult GetPersona(string cedula, string tipoIdentificacion)
+        public JsonResult GetPersona(string identificacion, string tipoIdentificacion)
         {
          
 
 
-            if (cedula != null && cedula != "")
+            if (identificacion != null && identificacion != "")
             {
 
 
 
-                cedula = cedula.Replace("-", "").Replace("_", "");
+                identificacion = identificacion.Replace("-", "").Replace("_", "");
 
-                if (tipoIdentificacion == "Cédula de Identidad")
+                if (tipoIdentificacion == "Cedula")
                 {
 
-                    if (cedula.Length == 9)//si no le agregan el primer 0 se le agrega solo
+                    if (identificacion.Length == 9)//si no le agregan el primer 0 se le agrega solo
                     {
-                        cedula = "0" + cedula;
+                        identificacion = "0" + identificacion;
                     }
                     else
                     {
-                        if (cedula.Length != 10)//si la cedula no es válida
+                        if (identificacion.Length != 10)//si la cedula no es válida
                         {
                             return Json(new { error = "Debes de ingresar una cédula válida" });
                         }
@@ -80,7 +82,7 @@ namespace AplicacionRHGit.Controllers
                 {
 
                     LoginDAO DA = new LoginDAO(_context);
-                    var persona = DA.ObtenerDatosPersonaPorCedula(cedula);
+                    var persona = DA.ObtenerDatosPersonaPorCedula(identificacion);
 
                     if (persona != null)
                     {
@@ -186,7 +188,7 @@ namespace AplicacionRHGit.Controllers
             MensajesAutomaticosServices aux = new MensajesAutomaticosServices(_context);
 
             //creacion del mensaje a enviar
-            var url = $"{this.Request.Scheme}://{this.Request.Host}{@Url.Action("ConfirmarCodigo", "Login", new { identificacion = usuario.identificacion })}";
+            var url = $"{this.Request.Scheme}://{this.Request.Host}{@Url.Action("ConfirmarCodigo", "Login", new { identificacion = usuario.identificacion, tipoUsuario=tipoUsuario })}";
             string mensaje = "Su solicitud de ingreso a la bolsa de empleo se realizó el " + aux.ObtenerFechaCompleta() +
                 ". Para finalizar su registro ingrese el código enviado a su celular <a href ='" + url +
                 "'>AQUI</a>.<br /><hr />Este correo es generado automaticamente por lo cual no debe de responderlo.<br />RH.CO.CR";
@@ -222,18 +224,58 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpGet]
-        public JsonResult ConfirmacionCuenta(string identificacion, string codigo)
+        public JsonResult ConfirmacionCuenta(string identificacion, string codigo, string tipoUsuario)
         {
 
             LoginDAO acceso = new LoginDAO(_context);
-            
-            //si retorna true es que si se confirma el codigo
-            if(acceso.ConfirmarCuenta(identificacion, codigo))
+
+            try
             {
+                //si retorna true es que si se confirma el codigo
+                if (acceso.ConfirmarCuenta(identificacion, codigo, tipoUsuario))
+                {
+                    return Json(new { exitoso = true });
+
+                }
+                else
+                {
+                    return Json(new { exitoso = false, mensaje = "Codigo incorrecto" });
+
+                }
 
             }
-        
-        
+            catch(Exception ex)
+            {
+                return Json(new { exitoso = false, mensaje = ex.Message });
+
+            }
+
+
+        }
+
+
+
+
+        [HttpPost]
+        public JsonResult GuardarContraseña(string identificacion, string clave, string tipoUsuario)
+        {
+
+            LoginDAO acceso = new LoginDAO(_context);
+
+            try
+            {
+                acceso.GuardarContraseña(identificacion, clave, tipoUsuario);
+                return Json(new { exitoso = true });
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { exitoso = false, mensaje = ex.Message });
+
+            }
+
+
         }
 
 

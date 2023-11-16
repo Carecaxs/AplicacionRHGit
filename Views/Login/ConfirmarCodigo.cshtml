@@ -28,6 +28,8 @@
                 <h2 id="seccionInicioSesion">Confirmación de Registro</h2>
 
                 <input id="identificacion" type="hidden" value="@ViewBag.id" />
+                <input id="tipoUsuario" type="hidden" value="@ViewBag.tipoUsuario" />
+
 
                 <div class="form-group col-md-12 mt-2">
                     <label for="codigo">Ingresé en esta pantalla el pin de activación enviado por SMS al celular registrado</label>
@@ -44,6 +46,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para ingresar la contraseña -->
+    <div class="modal fade" id="modalContraseña" tabindex="-1" role="dialog" aria-labelledby="modalContraseñaLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalContraseñaLabel">Crear Contraseña</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="contraseña">Contraseña:</label>
+                    <input type="password" id="contraseña" class="form-control" />
+
+                    <!-- mostrar mensajes de error -->
+                    <div id="mensajeError" class="text-danger"></div>
+                </div>
+                <div class="modal-footer">
+       
+                    <button type="button" class="btn btn-success mt-2" id="guardarContraseña">Guardar Contraseña</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 

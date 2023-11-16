@@ -16,7 +16,7 @@ $(document).ready(function () {
             mask = "99-9999-9999";
 
 
-        } else if (selectedType === "Dinex") {
+        } else if (selectedType === "Dimex") {
             mask = "99-999999-9999";
 
         } else if (selectedType === "Pasaporte") {
@@ -77,129 +77,155 @@ $(document).ready(function () {
 
         $("#identificationType").change(function () {
 
-            esconderForm();
+            LimpiarCampos();
 
+            // Obtener el valor seleccionado en el campo identificationType
+            var selectedIdentificationType = $(this).val();
+
+            // Habilitar o deshabilitar el campo de identificación según la opción seleccionada
+            if (selectedIdentificationType === "Dimex" || selectedIdentificationType === "Pasaporte") {
+                // Habilitar el campo de identificación
+                mostrarForm();
+
+                // habilitar campos
+                $("#nombre").prop("disabled", false);
+                $("#apellidos").prop("disabled", false);
+                $("#btnVerificarCedula").hide();
+
+            } else {
+                // Deshabilitar campos
+
+                $("#nombre").prop("disabled", true);
+                $("#apellidos").prop("disabled", true);
+                esconderForm();
+                $("#btnVerificarCedula").show();
+
+            }
 
 
             if ($("#msjValidacionCedula").length) {
                 // Si existe, elimina el elemento
                 $("#msjValidacionCedula").remove();
             }
+
+
         });
+
+
 
 
 
 
         //cargar provincias
         // URL de tu API que devuelve las provincias
-        var apiProvincia = "https://www.apprh.somee.com/api/Ubicaciones/Provincias";
+        //var apiProvincia = "https://www.apprh.somee.com/api/Ubicaciones/Provincias";
 
-        // Elemento <select> de provincias
-        var provinciasDropdown = $("#provincias");
-        var cantonesDropdown = $("#cantones");
-        var distritosDropdown = $("#distritos");
+        //// Elemento <select> de provincias
+        //var provinciasDropdown = $("#provincias");
+        //var cantonesDropdown = $("#cantones");
+        //var distritosDropdown = $("#distritos");
 
 
 
         // Realiza una solicitud GET a la API
-        fetch(apiProvincia)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo obtener las provincias.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
+        //fetch(apiProvincia)
+        //    .then(response => {
+        //        if (!response.ok) {
+        //            throw new Error('No se pudo obtener las provincias.');
+        //        }
+        //        return response.json();
+        //    })
+        //    .then(data => {
+        //        console.log(data);
 
-                // Llena el ComboBox con las provincias recibidas de la API
-                data.forEach(provincia => {
-                    provinciasDropdown.append($("<option>").val(provincia.idProvincia).text(provincia.nombreProvincia));
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        //        // Llena el ComboBox con las provincias recibidas de la API
+        //        data.forEach(provincia => {
+        //            provinciasDropdown.append($("<option>").val(provincia.idProvincia).text(provincia.nombreProvincia));
+        //        });
+        //    })
+        //    .catch(error => {
+        //        console.error(error);
+        //    });
 
 
     }
 
 
-    $("#provincias").change(function () {
-        if ($("#provincias").val() != "null") {//verificar que la opcion no sea "seleccione una provincia"
+    //$("#provincias").change(function () {
+    //    if ($("#provincias").val() != "null") {//verificar que la opcion no sea "seleccione una provincia"
 
-            //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
-            // Elimina todas las opciones excepto la primera (índice 0)
-            $("#cantones").find("option:not(:first)").remove();
-            $("#distritos").find("option:not(:first)").remove();
+    //        //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
+    //        // Elimina todas las opciones excepto la primera (índice 0)
+    //        $("#cantones").find("option:not(:first)").remove();
+    //        $("#distritos").find("option:not(:first)").remove();
 
-            var idProvincia = $("#provincias").val();//agarrar el id de la provincia elegida
+    //        var idProvincia = $("#provincias").val();//agarrar el id de la provincia elegida
 
-            const apiCanton = 'https://www.apprh.somee.com/api/Ubicaciones/Cantones/';
+    //        const apiCanton = 'https://www.apprh.somee.com/api/Ubicaciones/Cantones/';
 
-            fetch(apiCanton + (idProvincia))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('No se pudo obtener los cantones.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
+    //        fetch(apiCanton + (idProvincia))
+    //            .then(response => {
+    //                if (!response.ok) {
+    //                    throw new Error('No se pudo obtener los cantones.');
+    //                }
+    //                return response.json();
+    //            })
+    //            .then(data => {
+    //                console.log(data);
 
-                    // Llena el ComboBox con los cantones recibidos de la API
-                    data.forEach(cantones => {
-                        cantonesDropdown.append($("<option>").val(cantones.idCanton).text(cantones.nombreCanton));
-                    });
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-        else {
-            //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
-            // Elimina todas las opciones excepto la primera (índice 0)
-            $("#cantones").find("option:not(:first)").remove();
-            $("#distritos").find("option:not(:first)").remove();
+    //                // Llena el ComboBox con los cantones recibidos de la API
+    //                data.forEach(cantones => {
+    //                    cantonesDropdown.append($("<option>").val(cantones.idCanton).text(cantones.nombreCanton));
+    //                });
+    //            })
+    //            .catch(error => {
+    //                console.error(error);
+    //            });
+    //    }
+    //    else {
+    //        //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
+    //        // Elimina todas las opciones excepto la primera (índice 0)
+    //        $("#cantones").find("option:not(:first)").remove();
+    //        $("#distritos").find("option:not(:first)").remove();
 
 
 
-        }
+    //    }
 
-    });
+    //});
 
 
     //evento al cambiar de seleccion en cantones
-    $("#cantones").change(function () {
+    //$("#cantones").change(function () {
 
-        //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
-        // Elimina todas las opciones excepto la primera (índice 0)
-        $("#distritos").find("option:not(:first)").remove();
+    //    //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
+    //    // Elimina todas las opciones excepto la primera (índice 0)
+    //    $("#distritos").find("option:not(:first)").remove();
 
-        var idCanton = $("#cantones").val();//agarrar el id del cannton elegido
+    //    var idCanton = $("#cantones").val();//agarrar el id del cannton elegido
 
-        const apiDistrito = 'https://www.apprh.somee.com/api/Ubicaciones/Distritos/';
+    //    const apiDistrito = 'https://www.apprh.somee.com/api/Ubicaciones/Distritos/';
 
-        fetch(apiDistrito + (idCanton))
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo obtener los distritos.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
+    //    fetch(apiDistrito + (idCanton))
+    //        .then(response => {
+    //            if (!response.ok) {
+    //                throw new Error('No se pudo obtener los distritos.');
+    //            }
+    //            return response.json();
+    //        })
+    //        .then(data => {
+    //            console.log(data);
 
-                // Llena el ComboBox con los cantones recibidos de la API
-                data.forEach(distritos => {
-                    distritosDropdown.append($("<option>").val(distritos.idDistrito).text(distritos.nombreDistrito));
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+    //            // Llena el ComboBox con los cantones recibidos de la API
+    //            data.forEach(distritos => {
+    //                distritosDropdown.append($("<option>").val(distritos.idDistrito).text(distritos.nombreDistrito));
+    //            });
+    //        })
+    //        .catch(error => {
+    //            console.error(error);
+    //        });
 
-    });
+    //});
 
 
 
@@ -219,7 +245,7 @@ $(document).ready(function () {
         // Evitar la recarga de la página
         event.preventDefault();
 
-        var cedula = $("#identification").val();//obtener el valor de la cedula
+        var identificacion = $("#identification").val();//obtener el valor de la cedula
 
         var tipoIdentificacionSeleccionado = $("#identificationType").val();//acceder al tipo de identificacion seleccionado
 
@@ -227,7 +253,7 @@ $(document).ready(function () {
             type: "Get",//tipo de solicitud
             url: "/Login/GetPersona", //direccion del controlador
             data: {//se envia el parametro
-                cedula: cedula,
+                identificacion: identificacion,
                 tipoIdentificacion: tipoIdentificacionSeleccionado
             },
             success: function (data) {//en caso de que sale bien
@@ -259,12 +285,19 @@ $(document).ready(function () {
 
 
                     // Actualizar el valor visual del campo #cedula
-                    $("#cedula").val(cedula.startsWith("0") ? cedula : "0" + cedula);// Verificar si la cédula tiene un 0 al inicio
+                    if ($("#identificationType").val() == "Cédula de Identidad") {
+                        $("#identificacion").val(cedula.startsWith("0") ? identificacion : "0" + identificacion);// Verificar si la cédula tiene un 0 al inicio
+                    }
+                    else {
+                        $("#identificacion").val(identificacion);
+
+                    }
+                    
 
                     // asignar valores a los inputs de la consulta
                     $("#nombre").val(data.nombre);
                     $("#apellidos").val(data.apellido1 + " " + data.apellido2);
-                    $("#nacimiento").val(data.fechaNacimiento);
+/*                    $("#nacimiento").val(data.fechaNacimiento);*/
 
                     mostrarForm();
 
@@ -285,12 +318,29 @@ $(document).ready(function () {
 
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
+    
 
+        //comprobacion de que la cedula se mande bien
+        if (!ComprobarIdentificacion()) {
+
+            if ($("#msjFormulario").length) {
+
+                $("#msjFormulario").remove();
+
+                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+            }
+            else {
+                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+
+            }
+            return;
+        }
+
+  
 
 
         //si todos estan completados
-        if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#provincias').val() != "Seleccione una opción"
-            && $('#cantones').val() != "Seleccione una opción" && $('#distritos').val() != "Seleccione una opción" && $('#direccion').val() != "") {
+        if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#nombre').val() != "" && $('#apellidos').val() != "") {
 
             //retorna true si se valida el correo y telefono
             if (validarCorreoTelefono()) {
@@ -311,16 +361,17 @@ $(document).ready(function () {
                     var tipoUsuario = 'Reclutador';
                 }
 
+                // Dividir los apellidos en un array
+                var apellidosArray = $('#apellidos').val().split(" ");
 
                 //campos para crear usuario
                 var usuario = {
                     identificacion: $('#identification').val().replace(/-/g, ""),
+                    nombre: $('#nombre').val(),
+                    apellido1: apellidosArray[0] || "",
+                    apellido2: apellidosArray[1] || "",
                     correo: $('#correo').val(),
-                    telefono: $('#telefono').val().replace("-", ""),
-                    provincia: $('#provincias').val(),
-                    canton: $('#cantones').val(),
-                    distrito: $('#distritos').val(),
-                    direccion: $('#direccion').val()
+                    telefono: $('#telefono').val().replace("-", "")
                 };
 
 
@@ -334,10 +385,7 @@ $(document).ready(function () {
                     success: function (data) {
 
 
-                        console.log(data.exitoso);
-                        console.log(data.error);
 
-                        console.log($("#confirmacionModal").html());
                         if (data.exitoso == true) {
                             // Si no hay error, muestra el mensaje de éxito en el modal
 
@@ -405,14 +453,91 @@ $(document).ready(function () {
                 method: 'GET',
                 data: {
                     identificacion: $('#identificacion').val(),
-                    codigo: $('#codigo').val()
+                    codigo: $('#codigo').val(),
+                    tipoUsuario: $('#tipoUsuario').val()
+
                 },
                 success: function (data) {
 
+                    if (data.exitoso == true) {
+                        //mostrar modal
+                        $("#modalContraseña").modal("show");
+
+                        $("#guardarContraseña").click(function () {
+                            //acciones para guardar la contraseña
+
+                            //comprobar que no este vacio el input de clave
+                            if ($('#contraseña').val() != "") {
+
+                                $.ajax({
+                                    url: '/Login/GuardarContraseña',
+                                    method: 'POST',
+                                    data: {
+                                        identificacion: $('#identificacion').val(),
+                                        clave: $('#contraseña').val(),
+                                        tipoUsuario: $('#tipoUsuario').val()
+
+                                    },
+                                    success: function (data) {
+
+                                        if (data.exitoso == true) {
+                                            console.log("todo salio bien")
+                                            //aca me debe de redirigir a la cuenta del usuario
+                                            //esta pendiente
+                                            //cierra el modal
+                                            $("#modalContraseña").modal("hide");
+                                        }
+                                        else {
+                                            if (data.mensaje) {
+                                                $("#mensajeError").text(data.mensaje);
+                                            }
+                                        }
+
+
+                                    },
+                                    error: function (xhr, status, error) { //error en la solicitud de ajax
+                                        console.error(error);
+                                    }
+
+
+                                })
+
+                            }
 
 
 
+   
+                        });
+                    }
+                    else {
+                        if (data.mensaje) {
+                            //mostrar mensaje error
+                            if ($("#msjInformativo").length) {
 
+                                $("#msjInformativo").remove();
+
+                                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                            }
+                            else {
+                                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                            }
+                        }
+                        else {
+                            //mostrar mensaje de excepcion
+                            if ($("#msjInformativo").length) {
+
+                                $("#msjInformativo").remove();
+
+                                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                            }
+                            else {
+                                $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                            }
+
+                        }
+                    }
                 },
                 error: function (xhr, status, error) { //error en la solicitud de ajax
                     console.error(error);
@@ -449,11 +574,11 @@ function esconderForm() {
     $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
     $("#campoCorreo").hide();
     $("#campoTelefono").hide();
-    $("#campoProvincia").hide();
-    $("#campoCantones").hide();
-    $("#campoDistritos").hide();
-    $("#campoNacimiento").hide();
-    $("#campoDireccion").hide();
+    //$("#campoProvincia").hide();
+    //$("#campoCantones").hide();
+    //$("#campoDistritos").hide();
+    //$("#campoNacimiento").hide();
+    //$("#campoDireccion").hide();
     $('#btnCrearUsuario').hide();
 }
 
@@ -462,11 +587,13 @@ function mostrarForm() {
     $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
     $("#campoCorreo").show();
     $("#campoTelefono").show();
-    $("#campoProvincia").show();
-    $("#campoCantones").show();
-    $("#campoDistritos").show();
-    $("#campoNacimiento").show();
-    $("#campoDireccion").show();
+    //$("#campoProvincia").show();
+    //$("#campoCantones").show();
+    //$("#campoDistritos").show();
+    //$("#campoNacimiento").show();
+    //$("#campoDireccion").show();
+    $('#btnCrearUsuario').show();
+
 }
 
 function validarCorreo(){
@@ -536,5 +663,54 @@ function validarCorreoTelefono() {
     else {
         return true;
     }
+}
+
+
+function LimpiarCampos() {
+    $("#identification").val('');
+    $("#nombre").val('');
+    $("#apellidos").val('');
+    $("#correo").val('');
+    $("#telefono").val('');
+}
+
+
+function ComprobarIdentificacion() {
+
+    var identificationType = $('#identificationType').val();
+    var identificationValue = $('#identification').val().replace(/-/g, "");
+
+    if (identificationType === 'Cedula') {
+        // Validar que la cédula tenga 10 números
+        if (/^\d{10}$/.test(identificationValue)) {
+            console.log("true");
+            return true;
+        } else {
+            console.log("false");
+            return false;
+
+        }
+    } else if (identificationType === 'Dimex') {
+        // Validar que el DIMEX tenga la longitud deseada (ajusta según tus requisitos)
+        if (identificationValue.length === 12) {
+            console.log("true");
+            return true;
+        } else {
+            console.log("false");
+            return false;
+
+        }
+    } else if (identificationType === 'Pasaporte') {
+        // Validar que el pasaporte tenga la longitud deseada (ajusta según tus requisitos)
+        if (identificationValue.length >= 6 && identificationValue.length <= 12) {
+            console.log("true");
+            return true;
+        } else {
+            console.log("false");
+            return false;
+ 
+        }
+    } 
+
 }
 

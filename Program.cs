@@ -31,6 +31,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=ConfirmarCodigo}/{identificacion=117860836}");
+    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
 
 app.Run();

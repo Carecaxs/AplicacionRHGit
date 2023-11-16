@@ -11,6 +11,8 @@ namespace AplicacionRHGit.Data
         public DbSet<OFERENTE> Oferente { get; set; }
         public DbSet<RECLUTADOR> Reclutador { get; set; }
         public DbSet<CODIGOS_SMS> CodigosSms { get; set; }
+        public DbSet<EXPEDIENTE> Expediente { get; set; }
+
 
 
 
