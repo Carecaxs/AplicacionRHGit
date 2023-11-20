@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Oferentes"] - AplicacionRHGit</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AplicacionRHGit.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-"
+          crossorigin="anonymous">
+
+
+</head>
+<body class="fondoImg">
+    <header>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark mb-3">
+
+            <a id="navNombre" class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav text-white">
+                    <li class="nav-item active">
+                        <div class="nav-link dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Expediente
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Datos Personales</a>
+                                <a class="dropdown-item" href="#">Referencias</a>
+                                <a class="dropdown-item" href="#">Titulos</a>
+                                <a class="dropdown-item" href="#">Experiencia Laboral</a>
+
+                            </div>
+                        </div>
+                    </li>
+                    @* postulaciones *@
+                    <li class="nav-item active">
+                        <div class="nav-link dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Postulaciones
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Ver vacantes</a>
+                                <a class="dropdown-item" href="#">Vacantes Aplicadas</a>
+
+                            </div>
+                        </div>
+                    </li>
+                    @* comunicacion *@
+                    <li class="nav-item active">
+                        <div class="nav-link dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Comunicación
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Abrir Mensajería</a>
+                                <a class="dropdown-item" href="#">Soporte</a>
+                            </div>
+                        </div>
+                    </li>
+                    @* cuenta *@
+                    <li class="nav-item active">
+                        <div class="nav-link dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cuenta
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Cambiar Contraseña</a>
+                                <a class="dropdown-item" href="#">Inactivar Cuenta</a>
+                                <a class="dropdown-item" href="#">Cerrar Sesión</a>
+
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+
+        <!-- input con nombre de uusario -->
+        <input id="nombreUsuario" type="hidden" value="@ViewBag.nombre" />
+    </header>
+
+    
+
+
+    @RenderBody()
+
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/jquery.inputmask.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="~/js/oferente/paginainicio.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

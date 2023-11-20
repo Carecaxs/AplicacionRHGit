@@ -78,3 +78,33 @@ button.card-link {
 
    
 }
+
+
+.cartas-header {
+    text-decoration: underline;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size:1.5rem;
+}
+
+.cartas-cuerpo {
+    height: 13rem;
+/*    display: flex;
+    flex-direction: column;
+    justify-content: center;*/
+    
+}
+
+@media (max-width: 770px) {
+    .cartas-cuerpo {
+        height: auto; /* Altura automática para pantallas más pequeñas */
+    }
+    .cartas-header {
+        font-size: 1rem;
+    }
+}
+
+
+.dropdown-item:hover {
+    background-color: #343a40; /* Cambia esto al color deseado */
+    color: #ffffff; /* Cambia esto al color deseado */
+}

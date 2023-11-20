@@ -264,16 +264,17 @@ $(document).ready(function () {
 
                         $("#msjValidacionCedula").remove();
 
-                        $("#btnVerificarCedula").after("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+                        $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
                     }
                     else {
-                        $("#btnVerificarCedula").after("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+                        $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
 
                     }
 
 
 
                 } else {
+      
 
                     if ($("#msjValidacionCedula").length) {
 
@@ -318,6 +319,7 @@ $(document).ready(function () {
 
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
+
     
 
         //comprobacion de que la cedula se mande bien
@@ -327,10 +329,10 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
             }
             else {
-                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
 
             }
             return;
@@ -395,10 +397,9 @@ $(document).ready(function () {
                             $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");
                         }
                         else {
-                            // Muestra el modal
-                            $("#confirmacionModal").modal("show");
-                            // Muestra el mensaje de error en el modal
-                            $("#contenidoModal").html('<p style="color: red;">' + data.error + '</p>');
+
+                            $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+
                         }
 
 
@@ -419,10 +420,10 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
             }
             else {
-                $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
 
             }
 
@@ -448,6 +449,7 @@ $(document).ready(function () {
         //se valida que el input donde se ingresa el codigo no este vacio
         if ($('#codigo').val() != "") {
 
+
             $.ajax({
                 url: '/Login/ConfirmacionCuenta',
                 method: 'GET',
@@ -463,51 +465,7 @@ $(document).ready(function () {
                         //mostrar modal
                         $("#modalContraseña").modal("show");
 
-                        $("#guardarContraseña").click(function () {
-                            //acciones para guardar la contraseña
-
-                            //comprobar que no este vacio el input de clave
-                            if ($('#contraseña').val() != "") {
-
-                                $.ajax({
-                                    url: '/Login/GuardarContraseña',
-                                    method: 'POST',
-                                    data: {
-                                        identificacion: $('#identificacion').val(),
-                                        clave: $('#contraseña').val(),
-                                        tipoUsuario: $('#tipoUsuario').val()
-
-                                    },
-                                    success: function (data) {
-
-                                        if (data.exitoso == true) {
-                                            console.log("todo salio bien")
-                                            //aca me debe de redirigir a la cuenta del usuario
-                                            //esta pendiente
-                                            //cierra el modal
-                                            $("#modalContraseña").modal("hide");
-                                        }
-                                        else {
-                                            if (data.mensaje) {
-                                                $("#mensajeError").text(data.mensaje);
-                                            }
-                                        }
-
-
-                                    },
-                                    error: function (xhr, status, error) { //error en la solicitud de ajax
-                                        console.error(error);
-                                    }
-
-
-                                })
-
-                            }
-
-
-
-   
-                        });
+                       
                     }
                     else {
                         if (data.mensaje) {
@@ -562,11 +520,448 @@ $(document).ready(function () {
 
     });
 
-       
+    $("#guardarContraseña").click(function () {
+        //acciones para guardar la contraseña
+
+        //comprobar que no este vacio el input de clave
+        if ($('#contraseña1').val() != "" && $('#contraseña2').val() != "") {
+
+            if ($('#contraseña1').val() == $('#contraseña2').val()) {//se combrueba que sea igual
+
+                $.ajax({
+                    url: '/Login/GuardarContraseña',
+                    method: 'POST',
+                    data: {
+                        identificacion: $('#identificacion').val(),
+                        clave: $('#contraseña1').val(),
+                        tipoUsuario: $('#tipoUsuario').val()
+
+                    },
+                    success: function (data) {
+
+                        if (data.exitoso == true) {
 
 
+                            //////////////////aca me debe de redirigir a la cuenta del usuario///////////////////////////
+
+
+                            // Obtener el tipo de usuario del campo oculto o de donde sea necesario
+                            var tipoUsuario = $('#tipoUsuario').val();
+
+                            //Construir la URL de destino en función del tipo de usuario                        
+                            if (tipoUsuario == 'Reclutador') {
+                                var actionUrl = '/Reclutador/nombreVista';
+                            }
+                            else {
+                                var actionUrl = '/Oferente/MenuPrincipalOferente';
+                            }
+
+                            // Tu lógica para enviar el formulario
+                            var form = $("#formGuardarContraseña");
+
+                            //asignar la accion al formulario
+                            form.prop('action', actionUrl);
+
+                            form.submit();
+
+
+
+                            //cierra el modal
+                            $("#modalContraseña").modal("hide");
+                        }
+                        else {
+                            console.log("algo salio mal")
+
+                            if (data.mensaje) {
+                               
+                                if ($("#msjInformativo").length) {
+
+                                    $("#msjInformativo").remove();
+
+                                    $("#contraseña2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                                }
+                                else {
+                                    $("#contraseña2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                                }
+                            }
+                        }
+
+
+                    },
+                    error: function (xhr, status, error) { //error en la solicitud de ajax
+                        console.error(error);
+                    }
+
+
+                })
+            }
+            else {
+                if ($("#msjInformativo").length) {
+
+                    $("#msjInformativo").remove();
+
+                    $("#contraseña2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Las contraseñas no coinciden" + "</p>");
+                }
+                else {
+                    $("#contraseña2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Las contraseñas no coinciden" + "</p>");
+
+                }
+            }
+
+           
+
+        }
+
+
+
+
+    });
+
+    $("#cerrarModalContraseña").click(function (event) {
+
+        //limpiar inputs
+        $('#contraseña1').val("");
+        $('#contraseña2').val("");
+
+        if ($("#msjInformativo").length) {
+
+            $("#msjInformativo").remove();
+        }
+      
+
+        $.ajax({
+            url: '/Login/CambiarVerificadoFalse',
+            method: 'POST',
+            data: {
+                identificacion: $('#identificacion').val(),
+                tipoUsuario: $('#tipoUsuario').val()
+            },
+            success: function (data) {
+
+                if (data.mensaje) {
+                    if ($("#msjInformativo").length) {
+
+                        $("#msjInformativo").remove();
+
+                        $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                    }
+                    else {
+                        $("#validarCodigo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                    }
+                }
+
+                $("#codigo").val("");
+
+
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+    });
+
+
+
+    $("#btnRegresar").click(function (event) {
+        event.preventDefault();
+
+        var nombreVista = $("#nombreVista").val();
+
+        if (nombreVista === "Ingresar") {
+            window.location.href = '/MenuPrincipal/MenuAcceso';
+        }
+        else if (nombreVista === "Crear") {
+            window.location.href = '/Login/Ingresar?tipoUsuario=' + $("#tipoUsuario").val();
+        }
+
+    });
+
+    $("#restablecerClave").click(function (event) {
+
+        //validar que el campo correo no este vacio
+        if ($("#correo").val() != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/Login/OlvidarContraseña",
+                data: {
+                    correo: $("#correo").val(),
+                    tipoUsuario: $("#tipoUsuario").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+
+                        if ($("#msjInformativo").length) {
+
+                            $("#msjInformativo").remove();
+
+                            $("#correo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#correo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        if ($("#msjInformativo").length) {
+
+                            $("#msjInformativo").remove();
+
+                            $("#correo").after("<p class='alert alert-success mt-2' id='msjInformativo'>" + "Se ha enviado al correo un link para restablecer la contraseña" + "</p>");
+                        }
+                        else {
+                            $("#correo").after("<p class='alert alert-success mt-2' id='msjInformativo'>" + "Se ha enviado al correo un link para restablecer la contraseña" + "</p>");
+
+                        }
+
+
+                    }
+
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+        }
+        else {
+            if ($("#msjInformativo").length) {
+
+                $("#msjInformativo").remove();
+
+                $("#correo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de ingresar un correo" + "</p>");
+            }
+            else {
+                $("#correo").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de ingresar un correo" + "</p>");
+
+            }
+        }
+
+
+
+    });
+
+
+
+    $("#cerrarModalRestablecerClave").click(function (event) {
+
+        //cerrar modal
+        $("#olvideContrasenaModal").modal("hide");
+    });
+
+    $("#abrirModalRestablecerClave").click(function (event) {
+
+        //abrir modal
+        $('#olvideContrasenaModal').modal('show');
+
+    });
+
+
+
+    //si esta en la vista de verificar clave al cargar el documento se va mostrar el modal
+    if ($("#nombreVista").val() == "Restablecer Clave") {
+
+        //configurar para que sea estatico
+        $('#cambiarContrasenaModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        //mostrar modal
+        $('#cambiarContrasenaModal').modal('show');
+    }
+
+
+
+    //AL DAR CLICK EN EL BOTON DE CONFIRMAR LA NUEVA CLAVE AL ACCEDER EN LA PAGINA DE RESTABLECER CLAVE
+    $("#confirmarClaveNueva").click(function (event) {
+
+
+        //comprobar que no este vacio el input de clave
+        if ($('#clave1').val() != "" && $('#clave2').val() != "") {
+
+            if ($('#clave1').val() == $('#clave2').val()) {//se combrueba que sea igual
+
+                $.ajax({
+                    url: '/Login/GuardarContraseña',
+                    method: 'POST',
+                    data: {
+                        identificacion: $('#identificacion').val(),
+                        clave: $('#clave1').val(),
+                        tipoUsuario: $('#tipoUsuario').val()
+
+                    },
+                    success: function (data) {
+
+                        if (data.exitoso == true) {
+               
+                            //////////////////aca me debe de redirigir a la cuenta del usuario///////////////////////////
+
+
+                            // Obtener el tipo de usuario del campo oculto o de donde sea necesario
+                            var tipoUsuario = $('#tipoUsuario').val();
+
+                            //Construir la URL de destino en función del tipo de usuario                        
+                            if (tipoUsuario == 'Reclutador') {
+                                var actionUrl = '/Reclutador/nombreVista';
+                            }
+                            else {
+                                var actionUrl = '/Oferente/MenuPrincipalOferente';
+                            }
+
+                            // Tu lógica para enviar el formulario
+                            var form = $("#formRestablecerClave");
+
+                            //asignar la accion al formulario
+                            form.prop('action', actionUrl);
+
+                            form.submit(); 
+  
+               
+
+                        }
+                        else {
+                            if (data.mensaje) {
+
+                                if ($("#msjInformativo").length) {
+
+                                    $("#msjInformativo").remove();
+
+                                    $("#clave2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                                }
+                                else {
+                                    $("#clave2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                                }
+                            }
+                        }
+
+
+                    },
+                    error: function (xhr, status, error) { //error en la solicitud de ajax
+                        console.error(error);
+                    }
+
+
+                })
+            }
+            else {
+                if ($("#msjInformativo").length) {
+
+                    $("#msjInformativo").remove();
+
+                    $("#clave2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Las contraseñas no coinciden" + "</p>");
+                }
+                else {
+                    $("#clave2").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Las contraseñas no coinciden" + "</p>");
+
+                }
+            }
+
+
+
+        }
+    });
+
+
+
+
+    //INICIO DE SESION
+    $("#btnIniciarSesion").click(function (event) {
+        event.preventDefault();
+
+        //se verifica que se hayan datos en los inputs
+        if ($("#identification").val() != "" && $("#password").val() != "") {
+
+            identificacion = $('#identification').val().replace(/-/g, "");
+
+            //verificar que el usuario exista
+            $.ajax({
+                url: '/Login/IniciarSesion',
+                method: 'Get',
+                data: {
+                    identificacion: identificacion,
+                    clave: $('#password').val(),
+                    tipoUsuario: $('#tipoUsuario').val()
+
+                },
+                success: function (data) {
+
+                    if (data.exitoso == true) {
+
+                        //////////////////aca me debe de redirigir a la cuenta del usuario///////////////////////////
+
+                        // Obtener el tipo de usuario del campo oculto o de donde sea necesario
+                        var tipoUsuario = $('#tipoUsuario').val();
+
+                         //Construir la URL de destino en función del tipo de usuario                        
+                        if (tipoUsuario == 'Reclutador') {
+                            var actionUrl = '/Reclutador/nombreVista';
+                        }
+                        else {
+                            var actionUrl = '/Oferente/MenuPrincipalOferente';
+                        }
+
+                        // Tu lógica para enviar el formulario
+                        var form = $("#formIngresar");
+
+                        //asignar la accion al formulario
+                        form.prop('action', actionUrl);
+
+                        form.submit();
+
+
+
+                    }
+                    else {
+                        if (data.mensaje) {
+
+                            if ($("#msjInformativo").length) {
+
+                                $("#msjInformativo").remove();
+
+                                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                            }
+                            else {
+                                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+
+                            }
+                        }
+                    }
+
+
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+
+
+            })
+
+        } else {
+            //si alguno de los campos esta vacio
+            if ($("#msjInformativo").length) {
+
+                $("#msjInformativo").remove();
+
+                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
+            }
+            else {
+                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
+
+            }
+        }
+    });
+
+
+    
 
 });
+
+
+
 
 
 function esconderForm() {

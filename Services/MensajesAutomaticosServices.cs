@@ -21,7 +21,7 @@ namespace AplicacionRHGit.Services
             _context = context;
         }
 
-        public int EnviarCorreo(Usuario usuario, string mensaje)
+        public int EnviarCorreo(Usuario usuario, string mensaje, int tipoCorreo)//tipo correo 1 si es de registro, 2 si es olvidar contraseña
         {
             try
             {
@@ -31,20 +31,46 @@ namespace AplicacionRHGit.Services
                     smtpClient.Credentials = new NetworkCredential("plataformarh0@gmail.com", "tieghnwdhlcwwpae");
                     smtpClient.EnableSsl = true;
 
-                    using (MailMessage mailMessage = new MailMessage
+                    switch(tipoCorreo)
                     {
-                        From = new MailAddress("plataformarh0@gmail.com"),
-                        Subject = "Registro RH Bolsa de Empleo",
-                        Body = MensajeCorreo(usuario, mensaje),
-                        IsBodyHtml = true,
-                    })
-                    {
-                        mailMessage.To.Add(usuario.correo);
+                        case 1://en caso de que sea para confirmar la cuenta
+                            using (MailMessage mailMessage = new MailMessage
+                            {
+                                From = new MailAddress("plataformarh0@gmail.com"),
+                                Subject = "Registro RH Bolsa de Empleo",
+                                Body = MensajeCorreo(usuario, mensaje),
+                                IsBodyHtml = true,
+                            })
+                            {
+                                mailMessage.To.Add(usuario.correo);
 
-                        smtpClient.Send(mailMessage);
-                        Console.WriteLine("Correo enviado exitosamente");
-                        return 1;
+                                smtpClient.Send(mailMessage);
+                                Console.WriteLine("Correo enviado exitosamente");
+                                return 1;
+                            }
+
+                        case 2: //en caso de que sea para recuperar contraseña
+
+                            using (MailMessage mailMessage = new MailMessage
+                            {
+                                From = new MailAddress("plataformarh0@gmail.com"),
+                                Subject = "Cambio de Contraseña",
+                                Body = mensaje,
+                                IsBodyHtml = true,
+                            })
+                            {
+                                mailMessage.To.Add(usuario.correo);
+
+                                smtpClient.Send(mailMessage);
+                                Console.WriteLine("Correo enviado exitosamente");
+                                return 1;
+                            }
+
+                        default:
+                            return 0;
                     }
+
+                    
                 }
             }
             catch (SmtpException ex)

@@ -17,11 +17,19 @@
 
 </head>
 <body class="fondoImg">
+
+
+
      
     <div class="container">
         <div class="contenedorInicioSesion">
+
             <div class="d-flex flex-column align-items-center">
                 <h2 id="seccionInicioSesion">Registrarse como @TempData["Usuario"]</h2>
+                <input id="tipoUsuario" type="hidden" value="@TempData["Usuario"]" />
+                <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+
+
 
                 <form id="registroForm" class="">
                     <div class="form-group col-md-12 mt-2">
@@ -36,13 +44,16 @@
                     <div class="form-group col-md-12 mt-2">
                         <label for="identification">Identificación</label>
                         <div class="input-group">
-                            <input type="text" id="identification" class="form-control" disabled />
+                            <input type="text" id="identification" name="identification" class="form-control" disabled />
 
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
 
+                            <div class="input-group-append">
+                                <button id="btnVerificarCedula" class="btn btn-primary" type="button" style="margin-left: 5px;">Verificar cédula</button>
+                            </div>
                         </div>
 
-                        <button id="btnVerificarCedula" class="btn btn-primary mt-2">Verificar cédula</button>
+                
 
                     </div>
 
@@ -121,8 +132,20 @@
                         </div>
                     </div> *@
 
-                    <button id="btnCrearUsuario" class="btn btn-success mt-2">Crear</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- La mitad del ancho para el botón "Crear" -->
+                            <button id="btnCrearUsuario" class="btn btn-success mt-2 w-100">Crear</button> 
 
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <!-- La otra mitad del ancho para el botón "Regresar" alineado a la derecha -->
+                            <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
+                        </div>
+
+                    </div>
+               
+                   
 
 
 
@@ -165,7 +188,7 @@
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/jquery.inputmask.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="~/js/login/login.js"></script>
-
+    <script src="~/js/site.js"></script>
 
     
 

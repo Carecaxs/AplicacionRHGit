@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\js\\Login\\login.js"
     },
     {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\paginaInicio.js",
+      "PackagePath": "staticwebassets\\js\\Oferente\\paginaInicio.js"
+    },
+    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

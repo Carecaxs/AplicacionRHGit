@@ -33,4 +33,14 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
 
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Oferente}/{action=MenuPrincipalOferente}/{identificacion?}/{tipoUsuario?}");
+
+
+
+
+
+
+
 app.Run();

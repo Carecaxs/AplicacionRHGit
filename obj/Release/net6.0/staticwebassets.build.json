@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "bLizJjh2WQgxdw9cEyhgITmSPHHna+R745PqRutyajk=",
+  "Hash": "sEthOhKgtDX1x0+HoIdecnf/R9r+psBFPq4SBVQk2AY=",
   "Source": "AplicacionRHGit",
   "BasePath": "_content/AplicacionRHGit",
   "Mode": "Default",
@@ -151,6 +151,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Login\\login.js"
+    },
+    {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\paginaInicio.js",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "js/Oferente/paginaInicio.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Oferente\\paginaInicio.js"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",
