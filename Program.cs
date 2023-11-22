@@ -29,13 +29,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
-
 //app.MapControllerRoute(
 //    name: "default",
-//    pattern: "{controller=Oferente}/{action=MenuPrincipalOferente}/{identificacion?}/{tipoUsuario?}");
+//    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Oferente}/{action=TitulosOferente}/{identification?}/{clave?}");
 
 
 

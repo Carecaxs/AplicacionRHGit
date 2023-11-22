@@ -14,12 +14,12 @@ namespace AplicacionRHGit.Data
         }
 
 
-        public Usuario ObtenerDatosPersonaPorCedula(string identificacion, string tipoUsuario)
+        public Usuario ObtenerDatosPersonaPorCedula(string identificacion, string tipoUsuario, string clave)
         {
             Usuario usuario = new Usuario();
             if (tipoUsuario == "Oferente")
             {
-                var persona= _context.Oferente.Where(p => p.identificacion == identificacion).FirstOrDefault();
+                var persona= _context.Oferente.Where(p => p.identificacion == identificacion && p.clave==clave).FirstOrDefault();
                 if(persona != null)
                 {
                     usuario.identificacion = persona.identificacion;
@@ -33,7 +33,7 @@ namespace AplicacionRHGit.Data
             }
             else
             {
-                var persona = _context.Reclutador.Where(p => p.identificacion == identificacion).FirstOrDefault();
+                var persona = _context.Reclutador.Where(p => p.identificacion == identificacion && p.clave == clave).FirstOrDefault();
                 if (persona != null)
                 {
                     usuario.identificacion = persona.identificacion;

@@ -191,52 +191,7 @@ namespace AplicacionRHGit.Services
             _context.SaveChanges();
 
 
-            //using (RegistroContext registro = new RegistroContext())
-            //{
-            //    LoginDAO acceso = new LoginDAO(_context);
-            //    TSE persona = acceso.ObtenerDatosPersonaPorCedula(usuario.identificacion);
-
-
-            //    Registro registrado = new Registro()
-            //    {
-            //        Identificacion = usuario.identificacion,
-            //        Codigo = sms.codigo,
-            //        TipoUsuario = (tipoUsuario == "Oferente" ? 1 : 2),
-            //        Contrasena = null,
-            //        Estado = 0,
-            //        ServicioCivil = null,
-            //        Genero = null,
-            //        EstadoCivil = null,
-            //        Encargado = null,
-            //        CedulaJuridica = null,
-            //        Nombre = persona.nombre,
-            //        Apellidos=persona.apellido1+""+persona.apellido2,
-            //        FechaNacimiento=null,
-            //        Telefono=null,
-            //        Celular=int.Parse(usuario.telefono),
-            //        CorreoElectronico=usuario.correo,
-            //        FechaRegistro= DateTime.Now,
-            //        Puesto=null,
-            //        GradoAcademico=null,
-            //        Foto=null,
-            //        Idiomas=null,
-            //        Provincia=null,
-            //        Canton=null,
-            //        Distrito=null,
-            //        DireccionExacta=null,
-
-            //    };
-
-
-            //    Registro reg_update = new Registro()
-            //    {
-            //        Identificacion = registrado.Identificacion
-            //    };
-            //    oferente_db.Update(registrado);
-            //    registrado.Codigo = sms.codigo;
-            //    oferente_db.SaveChanges();
-
-            //}
+         
 
 
             return notificacion;

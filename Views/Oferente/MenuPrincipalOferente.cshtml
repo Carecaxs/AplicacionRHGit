@@ -7,7 +7,11 @@
 
         <div class="container mt-3">
 
-            <form method="post" asp-controller="" asp-action="">
+            <form id="formPaginaInicioOferente" method="post">
+            <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+            <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+
                 <div class="row mt-3">
                     <!-- Sección de Expediente -->
                     <div class="col-md-6 col-sm-12">
@@ -18,7 +22,7 @@
                             <div class="card-body cartas-cuerpo">
                                 <!-- Contenido de la sección de expediente -->
                                 <div class="row">
-                                    <button id="" class="btn btn-outline-dark" type="button">Datos Personales</button>
+                                    <button id="btnExpedienteDP" class="btn btn-outline-dark">Datos Personales</button>
                                 </div>
 
                                 <div class="row mt-1">

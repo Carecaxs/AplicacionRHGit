@@ -1,5 +1,5 @@
 ﻿using AplicacionRHGit.Clases;
-using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.Expedientes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -86,6 +86,7 @@ namespace AplicacionRHGit.Data
 
             try
             {
+
                 // Verificar si hay algún registro que coincida con la identificación y el código
                 bool cuentaConfirmada = _context.CodigosSms.Any(c => c.identificacion == identificacion && c.codigo == codigo);
 
@@ -101,18 +102,56 @@ namespace AplicacionRHGit.Data
                         oferente.activo = true;
                         oferente.verificado = true;
 
-                        EXPEDIENTE expediente = new EXPEDIENTE()
-                        {
-                            idOferente = oferente.idOferente,
-                            nacimiento = null,
-                            provincia = null,
-                            canton = null,
-                            distrito = null,
-                            direccion = null
-                        };
 
-                        //crear el expediente para el oferente
-                        _context.Expediente.Add(expediente);
+                        //consulta el id del oferente con la identificacion dada
+                        var idOferente = _context.Oferente
+                        .Where(o => o.identificacion == identificacion)
+                        .Select(o => o.idOferente)
+                        .FirstOrDefault();
+
+                        //consultar si ya tiene un expediente
+                        var expedienteExistente = _context.Expediente
+                            .Where(e => e.idOferente == idOferente)
+                            .FirstOrDefault();
+
+                        if (expedienteExistente == null)
+                        {
+
+                            EXPEDIENTE expediente = new EXPEDIENTE()
+                            {
+                                idOferente = oferente.idOferente,
+                                nacimiento = null,
+                                IdProvincia = 0,
+                                IdCanton = 0,
+                                IdDistrito = 0,
+                                direccion = null
+                            };
+
+                            //crear el expediente para el oferente
+                            _context.Expediente.Add(expediente);
+
+                            //guardar cambios
+                            _context.SaveChanges();
+
+                            //ahora a ese expediente lo relacionamos con tabla titulos y refrencias
+                            TITULO titulo = new TITULO()
+                            {
+                                ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
+                            };
+
+                            REFERENCIA refrencia = new REFERENCIA()
+                            {
+                                ID_EXPEDIENTE=expediente.ID_EXPEDIENTE
+                            };
+
+                            _context.Titulo.Add(titulo);
+                            _context.Referencia.Add(refrencia);
+
+                            //guardar cambios
+                            _context.SaveChanges();
+
+
+                        }
 
 
                     }
@@ -125,11 +164,11 @@ namespace AplicacionRHGit.Data
                         reclutador.activo = true;
                         reclutador.verificado = true;
 
-
+                        //guardar cambios
+                        _context.SaveChanges();
                     }
 
-                    //guardar cambios
-                    _context.SaveChanges();
+
 
                 }
 

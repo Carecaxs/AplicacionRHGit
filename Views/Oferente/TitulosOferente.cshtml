@@ -1,0 +1,117 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutOferente.cshtml";
+}
+<main role="main" class="pb-3">
+ 
+
+
+    <div class="container mt-5">
+        <div class="contenedorExpediente">
+            <h1 class="text-center">Lista de Títulos</h1>
+
+            <!-- Lista de Títulos -->
+            <ul class="list-group">
+                <!-- Puedes llenar esta lista con los títulos desde tu código C# -->
+                <li class="list-group-item">Título 1</li>
+                <li class="list-group-item">Título 2</li>
+                <li class="list-group-item">Título 3</li>
+                <!-- ... -->
+            </ul>
+
+            <!-- Botón para Añadir Título -->
+            <div class="form-group col-sm-12">
+                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloModal">
+                    Añadir Título
+                </button>
+            </div>
+            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+                <div class="form-group col-sm-12">
+                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
+                </div>
+            </form>
+
+           
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Modal para Añadir Título -->
+    <div class="modal fade" id="agregarTituloModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Añadir Título</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Título -->
+                    <form method="post" asp-controller="Oferente" asp-action="">
+                        <div class="form-group">
+                            <label for="nivelEducacion">Nivel de Educación:</label>
+                            <select class="form-control" id="nivelEducacion" required>
+                                <option value="bachillerato">Bachillerato</option>
+                                <option value="licenciatura">Licenciatura</option>
+                                <option value="maestría">Maestría</option>
+                                <option value="doctorado">Doctorado</option>
+                                <option value="certificación">Certificación</option>
+                                <option value="tecnico">Tecnico</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="titulo">Título:</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="institucion">Institución:</label>
+                            <input type="text" class="form-control" id="institucion" name="institucion" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fechaObtenido">Fecha Obtenido:</label>
+                            <input type="date" class="form-control" id="fechaObtenido" name="fechaObtenido" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="folio">Folio:</label>
+                            <input type="number" class="form-control" name="folio" id="folio" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="asiento">Asiento:</label>
+                            <input type="number" class="form-control" id="asiento" name="asiento" required />
+                        </div>
+
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group">
+                            <label for="fotoTitulo">Subir Foto del Título:</label>
+                            <div>
+                                <input type="file" class="form-control-file" id="fotoTitulo" name="fotoTitulo" accept="image/*" required />
+                            </div>
+                            
+                            
+                        </div>
+
+                        <!-- Puedes agregar más campos según tus necesidades -->
+                        <button id="agregarTitulo" class="btn btn-primary mt-2">Guardar Título</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+
+</main>
+
+<script src="~/js/oferente/expediente.js"></script>
