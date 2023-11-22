@@ -10,9 +10,9 @@ namespace AplicacionRHGit.Models.Expedientes
         [Key]
         public int ID_DETALLE_TITULOS { get; set; }
 
-        public int ID_TUTULO { get; set; }
+        public int ID_TITULO { get; set; }
 
-        public string TIPO_TITULO { get; set; }
+        public int TIPO_TITULO { get; set; }
 
 
         public string NOMBRE_INSTITUCION { get; set; }

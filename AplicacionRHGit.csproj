@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\ImagesTitulos\" />
+    <Folder Include="wwwroot\ImagesTitulos\0117860836\" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Agrega el HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -29,13 +32,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Oferente}/{action=TitulosOferente}/{identification?}/{clave?}");
+    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Oferente}/{action=TitulosOferente}/{identification?}/{clave?}");
 
 
 

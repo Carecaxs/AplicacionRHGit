@@ -1,6 +1,10 @@
 ﻿using AplicacionRHGit.Data;
+using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.Expedientes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace AplicacionRHGit.Controllers
 {
@@ -9,10 +13,12 @@ namespace AplicacionRHGit.Controllers
 
 
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public OferenteController(ApplicationDbContext context)
+        public OferenteController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -47,6 +53,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
+
                 return NotFound();
 
             }
@@ -90,7 +97,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification="0117860836", string clave="123")
+        public IActionResult TitulosOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -102,6 +109,23 @@ namespace AplicacionRHGit.Controllers
 
                     ViewBag.identificacion = identification;
                     ViewBag.clave = clave;
+
+                    //almacenar en un viewData los grados academicos para mostrarlo en un combo
+                    OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                    List<GradoAcademico> grados = oferentesDAO.CargarGradosAcademicos();
+                    // Pasar los datos a la vista
+                    ViewData["Grados"] = new SelectList(grados, "id", "gradoAcademico");
+
+
+
+                    List<DETALLE_TITULO> titulos= oferentesDAO.CargarTitulos(identification, clave);
+                    if(titulos != null)
+                    {
+                        ViewData["Titulos"] = new SelectList(titulos, "ID_DETALLE_TITULOS", "ESPECIALIDAD");
+                    }
+
+                    
+
                     return View();
                 }
                 else
@@ -186,29 +210,70 @@ namespace AplicacionRHGit.Controllers
 
         //seccion titulos
         [HttpPost]
-        public JsonResult GuardarCambiosDatosPersonalesEx(IFormCollection form, string identificacion, string clave)
+        public JsonResult AgregarTitulo(IFormCollection formData)
         {
-            // Obtener los valores del formulario
-            var nivelEducacion = form["nivelEducacion"];
-            var titulo = form["titulo"];
-            var institucion = form["institucion"];
-            var fechaObtenido = form["fechaObtenido"];
-            var folio = form["folio"];
-            var asiento = form["asiento"];
+
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
+                int idTitulo = acceso.AgregarTitulo(formData);
+
+                if (idTitulo != -1)
+                {
+                    var fotoTitulo = formData.Files["fotoTitulo"];
+                    if (fotoTitulo != null && fotoTitulo.Length > 0)
+                    {
+                        // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                        var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
 
 
-            OferentesDAO acceso = new OferentesDAO(_context);
+                        var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
 
-            
-            
+
+                        // Crear la carpeta si no existe
+                        if (!Directory.Exists(carpetaCedula))
+                        {
+                            Directory.CreateDirectory(carpetaCedula);
+                        }
+
+                        // Obtener la extensión del archivo
+                        var extension = Path.GetExtension(fotoTitulo.FileName);
+
+                        // Crear un nombre único para la imagen (id del detalle_titulo)
+                        var nombreImagen = $"{idTitulo}{extension}";
+
+                        // Obtener la ruta completa de la imagen
+                        var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                        // Guardar la imagen en el servidor
+                        using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                        {
+                            fotoTitulo.CopyTo(stream);
+                        }
+                    }
+
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al guardar el titulo" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
         }
 
-
-
-
-
-
-
+            
+       
+        
 
 
     }
@@ -216,4 +281,13 @@ namespace AplicacionRHGit.Controllers
 
 
 
+
+
+
+
+
 }
+
+
+
+

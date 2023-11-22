@@ -1,4 +1,6 @@
-﻿using AplicacionRHGit.Models.Expedientes;
+﻿using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.Expedientes;
+using AplicacionRHGit.Models.Mensajeria;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -106,15 +108,82 @@ namespace AplicacionRHGit.Data
         //titulos
 
 
-        //retorna 1 si todos sale bien , -1 si no sale bien
-        public int AgregarTitulo(IFormCollection form, string identificacion, string clave)
+        //retorna el id del tetilo añadido si todos sale bien , -1 si no sale bien
+        public int AgregarTitulo(IFormCollection form)
+        {
+            int retorno = -1;
+            var identificacion = form["identificacion"].FirstOrDefault();
+            var clave= form["clave"].FirstOrDefault();
+
+            try
+            {
+                //consulta el id del oferente con la identificacion y clave dada
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion && o.clave == clave)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idTitulo = _context.Titulo
+                .Where(t => t.ID_EXPEDIENTE == idExpediente)
+                .Select(t => t.ID_TITULO)
+                .FirstOrDefault();
+
+
+                DETALLE_TITULO datosTitulo = new DETALLE_TITULO()
+                {
+                    ID_TITULO = idTitulo,
+                    TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault()),
+                    ESPECIALIDAD = form["titulo"].FirstOrDefault(),
+                    NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault(),
+                    FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault()),
+                    FOLIO = int.Parse(form["folio"].FirstOrDefault()),
+                    ASIENTO = int.Parse(form["asiento"].FirstOrDefault()),
+                    ESTADO = 'P'
+                };
+
+                _context.DetalleTitulo.Add(datosTitulo);
+                _context.SaveChanges();
+
+                retorno = datosTitulo.ID_DETALLE_TITULOS;
+
+                return retorno;
+
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+
+        }
+
+
+
+        //retornar una lista de los grados academicos almacenados en la BD
+        public List<GradoAcademico> CargarGradosAcademicos()
+        {
+            List<GradoAcademico> grados = _context.GradoAcademico.ToList();
+
+            return grados;
+        }
+
+        public List<DETALLE_TITULO> CargarTitulos(string identificacion, string clave)
         {
 
-            //consulta el id del oferente con la identificacion y clave dada
             var idOferente = _context.Oferente
-            .Where(o => o.identificacion == identificacion && o.clave==clave)
-            .Select(o => o.idOferente)
-            .FirstOrDefault();
+              .Where(o => o.identificacion == identificacion && o.clave == clave)
+              .Select(o => o.idOferente)
+              .FirstOrDefault();
 
             //consulta el id del expediente de ese oferente
             var idExpediente = _context.Expediente
@@ -122,9 +191,25 @@ namespace AplicacionRHGit.Data
             .Select(e => e.ID_EXPEDIENTE)
             .FirstOrDefault();
 
+            //consulta el id del expediente de ese oferente
+            var idTitulo = _context.Titulo
+            .Where(t => t.ID_EXPEDIENTE == idExpediente)
+            .Select(t => t.ID_TITULO)
+            .FirstOrDefault();
 
+            //filtrar en una lista los titulos por id
+            List<DETALLE_TITULO> titulos = _context.DetalleTitulo
+            .Where(t => t.ID_TITULO == idTitulo)
+            .ToList();
 
+            if (titulos.Any())
+            {
+                return titulos;
+            }
+
+            return null;
         }
+
 
 
 

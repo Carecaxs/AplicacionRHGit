@@ -22,4 +22,28 @@
         form.submit();
     });
 
+
+    $("#btnExpedienteTitulos").click(function (event) {
+
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/TitulosOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioOferente");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    // Evento popstate
+    window.addEventListener('popstate', function (event) {
+
+        window.history.back();
+    });
 });

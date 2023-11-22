@@ -309,17 +309,61 @@ $(document).ready(function () {
 
 
 
-    //seccion titulos
+ /*   seccion titulos*/
 
 
     $("#agregarTitulo").click(function (event) {
 
         event.preventDefault();
 
+        // Obtener el formulario y los datos del formulario
+        var form = $("#formAgregarTitulo")[0];
+        var formData = new FormData(form);
+
+        // Agregar identificacion y clave al formData
+        formData.append("identificacion", $("#identification").val());
+        formData.append("clave", $("#clave").val());
 
 
+        $.ajax({
+            method: "POST",//tipo de solicitud
+            url: "/Oferente/AgregarTitulo",
+            data: formData,
+            processData: false,  // Necesario para enviar FormData correctamente
+            contentType: false,  // Necesario para enviar FormData correctamente
+            success: function (data) {//en caso de que sale bien
+
+                if (data.error) { //si data.error contiene algo
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+
+
+
+                }
+                else {
+                    //todo sale bien 
+                    ///recargar la lista de titulos
+
+                }
+            },
+
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
 
     });
+
+   
 });
 
 

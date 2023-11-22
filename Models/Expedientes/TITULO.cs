@@ -8,7 +8,7 @@ namespace AplicacionRHGit.Models.Expedientes
     {
 
         [Key]
-        public int ID_TUTULO { get; set; }
+        public int ID_TITULO { get; set; }
 
         public int ID_EXPEDIENTE { get; set; }
     }
