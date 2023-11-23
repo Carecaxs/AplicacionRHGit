@@ -114,6 +114,7 @@ namespace AplicacionRHGit.Data
             int retorno = -1;
             var identificacion = form["identificacion"].FirstOrDefault();
             var clave= form["clave"].FirstOrDefault();
+ 
 
             try
             {
@@ -210,6 +211,87 @@ namespace AplicacionRHGit.Data
             return null;
         }
 
+
+        public int EliminarTitulo(string idTitulo)
+        {
+            try
+            {
+                var titulo = _context.DetalleTitulo.Find(int.Parse(idTitulo));
+
+                if (titulo != null)
+                {
+                    _context.DetalleTitulo.Remove(titulo);
+                    _context.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    // Manejar el caso en que la referencia no se encontró
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+        public DETALLE_TITULO MostrarTitulo(string idTitulo)
+        {
+            try
+            {
+                var titulo = _context.DetalleTitulo.Find(int.Parse(idTitulo));
+
+                if (titulo != null)
+                {
+
+                    return titulo;
+                }
+                else
+                {
+                    return  null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+        //este metodo actualiza los datos del titulo
+        public int ActualizarTitulo(IFormCollection form)
+        {
+            var idDetalleTitulo = form["idTitulo"].FirstOrDefault();
+
+            var detalleTitulo = _context.DetalleTitulo.Find(int.Parse(idDetalleTitulo));
+
+            if (detalleTitulo != null)
+            {
+                // Modificar las propiedades
+                detalleTitulo.TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault());
+                detalleTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
+                detalleTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
+                detalleTitulo.FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault());
+                detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
+                detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
+
+                // Guardar los cambios
+                _context.SaveChanges();
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+
+            
+
+          
+        }
 
 
 

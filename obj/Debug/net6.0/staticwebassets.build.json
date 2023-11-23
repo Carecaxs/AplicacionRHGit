@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "j7a9H76S7QL/vzgCgJskVE/fVKeP/Ka0leNqli5Evy4=",
+  "Hash": "I70viv3PYbLoyBu0NVQly5jUG4Lym2ikP7ruZru/3ag=",
   "Source": "AplicacionRHGit",
   "BasePath": "_content/AplicacionRHGit",
   "Mode": "Default",
@@ -136,12 +136,12 @@
       "OriginalItemSpec": "wwwroot\\Images\\reclutamiento.png"
     },
     {
-      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\1.png",
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\12.png",
       "SourceId": "AplicacionRHGit",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
       "BasePath": "_content/AplicacionRHGit",
-      "RelativePath": "ImagesTitulos/0117860836/1.png",
+      "RelativePath": "ImagesTitulos/0117860836/12.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -150,7 +150,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\ImagesTitulos\\0117860836\\1.png"
+      "OriginalItemSpec": "wwwroot\\ImagesTitulos\\0117860836\\12.png"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Login\\login.js",

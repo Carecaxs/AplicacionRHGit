@@ -41,9 +41,9 @@
     });
 
 
-    // Evento popstate
-    window.addEventListener('popstate', function (event) {
+    //// Evento popstate
+    //window.addEventListener('popstate', function (event) {
 
-        window.history.back();
-    });
+    //    window.history.back();
+    //});
 });

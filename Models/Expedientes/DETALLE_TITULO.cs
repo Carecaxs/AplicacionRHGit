@@ -24,5 +24,6 @@ namespace AplicacionRHGit.Models.Expedientes
         public int ASIENTO { get; set; }
         public char ESTADO { get; set; }
 
+
     }
 }

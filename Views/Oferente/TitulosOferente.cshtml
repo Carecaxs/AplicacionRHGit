@@ -10,7 +10,7 @@
             <h1 class="text-center">Lista de Títulos</h1>
 
             <!-- Lista de Títulos -->
-            <ul class="list-group">
+            <ul id="listaTitulos" class="list-group">
                 @if (ViewData["Titulos"] != null)
                 {
                     foreach (SelectListItem titulo in (SelectList)ViewData["Titulos"])
@@ -18,8 +18,8 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center" data-id="@titulo.Value">
                             <span>@titulo.Text</span>
                             <div>
-                                <button class="btn btn-primary btn-sm"> <i class="fas fa-pencil-alt"></i></button>
-                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+                                <button id="btnEditarTitulo" class="btn btn-primary btn-sm"> <i class="fas fa-pencil-alt"></i></button>
+                                <button id="btnEliminarTitulo" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
 
                             </div>
                         </li>
@@ -35,7 +35,7 @@
 
             <!-- Botón para Añadir Título -->
             <div class="form-group col-sm-12">
-                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloModal">
+                <button id="abrirModalAgregarTitulo" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloModal">
                     Añadir Título
                 </button>
             </div>
@@ -109,6 +109,7 @@
                             <label for="fotoTitulo">Subir Foto del Título:</label>
                             <div>
                                 <input type="file" class="form-control-file" id="fotoTitulo" name="fotoTitulo" accept="image/*" required />
+                                
                             </div>
                             
                             
@@ -116,11 +117,39 @@
 
                         <!-- Puedes agregar más campos según tus necesidades -->
                         <button id="agregarTitulo" class="btn btn-success mt-2">Guardar Título</button>
+                        <button id="actualizarTitulo" class="btn btn-success mt-2" >Guardar Cambios</button>
+
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <!-- Modal de Confirmación para Eliminar Título -->
+    <div class="modal fade" id="confirmacionEliminarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este título?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmarEliminar" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 
   
