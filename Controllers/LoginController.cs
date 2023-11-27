@@ -152,9 +152,9 @@ namespace AplicacionRHGit.Controllers
 
             if (tipoUsuario == "Oferente")//si va crear un perfil en oferente se comprueba que no exista y si existe se le vuelve a mandar un correo al gmail y codigo al celular para que valide su cuenta
             {
-                bool existe = _context.Oferente.Any(o => o.identificacion == usuario.identificacion);
+                var persona = _context.Oferente.FirstOrDefault(u => u.identificacion == usuario.identificacion);
 
-                if (!existe)
+                if (persona==null)
                 {
                     try
                     {
@@ -182,14 +182,24 @@ namespace AplicacionRHGit.Controllers
 
 
                 }
+                else
+                {
+                    if (persona.verificado == true)
+                    {
+                        return Json(new { exitoso = false, error = "Usuario ya existe" });
+                    }
+                    
 
-                
+                }
+
+
             }
             else
             {
-                bool existe = _context.Reclutador.Any(o => o.identificacion == usuario.identificacion);
+                var persona = _context.Reclutador.FirstOrDefault(u => u.identificacion == usuario.identificacion);
 
-                if (!existe)
+
+                if (persona== null)
                 {
                     try
                     {
@@ -211,8 +221,13 @@ namespace AplicacionRHGit.Controllers
                         // Manejo de otras excepciones
                         return Json(new { exitoso = false, error = "Error desconocido: " + ex.Message });
                     }
-
-                    
+                }
+                else
+                {
+                    if (persona.verificado == true)
+                    {
+                        return Json(new { exitoso = false, error = "Usuario ya existe" });
+                    }
 
 
                 }

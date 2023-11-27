@@ -9,9 +9,29 @@ $(document).ready(function () {
 
     if ($("#nombreVista").val() == "DatosPersonalesOferente") {
 
+
+        //cargar titulos
+        $.ajax({
+            type: "Get",
+            url: "/Oferente/MostrarIdiomaLista",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val()
+            },
+            success: function (data) {
+                //recargar titulos
+
+                procesarRespuestaIdiomas(data);
+            },
+            error: function (error) {
+                console.log("Error al cargar idiomas: " + error);
+            }
+        });
+
+
         //cargar provincias
         //URL de tu API que devuelve las provincias
-        var apiProvincia = "https://www.apprh.somee.com/api/Ubicaciones/Provincias";
+        var apiProvincia = "https://apisproyectorg.somee.com/api/Ubicaciones/Provincias/";
 
         // Elemento <select> de provincias
         var provinciasDropdown = $("#provincias");
@@ -51,7 +71,7 @@ $(document).ready(function () {
 
                 var idProvincia = $("#provincias").val();//agarrar el id de la provincia elegida
 
-                const apiCanton = 'https://www.apprh.somee.com/api/Ubicaciones/Cantones/';
+                const apiCanton = 'https://apisproyectorg.somee.com/api/Ubicaciones/Cantones/';
 
                 fetch(apiCanton + (idProvincia))
                     .then(response => {
@@ -94,7 +114,7 @@ $(document).ready(function () {
 
             var idCanton = $("#cantones").val();//agarrar el id del cannton elegido
 
-            const apiDistrito = 'https://www.apprh.somee.com/api/Ubicaciones/Distritos/';
+            const apiDistrito = 'https://apisproyectorg.somee.com/api/Ubicaciones/Distritos/';
 
             fetch(apiDistrito + (idCanton))
                 .then(response => {
@@ -149,27 +169,26 @@ $(document).ready(function () {
                     var partesFecha = data.nacimiento.split('T');
 
                     var nacimiento = partesFecha[0];
-                    var correo = data.correo;
-                    var telefono = data.telefono;
                     var provincia = data.idProvincia;
                     var canton = data.idCanton;
                     var distrito = data.idDistrito;
                     var direccion = data.direccion;
+                    var genero = data.genero;
+      
+         
 
-     
                     //asignar los valores a los inputs
                     $("#nacimiento").val((nacimiento != null) ? nacimiento : "");
-                    $("#correo").val((correo != null) ? correo : "");
-                    $("#telefono").val((telefono != null) ? telefono : "");
                     $("#direccion").val((direccion != null) ? direccion : "");
+                    $("#genero").val((genero != 0) ? genero : 0);
+           
+ 
+
+
                     
-
-
-
-
                     //cargar los lugares del exopediente
                     if (canton != null) {
-                        const apiCanton = 'https://www.apprh.somee.com/api/Ubicaciones/Cantones/';
+                        const apiCanton = 'https://apisproyectorg.somee.com/api/Ubicaciones/Cantones/';
 
                         fetch(apiCanton + (provincia))
                             .then(response => {
@@ -196,7 +215,7 @@ $(document).ready(function () {
                     
 
                     if (distrito != null) {
-                        const apiDistrito = 'https://www.apprh.somee.com/api/Ubicaciones/Distritos/';
+                        const apiDistrito = 'https://apisproyectorg.somee.com/api/Ubicaciones/Distritos/';
 
                         fetch(apiDistrito + (canton))
                             .then(response => {
@@ -231,6 +250,9 @@ $(document).ready(function () {
         });
 
 
+
+
+
     }
             
 
@@ -248,8 +270,7 @@ $(document).ready(function () {
             data: {//se envia el parametro
                 identificacion: $("#identification").val(),
                 nacimiento: $("#nacimiento").val(),
-                correo: $("#correo").val(),
-                telefono: $("#telefono").val(),
+                genero: $("#genero").val(),
                 provincia: $("#provincias").val(),
                 canton: $("#cantones").val(),
                 distrito: $("#distritos").val(),
@@ -357,7 +378,7 @@ $(document).ready(function () {
                             },
                             success: function (data) {
                                 //recargar titulos
-                                procesarRespuesta(data);
+                                procesarRespuestaTitulos(data);
                             },
                             error: function (error) {
                                 console.log("Error al cargar títulos: " + error);
@@ -393,7 +414,7 @@ $(document).ready(function () {
 
     //evento para eliminar titulo
     // Evento para el botón de eliminar (delegación de eventos)
-    $("#listaTitulos").on("click", "#btnEliminarTitulo", function () {
+    $("#listaTitulo").on("click", ".btnEliminarTitulo", function () {
 
         // Obtén el data-id del li padre
         var idTitulo = $(this).closest("li").data("id");
@@ -407,7 +428,8 @@ $(document).ready(function () {
                 type: "POST",
                 url: "/Oferente/EliminarTitulo",
                 data: {
-                    idTitulo: idTitulo
+                    idTitulo: idTitulo,
+                    identificacion: $("#identification").val()
                 },
                 success: function (data) {
 
@@ -451,7 +473,7 @@ $(document).ready(function () {
                             },
                             success: function (data) {
                                 //recargar titulos
-                                procesarRespuesta(data);
+                                procesarRespuestaTitulos(data);
                             },
                             error: function (error) {
                                 console.log("Error al cargar títulos: " + error);
@@ -473,7 +495,7 @@ $(document).ready(function () {
 
 
     //evento para editar titulo
-    $("#listaTitulos").on("click", "#btnEditarTitulo", function () {
+    $("#listaTitulo").on("click", ".btnEditarTitulo", function () {
 
         // Obtén el data-id del li padre
         var idTitulo = $(this).closest("li").data("id");
@@ -591,7 +613,7 @@ $(document).ready(function () {
                                 },
                                 success: function (data) {
                                     //recargar titulos
-                                    procesarRespuesta(data);
+                                    procesarRespuestaTitulos(data);
                                 },
                                 error: function (error) {
                                     console.log("Error al cargar títulos: " + error);
@@ -636,6 +658,155 @@ $(document).ready(function () {
         eliminarMsjModal();
 
     });
+
+
+    $("#btnAgregarIdiomaModal").click(function (event) {
+        
+        event.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            url: "/Oferente/AñadirIdiomaExpediente",
+            data: {
+                identificacion: $("#identification").val(),
+                idIdioma: $("#nombreIdioma").val()
+            },
+            success: function (data) {
+                //recargar titulos
+
+                if (data.error) {
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+                }
+                else {
+
+                    $.ajax({
+                        type: "Get",
+                        url: "/Oferente/MostrarIdiomaLista",
+                        data: {
+                            identificacion: $("#identification").val(),
+                            clave: $("#clave").val()
+                        },
+                        success: function (data) {
+                            //recargar titulos
+
+                            procesarRespuestaIdiomas(data);
+                        },
+                        error: function (error) {
+                            console.log("Error al cargar idiomas: " + error);
+                        }
+                    });
+                }
+               
+  
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+
+
+    });
+
+
+
+
+
+    //evento para eliminar Idioma de expediente
+    $("#listaIdiomas").on("click", "#btnEliminarIdioma", function (event) {
+
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var idIdioma = $(this).closest("li").data("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModalIdioma").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarIdioma",
+                data: {
+                    idIdioma: idIdioma,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModalIdioma").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de titulos
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de idiomas
+
+                        $.ajax({
+                            type: "Get",
+                            url: "/Oferente/MostrarIdiomaLista",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val()
+                            },
+                            success: function (data) {
+                                //recargar titulos
+
+                                procesarRespuestaIdiomas(data);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar idiomas: " + error);
+                            }
+                        });
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+
+
 
 
 });
@@ -720,7 +891,8 @@ function verificarCamposModalTitulosActualizar() {
 
 
 function agregarTituloALaLista(titulo) {
-    var listaTitulos = document.getElementById("listaTitulos");
+
+    var listaTitulos = document.getElementById("listaTitulo");
 
     var li = document.createElement("li");
     li.className = "list-group-item d-flex justify-content-between align-items-center";
@@ -732,13 +904,11 @@ function agregarTituloALaLista(titulo) {
     var div = document.createElement("div");
 
     var btnEditar = document.createElement("button");
-    btnEditar.id = "btnEditarTitulo";
-    btnEditar.className = "btn btn-primary btn-sm";
+    btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm";
     btnEditar.innerHTML = '<i class="fas fa-pencil-alt"></i>';
 
     var btnEliminar = document.createElement("button");
-    btnEliminar.id = "btnEliminarTitulo";
-    btnEliminar.className = "btn btn-danger btn-sm";
+    btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm";
     btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
     btnEliminar.style = "margin-left:1px";
 
@@ -751,10 +921,12 @@ function agregarTituloALaLista(titulo) {
     listaTitulos.appendChild(li);
 }
 
-function procesarRespuesta(data) {
-    console.log(data);
+function procesarRespuestaTitulos(data) {
+    console.log("entro al 1");
 
-    var listaTitulos = document.getElementById("listaTitulos");
+
+
+    var listaTitulos = document.getElementById("listaTitulo");
     listaTitulos.innerHTML = "";
 
     data.forEach(function (titulo) {
@@ -781,7 +953,63 @@ function eliminarMsjModal() {
 }
 
         
+function agregarIdiomaALaLista(idioma) {
+    var listaIdiomas = document.getElementById("listaIdiomas");
 
+    var li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.setAttribute("data-id", idioma.idIdioma);
+
+    var span = document.createElement("span");
+    span.textContent = idioma.nombreIdioma;
+
+    var div = document.createElement("div");
+
+
+
+    var btnEliminar = document.createElement("button");
+    btnEliminar.className = "btnEliminarIdioma btn btn-danger btn-sm";
+    btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+
+    div.appendChild(btnEliminar);
+
+    li.appendChild(span);
+    li.appendChild(div);
+
+    listaIdiomas.appendChild(li);
+}
+
+function procesarRespuestaIdiomas(data) {
+    console.log(data);
+    console.log("entro al 2");
+
+    var listaIdiomas = document.getElementById("listaIdiomas");
+    listaIdiomas.innerHTML = "";
+    var p = document.createElement("p");
+    p.innerHTML="Idiomas:";
+    listaIdiomas.appendChild(p);
+
+
+    data.forEach(function (idioma) {
+        agregarIdiomaALaLista(idioma);
+    });
+
+    //agregar boton de agregar idioma
+    var divBoton = document.createElement("div");
+    divBoton.className = "form-group col-sm-12";
+    divBoton.innerHTML = '<button id="" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarIdiomaModal">Añadir Idioma</button>';
+    listaIdiomas.appendChild(divBoton);
+
+
+    $('#agregarIdiomaModal').modal('hide');
+
+    if ($("#mensaje").length) {
+
+        $("#mensaje").remove();
+    }
+
+}
         
 
 

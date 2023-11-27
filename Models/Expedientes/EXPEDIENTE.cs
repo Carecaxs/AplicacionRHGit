@@ -25,8 +25,9 @@ namespace AplicacionRHGit.Models.Expedientes
         public int? IdDistrito { get; set; }
 
         public string? direccion { get; set; }
-        public string? CORREO { get; set; }
-        public string? TELEFONO { get; set; }
+
+        public int? genero { get; set; }
+
 
 
 

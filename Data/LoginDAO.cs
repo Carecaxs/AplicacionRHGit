@@ -121,10 +121,11 @@ namespace AplicacionRHGit.Data
                             {
                                 idOferente = oferente.idOferente,
                                 nacimiento = null,
-                                IdProvincia = 0,
-                                IdCanton = 0,
-                                IdDistrito = 0,
-                                direccion = null
+                                IdProvincia = null,
+                                IdCanton = null,
+                                IdDistrito = null,
+                                direccion = null,
+                                genero= 0,
                             };
 
                             //crear el expediente para el oferente

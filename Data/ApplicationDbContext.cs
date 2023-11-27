@@ -17,6 +17,10 @@ namespace AplicacionRHGit.Data
         public DbSet<REFERENCIA> Referencia { get; set; }
         public DbSet<DETALLE_TITULO> DetalleTitulo { get; set; }
         public DbSet<GradoAcademico> GradoAcademico { get; set; }
+        public DbSet<Idioma> Idioma { get; set; }
+        public DbSet<OFERENTE_IDIOMA> OferenteIdioma { get; set; }
+
+
 
 
 

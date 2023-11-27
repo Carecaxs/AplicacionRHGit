@@ -110,8 +110,17 @@ namespace AplicacionRHGit.Services
                 nombre_completo = "<b>" + persona.nombre + " " + apellidos + "</b>";
 
             }
+            if (persona.genero == '1')
+            {
+                return "Bienvenido <b>" + nombre_completo + "</b><br>" + mensaje;
+            }
+            else
+            {
+                return "Bienvenida <b>" + nombre_completo + "</b><br>" + mensaje;
 
-            return "Bienvenid@ <b>" + nombre_completo + "</b><br>" + mensaje;
+            }
+
+
         }
 
         public string ObtenerFechaCompleta()

@@ -38,7 +38,7 @@ namespace AplicacionRHGit.Controllers
                 if (persona != null)
                 {
                     ViewBag.nombre = persona.nombre;
-                    ViewBag.identificacion = persona.identificacion;
+                    ViewBag.identificacion = identification;
                     ViewBag.clave = clave;
                     ViewBag.tipoUsuario = "Oferente";
 
@@ -78,6 +78,26 @@ namespace AplicacionRHGit.Controllers
                     ViewBag.apellidos = persona.apellido1 + " " + persona.apellido2;
                     ViewBag.VistaActual = "DatosPersonalesOferente";
                     ViewBag.clave = clave;
+                    ViewBag.correo = persona.correo;
+                    ViewBag.telefono = persona.telefono;
+
+
+
+
+                    //almacenar en un viewData los grados academicos para mostrarlo en un combo
+                    OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                    List<Idioma> idiomas = oferentesDAO.CargarIdiomas();
+                    // Pasar los datos a la vista
+                    ViewData["IdiomasCombo"] = new SelectList(idiomas, "idIdioma", "NombreIdioma");
+
+
+
+                    List<Idioma> titulos = oferentesDAO.CargarIdiomaPersona(identification, clave);
+                    if (titulos != null)
+                    {
+                        ViewData["IdiomaPersona"] = new SelectList(titulos, "idIdioma", "NombreIdioma");
+                    }
+
 
 
 
@@ -98,7 +118,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification = "0117860836", string clave = "123")
+        public IActionResult TitulosOferente(string identification="0117860836", string clave = "123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -155,6 +175,7 @@ namespace AplicacionRHGit.Controllers
                 OferentesDAO acceso = new OferentesDAO(_context);
 
                 var expediente = acceso.ObtenerDatosPersonalesEx(identificacion);
+
                 if (expediente != null)
                 {
                     return Json(expediente);
@@ -179,7 +200,7 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpPost]
-        public JsonResult GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, string correo, string telefono, int provincia, int canton, int distrito,
+        public JsonResult GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
             string direccion)
         {
             try
@@ -187,7 +208,7 @@ namespace AplicacionRHGit.Controllers
                 OferentesDAO acceso = new OferentesDAO(_context);
 
 
-                if (acceso.GuardarCambiosDatosPersonalesEx(identificacion, nacimiento, correo, telefono, provincia, canton, distrito, direccion) > 0)
+                if (acceso.GuardarCambiosDatosPersonalesEx(identificacion, nacimiento, genero, provincia, canton, distrito, direccion) > 0)
                 {
                     //si todo sale bien
                     return Json(new { mensaje = "Expediente actualizado exitosamente" });
@@ -205,6 +226,107 @@ namespace AplicacionRHGit.Controllers
 
             }
         }
+
+
+
+
+        [HttpPost]
+        public JsonResult AñadirIdiomaExpediente(string identificacion, int idIdioma)
+        {
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
+
+                int idRegistroAgregado=acceso.AñadirIdiomaExpediente(identificacion, idIdioma);
+
+                if (idRegistroAgregado > 0)
+                {
+                    //si todo sale bien
+                    return Json(new { exito=true });
+                }
+                else
+                {
+                    return Json(new { error = "Ya tienes este idioma agregado" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+
+        [HttpGet]
+        public JsonResult MostrarIdiomaLista(string identificacion, string clave)
+        {
+            OferentesDAO oferentesDAO = new OferentesDAO(_context);
+            var idioma = oferentesDAO.CargarIdiomaPersona(identificacion,clave);
+
+            try
+            {
+
+                if (idioma != null)
+                {
+                    return Json(idioma);
+
+                }
+                else
+                {
+                    return Json(new { error = true });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+
+        [HttpPost]
+        public JsonResult EliminarIdioma(string idIdioma, string identificacion)
+        {
+            try
+            {
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                if (oferentesDAO.EliminarIdioma(idIdioma, identificacion) == 1)
+                {
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al eliminar el idioma" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+
+
+
+
+
 
 
 
@@ -285,19 +407,38 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpPost]
-        public JsonResult EliminarTitulo(string idTitulo)
+        public JsonResult EliminarTitulo(string idTitulo, string identificacion)
         {
             try
             {
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
                 if (oferentesDAO.EliminarTitulo(idTitulo) == 1)
                 {
+                    //eliminar foto de ese titulo
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", identificacion);
+
+
+                    // Buscar el archivo en el directorio
+                    string[] archivos = Directory.GetFiles(carpetaCedula, idTitulo + ".*");
+
+                    if (archivos.Length > 0)
+                    {
+                        if (System.IO.File.Exists(archivos[0]))
+                        {
+                            // Elimina el archivo
+                            System.IO.File.Delete(archivos[0]);
+
+                        }
+
+                    }
+
                     return Json(new { exito = true });
 
                 }
                 else
                 {
-                    return Json(new { error = "Hubo un problema al guardar el titulo" });
+                    return Json(new { error = "Hubo un problema al eliminar el titulo" });
 
                 }
 

@@ -285,7 +285,7 @@ $(document).ready(function () {
                             // Muestra el modal
                             $("#confirmacionModal").modal("show");
 
-                            $("#contenidoModal").text("Se ha enviado un correo de confirmación. Por favor, verifica tu correo electrónico y sigue las instrucciones para activar tu cuenta.");
+                           
                         }
                         else {
 

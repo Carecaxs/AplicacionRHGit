@@ -1,4 +1,5 @@
-﻿using AplicacionRHGit.Models;
+﻿using AplicacionRHGit.Clases;
+using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.Mensajeria;
 using Microsoft.EntityFrameworkCore;
@@ -52,8 +53,20 @@ namespace AplicacionRHGit.Data
         }
 
 
+        //retornar una lista de los grados academicos almacenados en la BD
+        public List<Idioma> CargarIdiomas()
+        {
+            List<Idioma> idiomas = _context.Idioma.ToList();
+
+            return idiomas;
+        }
+
+
+
+
+
         //retorna 1 si todos sale bien , -1 si no sale bien
-        public int GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, string correo, string telefono, int provincia, int canton, int distrito,
+        public int GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
             string direccion)
         {
             try
@@ -79,8 +92,8 @@ namespace AplicacionRHGit.Data
                     expediente.IdCanton = (canton == 0 ? null : canton); ;
                     expediente.IdDistrito = (distrito == 0 ? null : distrito); ;
                     expediente.direccion = direccion;
-                    expediente.CORREO = correo;
-                    expediente.TELEFONO = telefono;
+                    expediente.genero = genero;
+
 
                     // Realiza el cambio en la base de datos
                     _context.SaveChanges();
@@ -100,6 +113,127 @@ namespace AplicacionRHGit.Data
                 throw ex;
             }
         }
+
+
+        //cargar lista de idiomas por personas
+        public List<Idioma> CargarIdiomaPersona(string identificacion, string clave)
+        {
+
+            var idOferente = _context.Oferente
+              .Where(o => o.identificacion == identificacion && o.clave == clave)
+              .Select(o => o.idOferente)
+              .FirstOrDefault();
+
+            //consulta el id del expediente de ese oferente
+            var idExpediente = _context.Expediente
+            .Where(e => e.idOferente == idOferente)
+            .Select(e => e.ID_EXPEDIENTE)
+            .FirstOrDefault();
+
+
+
+            var idiomas = (from oi in _context.OferenteIdioma
+                           join i in _context.Idioma on oi.idIdioma equals i.idIdioma
+                           where oi.ID_EXPEDIENTE == idExpediente
+                           select i).ToList();
+
+            return idiomas;
+
+        }
+
+
+
+        //retorna el id del registro agregado si sale bien, -1 si no
+        public int AñadirIdiomaExpediente(string identificacion, int idIdioma)
+        {
+            try
+            {
+
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+
+                //verificar que no tenga el idioma agregado
+                bool tieneIdioma = _context.OferenteIdioma
+                .Any(oi => oi.ID_EXPEDIENTE == idExpediente && oi.idIdioma==idIdioma);
+
+                if (!tieneIdioma)
+                {
+                    OFERENTE_IDIOMA agregar = new OFERENTE_IDIOMA()
+                    {
+                        idIdioma = idIdioma,
+                        ID_EXPEDIENTE = idExpediente
+                    };
+
+                    _context.OferenteIdioma.Add(agregar);
+                    _context.SaveChanges();
+
+                    return agregar.id;
+                }
+                else
+                {
+                    return -1;
+                }
+  
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
+
+
+
+        public int EliminarIdioma(string idIdioma, string identificacion)
+        {
+            try
+            {
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                var idioma = _context.OferenteIdioma
+                  .FirstOrDefault(x => x.ID_EXPEDIENTE ==idExpediente && x.idIdioma == int.Parse(idIdioma));
+
+
+                if (idioma != null)
+                {
+                    _context.OferenteIdioma.Remove(idioma);
+                    _context.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    // Manejar el caso en que la referencia no se encontró
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+
 
 
 

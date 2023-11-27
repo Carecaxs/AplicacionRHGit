@@ -5,12 +5,24 @@
       "PackagePath": "staticwebassets\\AplicacionRHGit.bundle.scp.css"
     },
     {
-      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\12.png",
-      "PackagePath": "staticwebassets\\ImagesTitulos\\0117860836\\12.png"
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\4.png",
+      "PackagePath": "staticwebassets\\ImagesTitulos\\0117860836\\4.png"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\5.png",
+      "PackagePath": "staticwebassets\\ImagesTitulos\\0117860836\\5.png"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondo.jpg",
       "PackagePath": "staticwebassets\\Images\\fondo.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCodigo.png",
+      "PackagePath": "staticwebassets\\Images\\msjCodigo.png"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCorreo.png",
+      "PackagePath": "staticwebassets\\Images\\msjCorreo.png"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\oferenteInicio.jpg",
