@@ -2,36 +2,31 @@
     Layout = "~/Views/Shared/LayoutOferente.cshtml";
 }
 <main role="main" class="pb-3">
- 
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="vistaActual" name="clave" type="hidden" value="@ViewBag.VistaActual" />
 
 
     <div class="container mt-5">
         <div class="contenedorExpediente">
             <h1 class="text-center">Lista de Títulos</h1>
 
-            <!-- Lista de Títulos -->
-            <ul id="listaTitulo" class="list-group">
-                @if (ViewData["Titulos"] != null)
-                {
-                    foreach (SelectListItem titulo in (SelectList)ViewData["Titulos"])
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center" data-id="@titulo.Value">
-                            <span>@titulo.Text</span>
-                            <div>
-                                <button class="btnEditarTitulo btn btn-primary btn-sm"> <i class="fas fa-pencil-alt"></i></button>
-                                <button class="btnEliminarTitulo btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
 
-                            </div>
-                        </li>
-                    }
-                }
-                else
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        No tienes titulos ingresados
-                    </li>
-                }
-            </ul>
+            <!-- Lista de Títulos -->
+            <table id="tablaTitulos" class="table table-bordered">
+                <thead class="tabla-head">
+                    <tr class="text-center">
+                        <th>Especialidad</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="listaTitulo">
+                    
+                </tbody>
+            </table>
+
+          
 
             <!-- Botón para Añadir Título -->
             <div class="form-group col-sm-12">
@@ -115,7 +110,6 @@
                             
                         </div>
 
-                        <!-- Puedes agregar más campos según tus necesidades -->
                         <button id="agregarTitulo" class="btn btn-success mt-2">Guardar Título</button>
                         <button id="actualizarTitulo" class="btn btn-success mt-2" >Guardar Cambios</button>
 

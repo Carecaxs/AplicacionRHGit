@@ -27,6 +27,8 @@ namespace AplicacionRHGit.Models.Expedientes
         public string? direccion { get; set; }
 
         public int? genero { get; set; }
+        public int? grupoProfesional { get; set; }
+
 
 
 

@@ -126,6 +126,7 @@ namespace AplicacionRHGit.Data
                                 IdDistrito = null,
                                 direccion = null,
                                 genero= 0,
+                                grupoProfesional = 0
                             };
 
                             //crear el expediente para el oferente
@@ -145,8 +146,16 @@ namespace AplicacionRHGit.Data
                                 ID_EXPEDIENTE=expediente.ID_EXPEDIENTE
                             };
 
+
+
+                            EXPERIENCIA experiencia = new EXPERIENCIA()
+                            {
+                                ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
+                            };
+
                             _context.Titulo.Add(titulo);
                             _context.Referencia.Add(refrencia);
+                            _context.Experiencia.Add(experiencia);
 
                             //guardar cambios
                             _context.SaveChanges();

@@ -123,3 +123,26 @@ button.card-link {
     background-color: #343a40; /* Cambia esto al color deseado */
     color: #ffffff; /* Cambia esto al color deseado */
 }
+
+.tabla-head {
+    background-color: cornsilk; /* Cambia el color de fondo según tus preferencias */
+    color: #495057; /* Cambia el color del texto según tus preferencias */
+    font-weight: bold; /* Otras propiedades de estilo según sea necesario */
+    font-size:1.1rem;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.estado-pendiente {
+    color: red;
+   
+}
+
+.estado-revisado {
+    color: blue;
+ 
+}
+
+.estado-verificado {
+    color: green;
+  
+}

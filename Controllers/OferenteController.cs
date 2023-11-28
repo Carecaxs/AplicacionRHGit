@@ -83,9 +83,14 @@ namespace AplicacionRHGit.Controllers
 
 
 
+                    //almacenar en un viewData los grupos profesionales para mostrarlo en un combo
+                    OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                    List<GrupoProfesional> grupos = oferentesDAO.CargarGruposProfesionales();
+                    // Pasar los datos a la vista
+                    ViewData["GruposCombo"] = new SelectList(grupos, "idGrupoProfesional", "Codigo");
+
 
                     //almacenar en un viewData los grados academicos para mostrarlo en un combo
-                    OferentesDAO oferentesDAO = new OferentesDAO(_context);
                     List<Idioma> idiomas = oferentesDAO.CargarIdiomas();
                     // Pasar los datos a la vista
                     ViewData["IdiomasCombo"] = new SelectList(idiomas, "idIdioma", "NombreIdioma");
@@ -118,7 +123,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification="0117860836", string clave = "123")
+        public IActionResult TitulosOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -127,9 +132,10 @@ namespace AplicacionRHGit.Controllers
 
                 if (persona != null)
                 {
-
+                    ViewBag.nombre = persona.nombre;
                     ViewBag.identificacion = identification;
                     ViewBag.clave = clave;
+                    ViewBag.VistaActual = "TitulosOferente";
 
                     //almacenar en un viewData los grados academicos para mostrarlo en un combo
                     OferentesDAO oferentesDAO = new OferentesDAO(_context);
@@ -142,8 +148,81 @@ namespace AplicacionRHGit.Controllers
                     List<DETALLE_TITULO> titulos = oferentesDAO.CargarTitulos(identification, clave);
                     if (titulos != null)
                     {
-                        ViewData["Titulos"] = new SelectList(titulos, "ID_DETALLE_TITULOS", "ESPECIALIDAD");
+                        ViewData["Titulos"] = new SelectList(titulos);
                     }
+
+
+
+                    return View();
+                }
+                else
+                {
+                    return NotFound();
+
+                }
+
+
+
+            }
+            else
+            {
+                return NotFound();
+
+            }
+        }
+
+
+        public IActionResult ReferenciasOferente(string identification, string clave)
+        {
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Oferente", clave);
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.VistaActual = "ReferenciasOferente";
+
+
+
+
+                    return View();
+                }
+                else
+                {
+                    return NotFound();
+
+                }
+
+
+
+            }
+            else
+            {
+                return NotFound();
+
+            }
+        }
+
+
+
+        public IActionResult ExperienciaOferente(string identification, string clave)
+        {
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Oferente", clave);
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.VistaActual = "ExperienciaOferente";
+
 
 
 
@@ -201,14 +280,14 @@ namespace AplicacionRHGit.Controllers
 
         [HttpPost]
         public JsonResult GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
-            string direccion)
+            string direccion, int grupoP)
         {
             try
             {
                 OferentesDAO acceso = new OferentesDAO(_context);
 
 
-                if (acceso.GuardarCambiosDatosPersonalesEx(identificacion, nacimiento, genero, provincia, canton, distrito, direccion) > 0)
+                if (acceso.GuardarCambiosDatosPersonalesEx(identificacion, nacimiento, genero, provincia, canton, distrito, direccion, grupoP) > 0)
                 {
                     //si todo sale bien
                     return Json(new { mensaje = "Expediente actualizado exitosamente" });
@@ -331,7 +410,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        //seccion titulos
+        ////////////////////////////////////////////////   seccion titulos ///////////////////////////////////////////////////////
         [HttpPost]
         public JsonResult AgregarTitulo(IFormCollection formData)
         {
@@ -398,8 +477,36 @@ namespace AplicacionRHGit.Controllers
         [HttpGet]
         public JsonResult CargarTitulos(string identificacion, string clave)
         {
-            OferentesDAO oferentesDAO = new OferentesDAO(_context);
-            var titulos = oferentesDAO.CargarTitulos(identificacion, clave);
+            var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion && o.clave == clave)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+            var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+            var idTitulo = _context.Titulo
+                .Where(t => t.ID_EXPEDIENTE == idExpediente)
+                .Select(t => t.ID_TITULO)
+                .FirstOrDefault();
+
+            var titulos = _context.DetalleTitulo
+                        .Where(dt => dt.ID_TITULO == idTitulo)
+                        .Join(
+                            _context.GradoAcademico,
+                            dt => dt.TIPO_TITULO,
+                            ga => ga.id,
+                            (dt, ga) => new
+                            {
+                                dt.ID_DETALLE_TITULOS,
+                                dt.ESPECIALIDAD,
+                                dt.ESTADO,
+                                dt.ASIENTO,
+                                ga.gradoAcademico
+                            }
+                        ).ToList();
 
             return Json(titulos);
         }
@@ -561,6 +668,155 @@ namespace AplicacionRHGit.Controllers
 
 
         }
+
+
+
+
+        ///////////////////////////////////////////////////////    SECCION REFERENCIAS ////////////////////////////////////////////////////////////////
+
+        [HttpPost]
+        public JsonResult AgregarReferecia(IFormCollection formData)
+        {
+
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
+                int idReferencia = acceso.AgregarReferecia(formData);
+
+                if (idReferencia != -1)
+                {
+                    var fotoReferencia = formData.Files["fotoReferencia"];
+                    if (fotoReferencia != null && fotoReferencia.Length > 0)
+                    {
+                        // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                        var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+
+                        var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesReferencias", formData["identificacion"].FirstOrDefault());
+
+
+                        // Crear la carpeta si no existe
+                        if (!Directory.Exists(carpetaCedula))
+                        {
+                            Directory.CreateDirectory(carpetaCedula);
+                        }
+
+                        // Obtener la extensión del archivo
+                        var extension = Path.GetExtension(fotoReferencia.FileName);
+
+                        // Crear un nombre único para la imagen (id del detalle_titulo)
+                        var nombreImagen = $"{idReferencia}{extension}";
+
+                        // Obtener la ruta completa de la imagen
+                        var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                        // Guardar la imagen en el servidor
+                        using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                        {
+                            fotoReferencia.CopyTo(stream);
+                        }
+
+                    }
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al guardar la referencia" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+        [HttpGet]
+        public JsonResult CargarReferenciasPersonales(string identificacion, string clave)
+        {
+            try
+            {
+
+                OferentesDAO acceso = new OferentesDAO(_context);
+
+                List<DETALLE_REFERENCIAS> referencias = acceso.CargarReferenciasPersonales(identificacion, clave);    
+
+                if(referencias!=null)
+                {
+                    return Json(referencias);
+                }
+                else
+                {
+                   return Json(new { vacio=true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+        [HttpPost]
+        public JsonResult EliminarReferencia(string idReferencia, string identificacion)
+        {
+            try
+            {
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                if (oferentesDAO.EliminarReferencia(idReferencia) == 1)
+                {
+                    //eliminar foto de ese titulo
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesReferencias", identificacion);
+
+
+                    // Buscar el archivo en el directorio
+                    string[] archivos = Directory.GetFiles(carpetaCedula, idReferencia + ".*");
+
+                    if (archivos.Length > 0)
+                    {
+                        if (System.IO.File.Exists(archivos[0]))
+                        {
+                            // Elimina el archivo
+                            System.IO.File.Delete(archivos[0]);
+
+                        }
+
+                    }
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al eliminar la referencia" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
 
 
 

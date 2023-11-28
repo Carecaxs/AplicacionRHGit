@@ -4,6 +4,7 @@ using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.Mensajeria;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace AplicacionRHGit.Data
 {
@@ -60,6 +61,15 @@ namespace AplicacionRHGit.Data
 
             return idiomas;
         }
+        
+        //retornar una lista de los grupos profesionales almacenados en la BD
+        public List<GrupoProfesional> CargarGruposProfesionales()
+        {
+            List<GrupoProfesional> grupos = _context.GrupoProfesional.ToList();
+
+            return grupos;
+        }
+
 
 
 
@@ -67,7 +77,7 @@ namespace AplicacionRHGit.Data
 
         //retorna 1 si todos sale bien , -1 si no sale bien
         public int GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
-            string direccion)
+            string direccion, int grupoP)
         {
             try
             {
@@ -90,9 +100,10 @@ namespace AplicacionRHGit.Data
                     expediente.nacimiento = DateTime.Parse(nacimiento);
                     expediente.IdProvincia = (provincia==0 ? null : provincia);
                     expediente.IdCanton = (canton == 0 ? null : canton); ;
-                    expediente.IdDistrito = (distrito == 0 ? null : distrito); ;
+                    expediente.IdDistrito = (distrito == 0 ? null : distrito); 
                     expediente.direccion = direccion;
                     expediente.genero = genero;
+                    expediente.grupoProfesional = grupoP;
 
 
                     // Realiza el cambio en la base de datos
@@ -426,6 +437,137 @@ namespace AplicacionRHGit.Data
 
           
         }
+
+
+
+
+        ///////////////////////////////////////////////////// seccion de referencias ////////////////////////////////////////////////////////////////
+        
+
+        //retorna el id de la referencia agregada si todo sale bien, retorna -1 si sale mal
+        public int AgregarReferecia(IFormCollection form)
+        {
+
+            int retorno = -1;
+            var identificacion = form["identificacion"].FirstOrDefault();
+            var clave = form["clave"].FirstOrDefault();
+
+
+            try
+            {
+                //consulta el id del oferente con la identificacion y clave dada
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion && o.clave == clave)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id de la referencia donde contenga ese id de expediente
+                var idReferencia = _context.Referencia
+                .Where(t => t.ID_EXPEDIENTE == idExpediente)
+                .Select(t => t.ID_REFERENCIA)
+                .FirstOrDefault();
+
+
+                int tipoReferencia=int.Parse(form["tipoReferencia"].FirstOrDefault());
+
+                DETALLE_REFERENCIAS datosReferencia = new DETALLE_REFERENCIAS()
+                {
+                    ID_REFERENCIA = idReferencia,
+                    TIPO = (tipoReferencia == 1 ? '1' : '2'),
+                    NOMBRE_EMPRESA= (tipoReferencia == 1 ? "" : form["nombreEmpresa"].FirstOrDefault()),
+                    NOMBRE_APELLIDOS= (tipoReferencia == 2 ? "" : form["nombrePersonaRefiere"].FirstOrDefault()),
+                    CONTACTO= Regex.Replace(form["contacto"].FirstOrDefault(), @"\D", ""),
+                    ESTADO=false
+                };
+
+                _context.DetalleReferencia.Add(datosReferencia);
+                _context.SaveChanges();
+
+                retorno = datosReferencia.ID_DETALLE_REFERENCIA;
+
+                return retorno;
+
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+
+        public List<DETALLE_REFERENCIAS> CargarReferenciasPersonales(string identificacion, string clave)
+        {
+
+            var idOferente = _context.Oferente
+              .Where(o => o.identificacion == identificacion && o.clave == clave)
+              .Select(o => o.idOferente)
+              .FirstOrDefault();
+
+            //consulta el id del expediente de ese oferente
+            var idExpediente = _context.Expediente
+            .Where(e => e.idOferente == idOferente)
+            .Select(e => e.ID_EXPEDIENTE)
+            .FirstOrDefault();
+
+            //consulta el id de la referencia donde contenga ese id de expediente
+            var idReferencia = _context.Referencia
+            .Where(t => t.ID_EXPEDIENTE == idExpediente)
+            .Select(t => t.ID_REFERENCIA)
+            .FirstOrDefault();
+
+            //filtrar en una lista los titulos por id
+            List<DETALLE_REFERENCIAS> referencias = _context.DetalleReferencia
+            .Where(r => r.ID_REFERENCIA == idReferencia)
+            .ToList();
+
+            if (referencias.Any())
+            {
+                return referencias;
+            }
+
+            return null;
+        }
+
+
+
+        public int EliminarReferencia(string idReferencia)
+        {
+            try
+            {
+                var referencia = _context.DetalleReferencia.Find(int.Parse(idReferencia));
+
+                if (referencia != null)
+                {
+                    _context.DetalleReferencia.Remove(referencia);
+                    _context.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    // Manejar el caso en que la referencia no se encontró
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+
+
 
 
 

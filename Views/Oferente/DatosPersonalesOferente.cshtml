@@ -106,7 +106,28 @@
                     </fieldset>
 
 
-                    <!-- Sección: Formacion academica -->
+                    <!-- Sección: Grupo Profesional -->
+
+                    <fieldset class="border p-3 mt-3">
+
+                        <legend class="w-auto">Grupo Profesional</legend>
+                        <hr />
+                        <label for="grupoProfesional">Grupos Profesionales:</label>
+
+                        <select class="form-control" id="grupoProfesional" name="grupoProfesional" required>
+                            <option value="0">Seleccione una opción:</option>
+
+                            @foreach (var grupo in (SelectList)ViewData["GruposCombo"])
+                            {
+                                <option value="@grupo.Value">@grupo.Text</option>
+                            }
+                        </select>
+                        
+
+                    </fieldset>
+
+
+                    <!-- Sección: Idiomas -->
 
                     <fieldset class="border p-3 mt-3">
 

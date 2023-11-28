@@ -1,0 +1,141 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutOferente.cshtml";
+}
+<main role="main" class="pb-3">
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+
+    <input id="vistaActual" type="hidden" value="@ViewBag.VistaActual" />
+
+
+    <div class="container mt-5">
+        <div class="contenedorExpediente">
+
+            <h1 class="text-center">Lista de Referencias</h1>
+
+            <table id="tablaReferencias" class="table table-bordered">
+                <thead class="tabla-head">
+                    <tr class="text-center">
+                        <th>Tipo</th>
+                        <th>Contacto</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="listaReferencias">
+                </tbody>
+            </table>
+        
+
+
+
+            <!-- Botón para Añadir Referencia -->
+            <div class="form-group col-sm-12">
+                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarReferenciaModal">
+                    Agregar Referencia
+                </button>
+            </div>
+            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+                <div class="form-group col-sm-12">
+                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
+                </div>
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- Modal para Añadir Referencia -->
+    <div class="modal fade" id="agregarReferenciaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Añadir Referencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Referencia -->
+                    <form id="formAgregarReferencia" method="post">
+
+                        <div class="form-group">
+                            <label for="tipoReferencia">Tipo:</label>
+                            <select class="form-control" id="tipoReferencia" name="tipoReferencia" required>
+                                <option value="1">Personal</option>
+                                <option value="2">Profesional</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-1" id="empresaDiv">
+                            <label for="nombreEmpresa">Empresa:</label>
+                            <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required />
+                        </div>
+
+                        <div class="form-group mt-1" id="personaReferenciaDiv">
+                            <label for="nombrePersonaRefiere">Persona que refiere:</label>
+                            <input type="text" class="form-control" id="nombrePersonaRefiere" name="nombrePersonaRefiere" required />
+                        </div>
+
+                        <div class="form-group mt-1">
+                            <label for="contacto">Contacto:</label>
+                            <input type="text" class="form-control" id="contacto" name="contacto" required />
+                        </div>
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group mt-1">
+                            <label for="fotoReferencia">Subir Foto de Referencia:</label>
+                            <div>
+                                <input type="file" class="form-control-file" id="fotoReferencia" name="fotoReferencia" accept="image/*" required />
+
+                            </div>
+                        </div>
+
+                        <button id="agregarReferencia" class="btn btn-success mt-2">Guardar Referencia</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal de Confirmación para Eliminar referencia -->
+    <div class="modal fade" id="confirmacionEliminarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar esta referencia?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmarEliminar" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   
+
+
+
+
+
+
+</main>
+
+<script src="~/js/oferente/expediente.js"></script>
