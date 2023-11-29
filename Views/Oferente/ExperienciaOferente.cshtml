@@ -16,12 +16,16 @@
                 <thead class="tabla-head">
                     <tr class="text-center">
                         <th>Empresa</th>
-                        <th>Contacto</th>
-                        <th>Estado</th>
+                        <th>Puesto</th>
+                        <th>Años</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="listaExperiencias">
+
+                    <tr id="mensajeTabla">
+                        <td colspan="4" class="text-center">No hay experiencias disponibles.</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -86,11 +90,11 @@
                         </div>
 
                         <div class="form-group mt-1">
-                            <label for="labores">Labores realizadas:</label>
+                            <label for="labores">Puesto:</label>
                             <textarea id="labores" name="labores" class="form-control"></textarea>
                         </div>
 
-      
+
 
                         <button id="agregarExperiencia" class="btn btn-success mt-2">Guardar Experiencia</button>
 

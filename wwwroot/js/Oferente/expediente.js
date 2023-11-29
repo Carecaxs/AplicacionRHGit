@@ -29,7 +29,7 @@ $(document).ready(function () {
         });
 
 
-       
+
 
 
         $("#provincias").change(function () {
@@ -52,7 +52,7 @@ $(document).ready(function () {
                         return response.json();
                     })
                     .then(data => {
-                    
+
 
                         // Llena el ComboBox con los cantones recibidos de la API
                         data.forEach(cantones => {
@@ -95,7 +95,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(data => {
-                 
+
 
                     // Llena el ComboBox con los cantones recibidos de la API
                     data.forEach(distritos => {
@@ -112,10 +112,10 @@ $(document).ready(function () {
 
         $.ajax({
             type: "Get",//tipo de solicitud
-            url: "/Oferente/ObtenerDatosPersonalesEx", 
+            url: "/Oferente/ObtenerDatosPersonalesEx",
             data: {//se envia el parametro
                 identificacion: $("#identification").val(),
-           
+
             },
             success: function (data) {//en caso de que sale bien
 
@@ -146,9 +146,9 @@ $(document).ready(function () {
                     var direccion = data.direccion;
                     var genero = data.genero;
                     var grupo = data.grupoProfesional;
-                    
-      
-         
+
+
+
 
                     //asignar los valores a los inputs
                     $("#nacimiento").val((nacimiento != null) ? nacimiento : "");
@@ -160,7 +160,7 @@ $(document).ready(function () {
                     CargarDatosUbicaciones(provincia, canton, distrito);
 
 
-                   
+
 
                 }
             },
@@ -174,7 +174,7 @@ $(document).ready(function () {
 
 
     }
-            
+
 
 
 
@@ -308,7 +308,7 @@ $(document).ready(function () {
 
                     }
                     else {
-                      
+
                         ///recargar la lista de titulos
 
                         // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
@@ -350,7 +350,7 @@ $(document).ready(function () {
 
         }
 
-       
+
 
     });
 
@@ -435,7 +435,7 @@ $(document).ready(function () {
 
         });
 
-        
+
 
     });
 
@@ -457,7 +457,7 @@ $(document).ready(function () {
                 identificacion: $("#identification").val()
             },
             success: function (data) {
-                
+
                 if (data.error) {
                     if ($("#mensaje").length) {
 
@@ -497,7 +497,7 @@ $(document).ready(function () {
                 }
             },
             error: function (error) {
-                console.log( error);
+                console.log(error);
             }
         });
 
@@ -609,7 +609,7 @@ $(document).ready(function () {
 
 
     $("#btnAgregarIdiomaModal").click(function (event) {
-        
+
         event.preventDefault();
 
         $.ajax({
@@ -654,8 +654,8 @@ $(document).ready(function () {
                         }
                     });
                 }
-               
-  
+
+
             },
             error: function (error) {
                 console.log(error);
@@ -766,7 +766,7 @@ $(document).ready(function () {
 
     //////////////////////////////////////////////  seccion de referencias //////////////////////////////////////////////////////////////
     if ($("#vistaActual").val() == "ReferenciasOferente") {
-     
+
         //al cargar la pagina por defecto va estar seleccionado referencia personal y no profesional
         //por lo que vamos a esconder los campos que solo se necesitan llenar cuando es refrencia profesional
         $('#empresaDiv').hide();
@@ -861,7 +861,7 @@ $(document).ready(function () {
                                 clave: $("#clave").val()
                             },
                             success: function (data) {
-           
+
                                 //recargar titulos
                                 procesarRespuestaReferencia(data);
                             },
@@ -988,21 +988,277 @@ $(document).ready(function () {
 
 
 
-     //////////////////////////////////////////////  seccion de experiencia laboral //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////  seccion de experiencia laboral //////////////////////////////////////////////////////////////
 
     if ($("#vistaActual").val() == "ExperienciaOferente") {
-        
+
         $('#inicio').inputmask('9999', { placeholder: 'YYYY' });
+        $('#contacto').inputmask('9999-9999');
         $('#fin').inputmask('9999', { placeholder: 'YYYY' });
 
+
+
+        //cargar experiencias en la tabla
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarExperiencias",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+
+                    else {
+                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+
+
+                } else {
+
+                    //cargar experiencias
+                    procesarRespuestaExperiencia(data);
+                }
+
+            },
+            error: function (error) {
+                console.log("Error al cargar títulos: " + error);
+            }
+        });
     }
+
+
+
+    $("#agregarExperiencia").click(function (event) {
+
+        event.preventDefault();
+
+        //retorna true si estan completados todos los campos
+        if (ValidarCamposAgregarExperiencia()) {
+
+            // Obtener el formulario y los datos del formulario
+            var form = $("#formAgregarExperiencia")[0];
+            var formData = new FormData(form);
+
+            // Agregar identificacion y clave al formData
+            formData.append("identificacion", $("#identification").val());
+            formData.append("clave", $("#clave").val());
+
+
+            $.ajax({
+                method: "POST",//tipo de solicitud
+                url: "/Oferente/AgregarExperiencia",
+                data: formData,
+                processData: false,  // Necesario para enviar FormData correctamente
+                contentType: false,  // Necesario para enviar FormData correctamente
+                success: function (data) {//en caso de que sale bien
+
+                    if (data.error) { //si data.error contiene algo
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#agregarExperiencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#agregarExperiencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+
+
+
+                    }
+                    else {
+
+                        ///recargar la lista de titulos
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarExperiencias",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val()
+                            },
+                            success: function (data) {
+
+                                if (data.error) {
+
+                                    if ($("#mensaje").length) {
+
+                                        $("#mensaje").remove();
+
+                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                                    }
+
+                                    else {
+                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                                    }
+
+
+                                } else {
+
+                                    //recargar titulos
+                                    procesarRespuestaExperiencia(data);
+
+                                }
+
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+                    }
+                },
+
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+        } else {
+            if ($("#mensaje").length) {
+
+                $("#mensaje").remove();
+
+                $("#agregarExperiencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $("#agregarExperiencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+        }
+
+
+
+    });
+
+
+
+    $("#listaExperiencias").on("click", ".btnEliminarExperiencia", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idExperiencia = fila.attr("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModal").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarExperiencia",
+                data: {
+                    idExperiencia: idExperiencia,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModal").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de experiencias
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarExperiencias",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val()
+                            },
+                            success: function (data) {
+
+                                if (data.error) {
+
+                                    if ($("#mensaje").length) {
+
+                                        $("#mensaje").remove();
+
+                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                                    }
+
+                                    else {
+                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                                    }
+
+
+                                } else {
+
+                                    //cargar experiencias
+                                    procesarRespuestaExperiencia(data);
+                                }
+
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+
+
+
+
 
 
 });
 
 
 
-    //////////////////////////////////////////////  seccion de funciones //////////////////////////////////////////////////////////////
+//////////////////////////////////////////////  seccion de funciones //////////////////////////////////////////////////////////////
 
 function limpiarModalTitulos() {
     // Limpiar valores de los campos de texto
@@ -1039,7 +1295,7 @@ function verificarCamposModalTitulos() {
         fechaObtenido !== "" &&
         folio !== "" &&
         asiento !== ""
-    ){
+    ) {
         // Verifica si se ha seleccionado un archivo en el campo de imagen
         var fotoTitulo = document.getElementById("fotoTitulo");
         if (fotoTitulo.files.length > 0) {
@@ -1156,52 +1412,6 @@ function procesarRespuestaTitulos(data) {
 
 
 
-//function agregarTituloALaLista(titulo) {
-
-//    var listaTitulos = document.getElementById("listaTitulo");
-
-//    var li = document.createElement("li");
-//    li.className = "list-group-item d-flex justify-content-between align-items-center";
-//    li.setAttribute("data-id", titulo.iD_DETALLE_TITULOS);
-
-//    var span = document.createElement("span");
-//    span.textContent = titulo.especialidad;
-
-//    var div = document.createElement("div");
-
-//    var btnEditar = document.createElement("button");
-//    btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm";
-//    btnEditar.innerHTML = '<i class="fas fa-pencil-alt"></i>';
-
-//    var btnEliminar = document.createElement("button");
-//    btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm";
-//    btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
-//    btnEliminar.style = "margin-left:1px";
-
-//    div.appendChild(btnEditar);
-//    div.appendChild(btnEliminar);
-
-//    li.appendChild(span);
-//    li.appendChild(div);
-
-//    listaTitulos.appendChild(li);
-//}
-
-//function procesarRespuestaTitulos(data) {
-//    console.log("entro al 1");
-
-
-
-//    var listaTitulos = document.getElementById("listaTitulo");
-//    listaTitulos.innerHTML = "";
-
-//    data.forEach(function (titulo) {
-//        agregarTituloALaLista(titulo);
-//    });
-
-//    $('#agregarTituloModal').modal('hide');
-//    limpiarModalTitulos();
-//}
 
 function eliminarMsjModal() {
     //eliminar el nombre de archivo que se pone a la hora de editar un titulo
@@ -1218,7 +1428,7 @@ function eliminarMsjModal() {
     }
 }
 
-        
+
 function agregarIdiomaALaLista(idioma) {
     var listaIdiomas = document.getElementById("listaIdiomas");
 
@@ -1271,7 +1481,7 @@ function procesarRespuestaIdiomas(data) {
     }
 
 }
-        
+
 
 function CargarDatosUbicaciones(provincia, canton, distrito) {
     //cargar provincias
@@ -1321,7 +1531,7 @@ function CargarDatosUbicaciones(provincia, canton, distrito) {
                 return response.json();
             })
             .then(data => {
-         
+
 
                 // Llena el ComboBox con los cantones recibidos de la API
                 data.forEach(cantones => {
@@ -1347,7 +1557,7 @@ function CargarDatosUbicaciones(provincia, canton, distrito) {
                 return response.json();
             })
             .then(data => {
-                
+
 
                 // Llena el ComboBox con los cantones recibidos de la API
                 data.forEach(distritos => {
@@ -1402,7 +1612,7 @@ function VerificarCamposModalAgregarReferencia() {
 
     if (!(/^\d{8}$/).test($("#contacto").val().replace(/\D/g, ''))) {
         return false;
-    } 
+    }
 
     return true;
 }
@@ -1416,7 +1626,7 @@ function agregarReferenciaALaTabla(referencia) {
     row.id = referencia.iD_DETALLE_REFERENCIA;
 
     var cellTipo = row.insertCell(0);
-    cellTipo.textContent = (referencia.tipo=='1'? "Personal":"Profesional");
+    cellTipo.textContent = (referencia.tipo == '1' ? "Personal" : "Profesional");
     cellTipo.style.textAlign = "center";
 
     var cellContacto = row.insertCell(1);
@@ -1427,7 +1637,7 @@ function agregarReferenciaALaTabla(referencia) {
     if (referencia.estado == false) {
         cellEstado.textContent = "No Verificado";
         cellEstado.classList.add('estado-pendiente');
-    } else{
+    } else {
         cellEstado.textContent = "Verificado";
         cellEstado.classList.add('estado-verificado');
     }
@@ -1436,22 +1646,18 @@ function agregarReferenciaALaTabla(referencia) {
     var cellAcciones = row.insertCell(3);
     cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
-    // Crear un contenedor div para los botones de editar y eliminar
-    var divBotones = document.createElement("div");
-    divBotones.className = "row";
-    divBotones.style.justifyContent = "center"; // Estilo en línea para centrar horizontalmente
-    divBotones.style.alignItems = "center"; // Estilo en línea para centrar verticalmente
+
 
 
     var btnEliminar = document.createElement("button");
-    btnEliminar.className = "btnEliminarReferencia btn btn-danger btn-sm  w-50";
+    btnEliminar.className = "btnEliminarReferencia btn btn-danger btn-sm  w-100";
     btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
 
 
-    divBotones.appendChild(btnEliminar);
+
 
     // Agregar el contenedor div a la celda de acciones
-    cellAcciones.appendChild(divBotones);
+    cellAcciones.appendChild(btnEliminar);
 
 
 }
@@ -1461,9 +1667,30 @@ function procesarRespuestaReferencia(data) {
     var tbody = document.getElementById("listaReferencias");
     tbody.innerHTML = "";
 
-    data.forEach(function (referencias) {
-        agregarReferenciaALaTabla(referencias);
-    });
+    // Verificar si se retorno refrencias en el data
+    if (data.vacio) {
+        // No hay experiencias, mostrar el mensaje
+        // Crear el elemento tr con su contenido
+        var mensajeTr = document.createElement("tr");
+
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay referencias disponibles.";
+
+        // Agregar la celda al elemento tr
+        mensajeTr.appendChild(mensajeTd);
+
+        tbody.appendChild(mensajeTr);
+
+
+    } else {
+        data.forEach(function (referencias) {
+            agregarReferenciaALaTabla(referencias);
+        });
+
+    }
+
 
     $('#agregarReferenciaModal').modal('hide');
     limpiarCamposModalReferencias();
@@ -1477,4 +1704,127 @@ function limpiarCamposModalReferencias() {
     document.getElementById('contacto').value = '';
     document.getElementById('fotoReferencia').value = '';  // Limpiar el campo de archivo (input type="file") no es posible por razones de seguridad
 }
+
+
+
+
+function ValidarCamposAgregarExperiencia() {
+    // Función de validación al hacer clic en el botón "Guardar Experiencia"
+    // Obtén los valores de los campos
+    var nombreEmpresa = $("#nombreEmpresa").val();
+    var contacto = $("#contacto").val();
+    var inicio = $("#inicio").val();
+    var fin = $("#fin").val();
+    var labores = $("#labores").val();
+
+    // Obtén solo los dígitos del campo de inicio
+    var inicioDigits = inicio.replace(/\D/g, '');
+
+    // Realiza la validación
+    if (
+        nombreEmpresa === "" ||
+        contacto === "" ||
+        inicio.replace(/\D/g, '').length !== 4 ||  // Validar que haya exactamente 4 números
+        fin.replace(/\D/g, '').length !== 4 ||
+        labores === ""
+    ) {
+
+
+        return false;
+    } else {
+
+
+        return true;
+    }
+}
+
+
+
+
+
+
+function agregarExperienciaALaTabla(experiencia) {
+    var tbody = document.getElementById("listaExperiencias");
+
+    var row = tbody.insertRow(-1);
+    row.id = experiencia.iD_DETALLE_EXPERIENCIA;
+
+    var cellEmpresa = row.insertCell(0);
+    cellEmpresa.textContent = experiencia.nombrE_EMPRESA + " ( " + experiencia.telefono.replace(/(\d{4})(\d{4})/, '$1-$2') + " )";
+    cellEmpresa.style.textAlign = "center";
+
+    var cellPuesto = row.insertCell(1);
+    cellPuesto.textContent = experiencia.descripcioN_LABORES;
+    cellPuesto.style.textAlign = "center";
+
+    var cellYears = row.insertCell(2);
+    cellYears.textContent = experiencia.inicio + " / " + experiencia.fin;
+    cellYears.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(3);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+
+    var btnEliminar = document.createElement("button");
+    btnEliminar.className = "btnEliminarExperiencia btn btn-danger btn-sm  w-100";
+    btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
+
+
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnEliminar);
+
+
+}
+
+
+function procesarRespuestaExperiencia(data) {
+    var tbody = document.getElementById("listaExperiencias");
+    tbody.innerHTML = "";
+
+    // Verificar si se retorno experiencias en el data
+    if (data.vacio) {
+        // No hay experiencias, mostrar el mensaje
+        // Crear el elemento tr con su contenido
+        var mensajeTr = document.createElement("tr");
+
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay experiencias disponibles.";
+
+        // Agregar la celda al elemento tr
+        mensajeTr.appendChild(mensajeTd);
+
+        // Agregar el elemento tr al tbody
+        tbody.appendChild(mensajeTr);
+
+
+    } else {
+        // Hay experiencias
+
+
+        data.forEach(function (experiencia) {
+            agregarExperienciaALaTabla(experiencia);
+        });
+
+    }
+
+
+    $('#agregarExperienciaModal').modal('hide');
+    limpiarCamposModalExperiencia();
+
+
+}
+
+
+function limpiarCamposModalExperiencia() {
+    // Limpiar los valores de los campos
+    $("#nombreEmpresa").val("");
+    $("#contacto").val("");
+    $("#inicio").val("");
+    $("#fin").val("");
+    $("#labores").val("");
+}
+
 

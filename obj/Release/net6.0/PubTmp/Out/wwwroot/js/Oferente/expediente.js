@@ -384,10 +384,10 @@ $(document).ready(function () {
 
                             $("#mensaje").remove();
 
-                            $("#listaTitulo").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
                         }
                         else {
-                            $("#listaTitulo").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
 
                         }
                     }
@@ -398,10 +398,10 @@ $(document).ready(function () {
 
                             $("#mensaje").remove();
 
-                            $("#listaTitulo").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
                         }
                         else {
-                            $("#listaTitulo").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
 
                         }
 
@@ -763,8 +763,246 @@ $(document).ready(function () {
 
 
 
+
+    //////////////////////////////////////////////  seccion de referencias //////////////////////////////////////////////////////////////
+    if ($("#vistaActual").val() == "ReferenciasOferente") {
+     
+        //al cargar la pagina por defecto va estar seleccionado referencia personal y no profesional
+        //por lo que vamos a esconder los campos que solo se necesitan llenar cuando es refrencia profesional
+        $('#empresaDiv').hide();
+
+
+        //evento que detecta el cambio de seleccion en el tipo de referencia
+        $('#tipoReferencia').on('change', function () {
+
+            //esta funcion muestra y oculta elementos al agregar una referencia dependiendo si es personal o profesional
+            CambioTipoReferencia();
+
+        });
+
+
+        //aplicar mascara al input de numero telefonico 
+        // Aplica la máscara de número telefónico específica para Costa Rica
+        Inputmask({ mask: '9999-9999' }).mask($('#contacto'));
+
+        //cargar referencias de la persona
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarReferenciasPersonales",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val()
+            },
+            success: function (data) {
+
+                //recargar titulos
+                procesarRespuestaReferencia(data);
+            },
+            error: function (error) {
+                console.log("Error al cargar títulos: " + error);
+            }
+        });
+
+    }
+
+
+
+    $("#agregarReferencia").click(function (event) {
+
+        event.preventDefault();
+
+        //retorna true si estan completados todos los campos
+        if (VerificarCamposModalAgregarReferencia()) {
+
+            // Obtener el formulario y los datos del formulario
+            var form = $("#formAgregarReferencia")[0];
+            var formData = new FormData(form);
+
+            // Agregar identificacion y clave al formData
+            formData.append("identificacion", $("#identification").val());
+            formData.append("clave", $("#clave").val());
+
+
+            $.ajax({
+                method: "POST",//tipo de solicitud
+                url: "/Oferente/AgregarReferecia",
+                data: formData,
+                processData: false,  // Necesario para enviar FormData correctamente
+                contentType: false,  // Necesario para enviar FormData correctamente
+                success: function (data) {//en caso de que sale bien
+
+                    if (data.error) { //si data.error contiene algo
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+
+
+
+                    }
+                    else {
+                        console.log("exito");
+                        ///recargar la lista de referencias 
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarReferenciasPersonales",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val()
+                            },
+                            success: function (data) {
+           
+                                //recargar titulos
+                                procesarRespuestaReferencia(data);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+                    }
+                },
+
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+        } else {
+            if ($("#mensaje").length) {
+
+                $("#mensaje").remove();
+
+                $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+        }
+
+
+
+    });
+
+
+
+    $("#listaReferencias").on("click", ".btnEliminarReferencia", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idReferencia = fila.attr("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModal").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarReferencia",
+                data: {
+                    idReferencia: idReferencia,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModal").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de referencias
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarReferenciasPersonales",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val()
+                            },
+                            success: function (data) {
+
+                                //recargar titulos
+                                procesarRespuestaReferencia(data);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar las referencias: " + error);
+                            }
+                        });
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+    //evento al cerrar modal 
+    $('#agregarReferenciaModal').on('hidden.bs.modal', function () {
+        limpiarCamposModalReferencias();
+    });
+
+
+
+
+     //////////////////////////////////////////////  seccion de experiencia laboral //////////////////////////////////////////////////////////////
+
+    if ($("#vistaActual").val() == "ExperienciaOferente") {
+        
+        $('#inicio').inputmask('9999', { placeholder: 'YYYY' });
+        $('#fin').inputmask('9999', { placeholder: 'YYYY' });
+
+    }
+
+
 });
 
+
+
+    //////////////////////////////////////////////  seccion de funciones //////////////////////////////////////////////////////////////
 
 function limpiarModalTitulos() {
     // Limpiar valores de los campos de texto
@@ -1123,7 +1361,120 @@ function CargarDatosUbicaciones(provincia, canton, distrito) {
             });
     }
 }
-    
 
 
-    
+
+function CambioTipoReferencia() {
+    if ($('#tipoReferencia').val() == 2) {
+        //si se selecciona referencia profesional
+        $('#empresaDiv').show();
+
+        //se esconde campo requerido en referencia personal
+        $('#personaReferenciaDiv').hide();
+    }
+    else {
+        //si se selecciona referencia personal
+        $('#personaReferenciaDiv').show();
+
+        //se esconde campo requerido en referencia profesional
+        $('#empresaDiv').hide();
+    }
+}
+
+
+
+function VerificarCamposModalAgregarReferencia() {
+    // Obtener todos los campos obligatorios
+    var camposObligatorios = document.querySelectorAll('[required]');
+
+
+    // Verificar cada campo obligatorio
+    camposObligatorios.forEach(function (campo) {
+        // Verificar si el campo está visible
+        if ($(campo).is(':visible')) {
+            if (!campo.value.trim()) {
+                return false;
+            }
+        }
+    });
+
+    //verificar que el campo contacto se complete
+
+    if (!(/^\d{8}$/).test($("#contacto").val().replace(/\D/g, ''))) {
+        return false;
+    } 
+
+    return true;
+}
+
+
+
+function agregarReferenciaALaTabla(referencia) {
+    var tbody = document.getElementById("listaReferencias");
+
+    var row = tbody.insertRow(-1);
+    row.id = referencia.iD_DETALLE_REFERENCIA;
+
+    var cellTipo = row.insertCell(0);
+    cellTipo.textContent = (referencia.tipo=='1'? "Personal":"Profesional");
+    cellTipo.style.textAlign = "center";
+
+    var cellContacto = row.insertCell(1);
+    cellContacto.textContent = (referencia.tipo == '1' ? referencia.nombrE_APELLIDOS : referencia.nombrE_EMPRESA) + " " + referencia.contacto.replace(/(\d{4})(\d{4})/, '$1-$2');
+    cellContacto.style.textAlign = "center";
+
+    var cellEstado = row.insertCell(2);
+    if (referencia.estado == false) {
+        cellEstado.textContent = "No Verificado";
+        cellEstado.classList.add('estado-pendiente');
+    } else{
+        cellEstado.textContent = "Verificado";
+        cellEstado.classList.add('estado-verificado');
+    }
+    cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(3);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+    // Crear un contenedor div para los botones de editar y eliminar
+    var divBotones = document.createElement("div");
+    divBotones.className = "row";
+    divBotones.style.justifyContent = "center"; // Estilo en línea para centrar horizontalmente
+    divBotones.style.alignItems = "center"; // Estilo en línea para centrar verticalmente
+
+
+    var btnEliminar = document.createElement("button");
+    btnEliminar.className = "btnEliminarReferencia btn btn-danger btn-sm  w-50";
+    btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
+
+
+    divBotones.appendChild(btnEliminar);
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(divBotones);
+
+
+}
+
+
+function procesarRespuestaReferencia(data) {
+    var tbody = document.getElementById("listaReferencias");
+    tbody.innerHTML = "";
+
+    data.forEach(function (referencias) {
+        agregarReferenciaALaTabla(referencias);
+    });
+
+    $('#agregarReferenciaModal').modal('hide');
+    limpiarCamposModalReferencias();
+}
+
+function limpiarCamposModalReferencias() {
+    // Establecer valores en blanco para los campos
+    document.getElementById('tipoReferencia').value = '';
+    document.getElementById('nombreEmpresa').value = '';
+    document.getElementById('nombrePersonaRefiere').value = '';
+    document.getElementById('contacto').value = '';
+    document.getElementById('fotoReferencia').value = '';  // Limpiar el campo de archivo (input type="file") no es posible por razones de seguridad
+}
+

@@ -22,7 +22,7 @@
 
      
     <div class="container">
-        <div class="contenedorInicioSesion">
+        <div class="contenedorInicioSesion mt-5">
 
             <div class="d-flex flex-column align-items-center">
                 <h2 id="seccionInicioSesion">Registrarse como @TempData["Usuario"]</h2>
@@ -35,16 +35,16 @@
                     <div class="form-group col-md-12 mt-2">
                         <label for="identificationType">Tipo de Identificación</label>
                         <select id="identificationType" class="form-control">
-                            <option value="null">Seleccione una opción</option>
+                          
                             <option value="Cedula">Cédula de Identidad</option>
                             <option value="Dimex">DIMEX</option>
-                            <option value="Pasaporte">Pasaporte</option>
+                           
                         </select>
                     </div>
                     <div class="form-group col-md-12 mt-2">
                         <label for="identification">Identificación</label>
                         <div class="input-group">
-                            <input type="text" id="identification" name="identification" class="form-control" disabled />
+                            <input type="text" id="identification" name="identification" class="form-control" />
 
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
 
@@ -55,6 +55,14 @@
 
                 
 
+                    </div>
+
+                    <div id="campoVerificarDimex" class="form-group col-md-12 mt-2">
+                        <label for="dimex">Vuelva a digitar Dimex</label>
+                        <div class="input-group">
+                            <input type="text" id="dimex" class="form-control" />
+
+                        </div>
                     </div>
 
                     <div id="campoNombre" class="form-group col-md-12 mt-2">
@@ -73,6 +81,22 @@
                         </div>
                     </div>
 
+                    <div id="campoNacimiento" class="form-group col-md-12 mt-2">
+                        <label for="nacimiento">Nacimiento</label>
+                        <div class="input-group">
+                            <input type="text" id="nacimiento" class="form-control" disabled />
+
+                        </div>
+                    </div>
+
+
+                    <div id="campoSexo" class="form-group col-md-12 mt-2">
+                        <label for="sexo">Sexo</label>
+                        <div class="input-group">
+                            <input type="text" id="sexo" class="form-control" disabled />
+
+                        </div>
+                    </div>
      
 
                     <div id="campoCorreo" class="form-group col-md-12 mt-2">

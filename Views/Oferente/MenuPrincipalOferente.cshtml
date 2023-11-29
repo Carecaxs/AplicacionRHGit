@@ -3,112 +3,113 @@
 }
 
 @* <div class="container"> *@
-    <main role="main" class="pb-3 d-flex align-items-center justify-content-center">
+<main role="main" class="pb-3 d-flex align-items-center justify-content-center">
 
-        <div class="container mt-3">
+    <div class="container mt-3">
 
-            <form id="formPaginaInicioOferente" method="post">
+        <form id="formPaginaInicioOferente" method="post">
             <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
             <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
 
-                <div class="row mt-3">
-                    <!-- Sección de Expediente -->
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card">
-                            <div class="card-header text-center bg-dark text-white cartas-header">
-                                EXPEDIENTE
+            <div class="row mt-3">
+                <!-- Sección de Expediente -->
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header text-center bg-dark text-white cartas-header">
+                            EXPEDIENTE
+                        </div>
+                        <div class="card-body cartas-cuerpo">
+                            <!-- Contenido de la sección de expediente -->
+                            <div class="row">
+                                <button id="btnExpedienteDP" class="btn btn-outline-dark">Datos Personales</button>
                             </div>
-                            <div class="card-body cartas-cuerpo">
-                                <!-- Contenido de la sección de expediente -->
-                                <div class="row">
-                                    <button id="btnExpedienteDP" class="btn btn-outline-dark">Datos Personales</button>
-                                </div>
 
-                                <div class="row mt-1">
+                            <div class="row mt-1">
                                 <button id="btnExpedienteReferencias" class="btn btn-outline-dark">Referencias</button>
-                                </div>
+                            </div>
 
-                                <div class="row mt-1">
-                                    <button id="btnExpedienteTitulos" class="btn btn-outline-dark">Titulos</button>
-                                </div>
+                            <div class="row mt-1">
+                                <button id="btnExpedienteTitulos" class="btn btn-outline-dark">Titulos</button>
+                            </div>
 
-                                <div class="row mt-1">
-                                    <button id="" class="btn btn-outline-dark">Experiencia laboral</button>
-                                </div>
+                            <div class="row mt-1">
+                                <button id="btnExpedienteExpe" class="btn btn-outline-dark">Experiencia laboral</button>
 
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Sección de Postulaciones -->
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card">
-                            <div class="card-header text-center bg-dark text-white cartas-header">
-                                POSTULACIONES
-                            </div>
-                            <div class="card-body cartas-cuerpo">
-                                <!-- Contenido de la sección de expediente -->
-                                <div class="row">
-                                    <button id="" class="btn btn-outline-dark" type="button">Ver vacantes</button>
-                                </div>
-
-                                <div class="row mt-1">
-                                    <button id="" class="btn btn-outline-dark" type="button">Vacantes aplicadas</button>
-                                </div>
-
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sección de Comunicación -->
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card">
-                            <div class="card-header text-center bg-dark text-white cartas-header">
-                                COMUNICACIÓN
-                            </div>
-                            <div class="card-body cartas-cuerpo">
-                                <!-- Contenido de la sección de expediente -->
-                                <div class="row">
-                                    <button id="" class="btn btn-outline-dark" type="button">Abrir Mensajería</button>
-                                </div>
-
-                                <div class="row mt-1">
-                                    <button id="" class="btn btn-outline-dark" type="button">Soporte</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sección de Cuenta -->
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card">
-                            <div class="card-header text-center bg-dark text-white cartas-header">
-                                CUENTA
-                            </div>
-                            <div class="card-body cartas-cuerpo">
-                                <!-- Contenido de la sección de expediente -->
-                                <div class="row">
-                                    <button id="" class="btn btn-outline-dark" type="button">Cambiar Contraseña</button>
-                                </div>
-
-                                <div class="row mt-1">
-                                    <button id="" class="btn btn-outline-dark" type="button">Inactivar Cuenta</button>
-                                </div>
-
-                                <div class="row mt-1">
-                                    <button id="" class="btn btn-outline-dark" type="button">Cerrar Sesión</button>
-                                </div>
-
-                            </div>
                         </div>
                     </div>
                 </div>
-             </form>
-        </div>
+
+                <!-- Sección de Postulaciones -->
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header text-center bg-dark text-white cartas-header">
+                            POSTULACIONES
+                        </div>
+                        <div class="card-body cartas-cuerpo">
+                            <!-- Contenido de la sección de expediente -->
+                            <div class="row">
+                                <button id="" class="btn btn-outline-dark" type="button">Ver vacantes</button>
+                            </div>
+
+                            <div class="row mt-1">
+                                <button id="" class="btn btn-outline-dark" type="button">Vacantes aplicadas</button>
+                            </div>
 
 
-    </main>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Comunicación -->
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header text-center bg-dark text-white cartas-header">
+                            COMUNICACIÓN
+                        </div>
+                        <div class="card-body cartas-cuerpo">
+                            <!-- Contenido de la sección de expediente -->
+                            <div class="row">
+                                <button id="" class="btn btn-outline-dark" type="button">Abrir Mensajería</button>
+                            </div>
+
+                            <div class="row mt-1">
+                                <button id="" class="btn btn-outline-dark" type="button">Soporte</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Cuenta -->
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header text-center bg-dark text-white cartas-header">
+                            CUENTA
+                        </div>
+                        <div class="card-body cartas-cuerpo">
+                            <!-- Contenido de la sección de expediente -->
+                            <div class="row">
+                                <button id="" class="btn btn-outline-dark" type="button">Cambiar Contraseña</button>
+                            </div>
+
+                            <div class="row mt-1">
+                                <button id="" class="btn btn-outline-dark" type="button">Inactivar Cuenta</button>
+                            </div>
+
+                            <div class="row mt-1">
+                                <button id="" class="btn btn-outline-dark" type="button">Cerrar Sesión</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</main>
 @* </div> *@

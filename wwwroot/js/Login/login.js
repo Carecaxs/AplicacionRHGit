@@ -1,5 +1,6 @@
 ﻿
 $(document).ready(function () {
+  
     var identificationField = $("#identification");//input donde se pone la identificacion
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
         var selectedType = $(this).val();
@@ -19,14 +20,11 @@ $(document).ready(function () {
         } else if (selectedType === "Dimex") {
             mask = "99-999999-9999";
 
-        } else if (selectedType === "Pasaporte") {
-            mask = "a999999";
 
+
+
+            $("#identification").inputmask({ mask: mask });
         }
-
-
-        $("#identification").inputmask({ mask: mask });
-
     });
 
 
@@ -68,7 +66,9 @@ $(document).ready(function () {
     });
 
 
-    if ($("#registroForm").length > 0) { //si esta en el documento de creacion de perfil
+    if ($("#nombreVista").val() == "Crear") { //si esta en el documento de creacion de perfil
+
+        $("#campoVerificarDimex").hide();
 
         // Aplicar la máscara al campo de teléfono
         $('#telefono').inputmask('9999-9999');
@@ -83,20 +83,28 @@ $(document).ready(function () {
             var selectedIdentificationType = $(this).val();
 
             // Habilitar o deshabilitar el campo de identificación según la opción seleccionada
-            if (selectedIdentificationType === "Dimex" || selectedIdentificationType === "Pasaporte") {
+            if (selectedIdentificationType === "Dimex") {
                 // Habilitar el campo de identificación
                 mostrarForm();
+                $("#campoNacimiento").hide();
+                $("#campoSexo").hide();
+                $("#campoVerificarDimex").show();
+
 
                 // habilitar campos
                 $("#nombre").prop("disabled", false);
                 $("#apellidos").prop("disabled", false);
+
                 $("#btnVerificarCedula").hide();
 
             } else {
+                $("#campoVerificarDimex").hide();
+
                 // Deshabilitar campos
 
                 $("#nombre").prop("disabled", true);
                 $("#apellidos").prop("disabled", true);
+
                 esconderForm();
                 $("#btnVerificarCedula").show();
 
@@ -184,12 +192,14 @@ $(document).ready(function () {
                         $("#identificacion").val(identificacion);
 
                     }
-                    
 
+                    console.log(data);
                     // asignar valores a los inputs de la consulta
                     $("#nombre").val(data.nombre);
                     $("#apellidos").val(data.apellido1 + " " + data.apellido2);
-           
+                    $("#sexo").val((data.genero=='1'? "Masculino":"Femenino"));
+                    $("#nacimiento").val(cambiarFormatoFecha(data.fechaNacimiento));
+
 
                     mostrarForm();
 
@@ -860,12 +870,10 @@ function esconderForm() {
     $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
     $("#campoCorreo").hide();
     $("#campoTelefono").hide();
-    //$("#campoProvincia").hide();
-    //$("#campoCantones").hide();
-    //$("#campoDistritos").hide();
-    //$("#campoNacimiento").hide();
-    //$("#campoDireccion").hide();
+    $("#campoNacimiento").hide();
+    $("#campoSexo").hide();
     $('#btnCrearUsuario').hide();
+    console.log("hola");
 }
 
 function mostrarForm() {
@@ -873,11 +881,8 @@ function mostrarForm() {
     $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
     $("#campoCorreo").show();
     $("#campoTelefono").show();
-    //$("#campoProvincia").show();
-    //$("#campoCantones").show();
-    //$("#campoDistritos").show();
-    //$("#campoNacimiento").show();
-    //$("#campoDireccion").show();
+    $("#campoNacimiento").show();
+    $("#campoSexo").show();
     $('#btnCrearUsuario').show();
 
 }
@@ -958,6 +963,9 @@ function LimpiarCampos() {
     $("#apellidos").val('');
     $("#correo").val('');
     $("#telefono").val('');
+    $("#nacimiento").val('');
+    $("#sexo").val('');
+
 }
 
 
@@ -986,17 +994,18 @@ function ComprobarIdentificacion() {
             return false;
 
         }
-    } else if (identificationType === 'Pasaporte') {
-        // Validar que el pasaporte tenga la longitud deseada (ajusta según tus requisitos)
-        if (identificationValue.length >= 6 && identificationValue.length <= 12) {
-            console.log("true");
-            return true;
-        } else {
-            console.log("false");
-            return false;
- 
-        }
     } 
+    
 
 }
 
+// Función para cambiar el formato de fecha
+function cambiarFormatoFecha(fechaEnFormatoOriginal) {
+    // Dividir la cadena en mes, día y año
+    var partes = fechaEnFormatoOriginal.split('/');
+
+    // Crear una nueva cadena con el formato deseado
+    var fechaEnNuevoFormato = partes[1] + '/' + partes[0] + '/' + partes[2];
+
+    return fechaEnNuevoFormato;
+}
