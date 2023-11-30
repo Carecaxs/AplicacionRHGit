@@ -16,12 +16,16 @@
                 <thead class="tabla-head">
                     <tr class="text-center">
                         <th>Empresa</th>
-                        <th>Contacto</th>
-                        <th>Estado</th>
+                        <th>Puesto</th>
+                        <th>Años</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="listaExperiencias">
+
+                    <tr id="mensajeTabla">
+                        <td colspan="4" class="text-center">No hay experiencias disponibles.</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -30,7 +34,7 @@
 
             <!-- Botón para Añadir Experiencia -->
             <div class="form-group col-sm-12">
-                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarExperienciaModal" tabindex="1">
+                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarExperienciaModal">
                     Agregar Experiencia
                 </button>
             </div>
@@ -38,7 +42,7 @@
                 <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
                 <div class="form-group col-sm-12">
-                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100" tabindex="1">Regresar</button>
+                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
                 </div>
             </form>
 
@@ -67,32 +71,32 @@
 
                         <div class="form-group mt-1" id="nombreEmpresaDiv">
                             <label for="nombreEmpresa">Empresa:</label>
-                            <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required tabindex="1" />
+                            <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required />
                         </div>
 
                         <div class="form-group mt-1">
                             <label for="contacto">Contacto:</label>
-                            <input type="text" class="form-control" id="contacto" name="contacto" required tabindex="2" />
+                            <input type="text" class="form-control" id="contacto" name="contacto" required />
                         </div>
 
                         <div class="form-group mt-1">
                             <label for="inicio">Año Inicio:</label>
-                            <input type="text" class="form-control" id="inicio" name="inicio" required tabindex="3" />
+                            <input type="text" class="form-control" id="inicio" name="inicio" required />
                         </div>
 
                         <div class="form-group mt-1">
                             <label for="fin">Año Fin:</label>
-                            <input type="text" class="form-control" id="fin" name="fin" required tabindex="4" />
+                            <input type="text" class="form-control" id="fin" name="fin" required />
                         </div>
 
                         <div class="form-group mt-1">
-                            <label for="labores">Labores realizadas:</label>
-                            <textarea id="labores" name="labores" class="form-control" tabindex="5"></textarea>
+                            <label for="labores">Puesto:</label>
+                            <textarea id="labores" name="labores" class="form-control"></textarea>
                         </div>
 
-      
 
-                        <button id="agregarExperiencia" class="btn btn-success mt-2" tabindex="6">Guardar Experiencia</button>
+
+                        <button id="agregarExperiencia" class="btn btn-success mt-2">Guardar Experiencia</button>
 
                     </form>
                 </div>
