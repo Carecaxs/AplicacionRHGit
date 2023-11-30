@@ -22,8 +22,6 @@ namespace AplicacionRHGit.Data
         public DbSet<GrupoProfesional> GrupoProfesional { get; set; }
         public DbSet<EXPERIENCIA> Experiencia { get; set; }
         public DbSet<DETALLE_REFERENCIAS> DetalleReferencia { get; set; }
-        public DbSet<DETALLE_EXPERIENCIA> DetalleExperiencia { get; set; }
-
 
 
 
