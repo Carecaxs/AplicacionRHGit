@@ -65,18 +65,16 @@ button.card-link {
 }
 
 
-.contenedorInicioSesion {
 
+.contenedorInicioSesion {
     background-color: #f8f9fa;
-    margin-top: 4rem;
-    padding: 3rem;
-    max-width: 55rem; /* Ajusta el ancho máximo según tus necesidades */
-    margin: auto;
- 
+    margin-top: 5rem;
+    padding: 1rem;
+    max-width: 35rem; /*55rem*/ /* Ajusta el ancho máximo según tus necesidades */
+    margin-left:auto;
+    margin-right:auto;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
     border-radius: 8rem; /* Esquinas redondeadas */
-
-   
 }
 
 .contenedorExpediente {
@@ -85,7 +83,7 @@ button.card-link {
     padding: 3rem;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
     border-radius: 8rem; /* Esquinas redondeadas */
-    max-width: 55rem; /* Ajusta el ancho máximo según tus necesidades */
+    max-width: 60rem; /* Ajusta el ancho máximo según tus necesidades */
     margin-right:auto;
     margin-left:auto;
 }

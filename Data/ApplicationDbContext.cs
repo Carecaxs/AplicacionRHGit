@@ -1,5 +1,6 @@
 ﻿using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Expedientes;
+using AplicacionRHGit.Models.InstitucionesEducativas;
 using Microsoft.EntityFrameworkCore;
 using Proyecto.Models;
 
@@ -22,6 +23,16 @@ namespace AplicacionRHGit.Data
         public DbSet<GrupoProfesional> GrupoProfesional { get; set; }
         public DbSet<EXPERIENCIA> Experiencia { get; set; }
         public DbSet<DETALLE_REFERENCIAS> DetalleReferencia { get; set; }
+        public DbSet<DETALLE_EXPERIENCIA> DetalleExperiencia { get; set; }
+        public DbSet<u_universidades> u_universidades { get; set; }
+        public DbSet<u_parauniversidades> u_parauniversidades { get; set; }
+        public DbSet<u_paracarreras> u_paracarreras { get; set; }
+        public DbSet<u_carreras> u_carreras { get; set; }
+
+
+
+
+
 
 
 

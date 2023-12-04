@@ -13,7 +13,7 @@ $('input, select').keydown(function (event) {
         }
 
         var nextElement = $('[tabindex="' + (parseInt(currentTabIndex) + 1) + '"]');
-        console.log(nextElement);
+  
 
         if (nextElement.length > 0 && nextElement.is(":visible")) {
             nextElement.focus();

@@ -2,29 +2,27 @@
 $(document).ready(function () {
 
     var identificationField = $("#identification");//input donde se pone la identificacion
+    $("#identification").inputmask({ mask: "99-9999-9999" });
+    
+
+
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
+        $('#btnCrearUsuario').hide();
+
         var selectedType = $(this).val();
         var mask = "";
         $("#identification").val('');
 
-        if (selectedType === "null") {
-            identificationField.prop("disabled", true); // Deshabilitar el campo
-        } else {
-            identificationField.prop("disabled", false); // habilitar el campo
-        }
+
 
         if (selectedType === "Cedula") {
             mask = "99-9999-9999";
-
+           
 
         } else if (selectedType === "Dimex") {
             mask = "99-999999-9999";
-
-
-
-
-            $("#identification").inputmask({ mask: mask });
         }
+        $("#identification").inputmask({ mask: mask });
     });
 
 
@@ -74,6 +72,7 @@ $(document).ready(function () {
 
 
     if ($("#nombreVista").val() == "Crear") { //si esta en el documento de creacion de perfil
+        $('#btnCrearUsuario').hide();
 
         $("#identification").focus();
         
@@ -82,6 +81,7 @@ $(document).ready(function () {
 
         // Aplicar la máscara al campo de teléfono
         $('#telefono').inputmask('9999-9999');
+        $("#dimex").inputmask({ mask: "99-999999-9999" });
 
         esconderForm();
 
@@ -190,8 +190,7 @@ $(document).ready(function () {
                         $("#msjValidacionCedula").remove();
                     }
 
-                    //se muestra el boton de confirmar
-                    $('#btnCrearUsuario').show();
+
 
 
                     // Actualizar el valor visual del campo #cedula
@@ -203,7 +202,6 @@ $(document).ready(function () {
 
                     }
 
-                    console.log(data);
                     // asignar valores a los inputs de la consulta
                     $("#nombre").val(data.nombre);
                     $("#apellidos").val(data.apellido1 + " " + data.apellido2);
@@ -225,6 +223,31 @@ $(document).ready(function () {
     });
 
 
+    $('#identification').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#correo').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#telefono').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#nombre').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#apellidos').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#dimex').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+
 
     $("#btnCrearUsuario").click(function (event) {
 
@@ -240,10 +263,10 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
             }
             else {
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
 
             }
             return;
@@ -263,10 +286,10 @@ $(document).ready(function () {
 
                         $("#msjFormulario").remove();
 
-                        $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
                     }
                     else {
-                        $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
 
                     }
                 }
@@ -325,7 +348,7 @@ $(document).ready(function () {
                         }
                         else {
 
-                            $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+                            $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
 
                         }
 
@@ -347,10 +370,10 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
             }
             else {
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
 
             }
 
@@ -885,6 +908,9 @@ $(document).ready(function () {
 
 
 
+
+
+
 });
 
 
@@ -898,7 +924,7 @@ function esconderForm() {
     $("#campoTelefono").hide();
     $("#campoNacimiento").hide();
     $("#campoSexo").hide();
-    $('#btnCrearUsuario').hide();
+
     console.log("hola");
 }
 
@@ -909,7 +935,7 @@ function mostrarForm() {
     $("#campoTelefono").show();
     $("#campoNacimiento").show();
     $("#campoSexo").show();
-    $('#btnCrearUsuario').show();
+
 
 }
 
@@ -1013,10 +1039,10 @@ function ComprobarIdentificacion() {
     } else if (identificationType === 'Dimex') {
         // Validar que el DIMEX tenga la longitud deseada (ajusta según tus requisitos)
         if (identificationValue.length === 12) {
-            console.log("true");
+        
             return true;
         } else {
-            console.log("false");
+        
             return false;
 
         }
@@ -1034,4 +1060,15 @@ function cambiarFormatoFecha(fechaEnFormatoOriginal) {
     var fechaEnNuevoFormato = partes[1] + '/' + partes[0] + '/' + partes[2];
 
     return fechaEnNuevoFormato;
+}
+
+
+//funcion que detecta si todos los campos tienen contenido para mostrar boton de crear
+function verificarCondiciones() {
+    if ($('#identification').val() !== "" && $('#correo').val() !== "" && $('#telefono').val() !== "" &&
+        $('#nombre').val() !== "" && $('#apellidos').val() !== "") {
+        $('#btnCrearUsuario').show();
+    } else {
+        $('#btnCrearUsuario').hide();
+    }
 }

@@ -13,155 +13,154 @@
         <div class="contenedorExpediente d-flex justify-content-center">
 
             <div class="">
-                <h2 class="text-center">Expediente (Datos Personales)</h2>
+                <h2 class="text-center">Expediente Personal</h2>
 
 
                 <form id="expedienteForm">
 
-                    <!-- Sección: Información Personal -->
-                    <fieldset class="border p-3 mt-3">
-      
-                        <legend class="w-auto">Información Personal</legend>
-                        <hr />
-              
-                        <!-- Agrega aquí los demás campos de Información Personal -->
+                    <div class="row">
+                        <!-- Sección: Información Personal -->
+                        <div class="col">
+                            <fieldset class="border p-3 mt-3">
+                                <legend class="w-auto">Información Personal</legend>
+                                <hr />
+                                <!-- Agrega aquí los demás campos de Información Personal -->
+                                <div class="row">
+                                    <div class="form-group col-sm-6 mt-2">
+                                        <label for="nombre" class="col-sm-2 col-form-label">Nombre:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="nombre" name="nombre" disabled>
+                                        </div>
+                                    </div>
 
-                        <div class="form-group row mt-4">
-                            <label for="nombre" class="col-sm-2 col-form-label">Nombre:</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="nombre" name="nombre" disabled>
-                            </div>
+                                    <div class="form-group col-sm-6 mt-2">
+                                        <label for="apellidos" class="col-sm-2 col-form-label">Apellidos:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-sm-6 mt-1">
+                                        <label for="nacimiento" class="col-sm-4 col-form-label">Nacimiento:</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="nacimiento" name="nacimiento" tabindex="1">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-sm-6 mt-1">
+                                        <label for="genero" class="col-sm-4 col-form-label">Género:</label>
+                                        <div class="col-sm-10">
+                                            <select id="genero" class="form-control" tabindex="2">
+                                                <option value="0">Seleccione una opción</option>
+                                                <option value="1">M</option>
+                                                <option value="2">F</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
                         </div>
 
-                        <div class="form-group row mt-3">
-                            <label for="apellidos" class="col-sm-2 col-form-label">Apellidos:</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
-                            </div>
+                        <!-- Sección: Ubicación -->
+                        <div class="col">
+                            <fieldset class="border p-3 mt-3">
+                                <legend class="w-auto">Ubicación</legend>
+                                <hr />
+                                <!-- Agrega aquí los demás campos de Ubicación -->
+                                <div class="row">
+                                    <div class="form-group col-sm-4 mt-2">
+                                        <label for="provincias" class="col-form-label">Provincia:</label>
+                                        <select id="provincias" class="form-control" tabindex="3">
+                                            <option value="0">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-sm-4 mt-2">
+                                        <label for="cantones" class="col-form-label">Cantón:</label>
+                                        <select id="cantones" class="form-control" tabindex="4">
+                                            <option value="0">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-sm-4 mt-2">
+                                        <label for="distritos" class="col-form-label">Distritos:</label>
+                                        <select id="distritos" class="form-control" tabindex="5">
+                                            <option value="0">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-3">
+                                    <label for="direccion" class="col-sm-2 col-form-label">Dirección:</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="direccion" class="form-control" placeholder="Ingrese la dirección" tabindex="6"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!-- Sección: Idiomas -->
+                        <div class="col">
+                            <fieldset class="border p-3 mt-3">
+                                <legend class="w-auto">Idiomas</legend>
+                                <hr />
+                                <ul id="listaIdiomas" class="list-group">
+                                    <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
+                                </ul>
+                            </fieldset>
                         </div>
 
 
-                        <div class="form-group row mt-3">
-                            <label for="nacimiento" class="col-sm-2 col-form-label">Nacimiento:</label>
-                            <div class="col-sm-6">
-                                <input type="date" class="form-control" id="nacimiento" name="nacimiento" tabindex="1">
-                            </div>
-                        </div>
+                        <!-- Sección: Grupo Profesional -->
+                        <div class="col" style="padding-bottom:3rem;">
+                            <fieldset class="border p-3 mt-3">
+                                <legend class="w-auto">Grupo Profesional</legend>
+                                <hr />
+                                <label for="grupoProfesional">Grupos Profesionales:</label>
 
+                                <select class="form-control" id="grupoProfesional" name="grupoProfesional" tabindex="7">
+                                    <option value="0">Seleccione una opción:</option>
 
-                        <div class="form-group row mt-3">
-                            <label for="genero" class="col-sm-2 col-form-label">Genero:</label>
-                            <div class="col-sm-6">
-                                <select id="genero" class="form-control mt-2" tabindex="2">
-                                    <option value="0">Seleccione una opción</option>
-                                    <option value="1">M</option>
-                                    <option value="2">F</option>
+                                    @foreach (var grupo in (SelectList)ViewData["GruposCombo"])
+                                    {
+                                        <option value="@grupo.Value">@grupo.Text</option>
+                                    }
                                 </select>
-                            </div>
-                        </div>
-                    </fieldset>
-
-
-
-                    <!-- Sección: Ubicacion -->
-
-                    <fieldset class="border p-3 mt-3">
-                   
-                        <legend class="w-auto">Ubicación</legend>
-                        <hr />
-                        <!-- Agrega aquí los demás campos de Ubicación -->
-                        <div class="form-group row mt-4">
-                            <label for="provincias" class="col-sm-2 col-form-label">Provincia:</label>
-                            <div class="col-sm-6">
-                                <select id="provincias" class="form-control mt-2" tabindex="3">
-                                    <option value="0">Seleccione una opción</option>
-                                </select>
-                            </div>
+                            </fieldset>
                         </div>
 
-                        <div class="form-group row mt-3">
-                            <label for="cantones" class="col-sm-2 col-form-label">Cantón:</label>
-                            <div class="col-sm-6">
-                                <select id="cantones" class="form-control mt-2" tabindex="4">
-                                    <option value="0">Seleccione una opción</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="form-group row mt-3">
-                            <label for="distritos" class="col-sm-2 col-form-label">Distritos:</label>
-                            <div class="col-sm-6">
-                                <select id="distritos" class="form-control mt-2" tabindex="5">
-                                    <option value="0">Seleccione una opción</option>
-                                </select>
-                            </div>
-                        </div>
+                    </div>
 
-                        <div class="form-group row mt-3">
-                            <label for="direccion" class="col-sm-2 col-form-label">Dirección:</label>
-                            <div class="col-sm-8">
-                                <textarea id="direccion" class="form-control" placeholder="Ingrese la dirección" tabindex="6"></textarea>
-                            </div>
-                        </div>
-                    </fieldset>
-
-
-                    <!-- Sección: Grupo Profesional -->
-
-                    <fieldset class="border p-3 mt-3">
-
-                        <legend class="w-auto">Grupo Profesional</legend>
-                        <hr />
-                        <label for="grupoProfesional">Grupos Profesionales:</label>
-
-                        <select class="form-control" id="grupoProfesional" name="grupoProfesional" tabindex="7" >
-                            <option value="0">Seleccione una opción:</option>
-
-                            @foreach (var grupo in (SelectList)ViewData["GruposCombo"])
-                            {
-                                <option value="@grupo.Value">@grupo.Text</option>
-                            }
-                        </select>
-                        
-
-                    </fieldset>
-
-
-                    <!-- Sección: Idiomas -->
-
-                    <fieldset class="border p-3 mt-3">
-
-                        <legend class="w-auto">Idiomas</legend>
-                        <hr />
-
-                        <ul id="listaIdiomas" class="list-group">
-                            
-                        </ul>
-                    </fieldset>
-
-
+                 
                     <!-- Sección: Contacto -->
 
                     <fieldset class="border p-3 mt-3">
-
                         <legend class="w-auto">Contacto</legend>
                         <hr />
                         <!-- Agrega aquí los demás campos de Contacto -->
-                        <div class="form-group row mt-4">
-                            <label for="correo" class="col-sm-2 col-form-label">Correo:</label>
-                            <div class="col-sm-8">
-                                <input type="email" class="form-control" id="correo" name="correo" value="@ViewBag.correo" disabled>
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <label for="correo" class="col-sm-4 col-form-label">Correo:</label>
+                                <div class="col-sm-8">
+                                    <input type="email" class="form-control" id="correo" name="correo" value="@ViewBag.correo" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="telefono" class="col-sm-4 col-form-label">Teléfono:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="telefono" name="telefono" value="@ViewBag.telefono" disabled>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form-group row mt-3">
-                            <label for="telefono" class="col-sm-2 col-form-label">Teléfono:</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="telefono" name="telefono" value="@ViewBag.telefono" disabled>
-                            </div>
-                        </div>
-
                     </fieldset>
+
 
 
 

@@ -243,23 +243,241 @@ $(document).ready(function () {
 
     /*   seccion titulos*/
 
+    $('#nivelEducacion').on('change', function () {
+        $("#divInstituto").hide();
+        $("#divCarrera").hide();
+        $("#divTitulo").hide();
+        $("#divInstituto2").hide();
+        //1.secundaria
+        //2.diplomado
+        //3.profesorado
+        //4.bachillerato
+        //5.licenciatura
+        //6.maestria
+        //7.doctorado
+
+        var seleccion = parseInt($(this).val(), 10);
+        switch (seleccion) {
+            case 2:
+                tipoCarrera = 1;
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Oferente/MostrarInstitutosDiplomados",
+                    success: function (data) {
+
+
+                        // Obtener el elemento select
+                        var selectInstitutos = $('#instituto');
+
+                        // Limpiar opciones existentes
+                        selectInstitutos.empty();
+                        selectInstitutos.append('<option value="0">' + "Seleccione un opción" + '</option>');
+
+
+                        // Iterar sobre la lista de instituciones y agregar opciones al select
+                        $.each(data, function (index, institucion) {
+
+                            selectInstitutos.append('<option value="' + institucion + '">' + institucion + '</option>');
+                        });
+
+                        $("#divInstituto").show();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+                break;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+
+                tipoCarrera = 2;
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Oferente/MostrarUniversidades",
+                    success: function (data) {
+
+
+                        // Obtener el elemento select
+                        var selectInstitutos = $('#instituto');
+
+                        // Limpiar opciones existentes
+                        selectInstitutos.empty();
+                        selectInstitutos.append('<option value="0">' + "Seleccione un opción" + '</option>');
+
+
+                        // Iterar sobre la lista de instituciones y agregar opciones al select
+                        $.each(data, function (index, institucion) {
+                            selectInstitutos.append('<option value="' + institucion + '">' + institucion + '</option>');
+                        });
+
+                        $("#divInstituto").show();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                break;
+
+            default:
+                $("#divTitulo").show();
+                $("#divInstituto2").show();
+        }
+
+
+    });
+
+
+
+    $('#instituto').on('change', function () {
+
+
+
+        switch (tipoCarrera) {
+            case 1:
+
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Oferente/MostrarCarrerasDiplomados",
+                    data: {
+                        instituto: $(this).find(":selected").text()
+                    },
+                    success: function (data) {
+
+
+                        // Obtener el elemento select
+                        var selectCarreras = $('#carreras');
+
+                        // Limpiar opciones existentes
+                        selectCarreras.empty();
+
+                        // Iterar sobre la lista de instituciones y agregar opciones al select
+                        $.each(data, function (index, carreras) {
+
+                            selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
+                        });
+
+                        $("#divCarrera").show();
+                        $("#divFolio").show();
+                        $("#divAsiento").show();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+                break;
+            case 2:
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Oferente/MostrarCarreras",
+                    data: {
+                        instituto: $(this).find(":selected").text()
+                    },
+                    success: function (data) {
+
+
+                        // Obtener el elemento select
+                        var selectCarreras = $('#carreras');
+
+                        // Limpiar opciones existentes
+                        selectCarreras.empty();
+
+                        // Iterar sobre la lista de instituciones y agregar opciones al select
+                        $.each(data, function (index, carreras) {
+
+                            selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
+                        });
+
+                        $("#divCarrera").show();
+                        $("#divFolio").show();
+                        $("#divAsiento").show();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                break;
+
+        }
+
+
+    });
 
 
 
 
     if ($("#vistaActual").val() == "TitulosOferente") {
 
+        $("#divInstituto").hide();
+        $("#divCarrera").hide();
+
+        $("#divFolio").hide();
+        $("#divAsiento").hide();
+
+
+
+        let tipoCarrera;//variable guarda si se va mostrar carreras de diplomado (1) o bachillerato, licenciatura, maestria (2),
+        //y si es tecnico o secundaria(3)
+
+        //cargar titulos secundaria
         $.ajax({
             type: "GET",
             url: "/Oferente/CargarTitulos",
             data: {
                 identificacion: $("#identification").val(),
-                clave: $("#clave").val()
+                clave: $("#clave").val(),
+                tipo: 1
             },
             success: function (data) {
                 //recargar titulos
                 //console.log(data);
-                procesarRespuestaTitulos(data);
+                procesarRespuestaTitulos(data, 1);
+            },
+            error: function (error) {
+                console.log("Error al cargar títulos: " + error);
+            }
+        });
+
+        //cargar titulos universitarios
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarTitulos",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val(),
+                tipo: 2
+            },
+            success: function (data) {
+                //recargar titulos
+                //console.log(data);
+                procesarRespuestaTitulos(data, 2);
+            },
+            error: function (error) {
+                console.log("Error al cargar títulos: " + error);
+            }
+        });
+
+        //cargar otros titulos
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarTitulos",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val(),
+                tipo: 3
+            },
+            success: function (data) {
+                //recargar titulos
+                //console.log(data);
+                procesarRespuestaTitulos(data, 3);
             },
             error: function (error) {
                 console.log("Error al cargar títulos: " + error);
@@ -312,22 +530,66 @@ $(document).ready(function () {
                         ///recargar la lista de titulos
 
                         // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+                        if ($("#nivelEducacion").val() == "1") {
+                            $.ajax({
+                                type: "GET",
+                                url: "/Oferente/CargarTitulos",
+                                data: {
+                                    identificacion: $("#identification").val(),
+                                    clave: $("#clave").val(),
+                                    tipo: 1
+                                },
+                                success: function (data) {
+                                    //recargar titulos
+                                    //console.log(data);
+                                    procesarRespuestaTitulos(data, 1);
+                                },
+                                error: function (error) {
+                                    console.log("Error al cargar títulos: " + error);
+                                }
+                            });
+                        }
+                        else if ($("#nivelEducacion").val() == "2" || $("#nivelEducacion").val() == "3") {
+                            //cargar otros titulos
+                            $.ajax({
+                                type: "GET",
+                                url: "/Oferente/CargarTitulos",
+                                data: {
+                                    identificacion: $("#identification").val(),
+                                    clave: $("#clave").val(),
+                                    tipo: 3
+                                },
+                                success: function (data) {
+                                    //recargar titulos
+                                    //console.log(data);
+                                    procesarRespuestaTitulos(data, 3);
+                                },
+                                error: function (error) {
+                                    console.log("Error al cargar títulos: " + error);
+                                }
+                            });
+                        }
+                        else {
+                            //cargar titulos universitarios
+                            $.ajax({
+                                type: "GET",
+                                url: "/Oferente/CargarTitulos",
+                                data: {
+                                    identificacion: $("#identification").val(),
+                                    clave: $("#clave").val(),
+                                    tipo: 2
+                                },
+                                success: function (data) {
+                                    //recargar titulos
+                                    //console.log(data);
+                                    procesarRespuestaTitulos(data, 2);
+                                },
+                                error: function (error) {
+                                    console.log("Error al cargar títulos: " + error);
+                                }
+                            });
+                        }
 
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarTitulos",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
-                            },
-                            success: function (data) {
-                                //recargar titulos
-                                procesarRespuestaTitulos(data);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
 
                     }
                 },
@@ -358,7 +620,7 @@ $(document).ready(function () {
 
     //evento para eliminar titulo
     // Evento para el botón de eliminar (delegación de eventos)
-    $("#listaTitulo").on("click", ".btnEliminarTitulo", function () {
+    $("#listaTitulosSecundaria").on("click", ".btnEliminarTitulo", function () {
 
         // Obtener el id de la fila que va ser el id del titulo 
         var fila = $(this).closest("tr");
@@ -410,21 +672,209 @@ $(document).ready(function () {
 
                         // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
 
+
                         $.ajax({
                             type: "GET",
                             url: "/Oferente/CargarTitulos",
                             data: {
                                 identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
+                                clave: $("#clave").val(),
+                                tipo: 1
                             },
                             success: function (data) {
                                 //recargar titulos
-                                procesarRespuestaTitulos(data);
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 1);
                             },
                             error: function (error) {
                                 console.log("Error al cargar títulos: " + error);
                             }
                         });
+
+
+                       
+
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+
+    $("#listaTitulosUniversitarios").on("click", ".btnEliminarTitulo", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModal").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarTitulo",
+                data: {
+                    idTitulo: idTitulo,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModal").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de titulos
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarTitulos",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipo: 1
+                            },
+                            success: function (data) {
+                                //recargar titulos
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 1);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+
+
+
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+
+
+    $("#listaTitulosVarios").on("click", ".btnEliminarTitulo", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModal").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarTitulo",
+                data: {
+                    idTitulo: idTitulo,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#tablaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModal").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#tablaTitulos").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de titulos
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarTitulos",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipo: 1
+                            },
+                            success: function (data) {
+                                //recargar titulos
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 1);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+
+
+
 
                     }
                 },
@@ -441,7 +891,7 @@ $(document).ready(function () {
 
 
     //evento para editar titulo
-    $("#listaTitulo").on("click", ".btnEditarTitulo", function () {
+    $("#listaTitulosSecundaria").on("click", ".btnEditarTitulo", function () {
 
         // Obtener el id de la fila que va ser el id del titulo 
         var fila = $(this).closest("tr");
@@ -502,99 +952,138 @@ $(document).ready(function () {
         });
 
 
-
-        //evento al precionar guardar cambios en el titulo
-        $("#actualizarTitulo").click(function (event) {
-
-            event.preventDefault();
-
-            //retorna true si estan completados todos los campos
-            if (verificarCamposModalTitulosActualizar()) {
-
-                // Obtener el formulario y los datos del formulario
-                var form = $("#formAgregarTitulo")[0];
-                var formData = new FormData(form);
-
-                // Agregar identificacion y clave al formData
-                formData.append("identificacion", $("#identification").val());
-                formData.append("clave", $("#clave").val());
-                formData.append("idTitulo", idTitulo);
+    });
 
 
+    $("#listaTitulosUniversitarios").on("click", ".btnEditarTitulo", function () {
 
-                $.ajax({
-                    method: "POST",//tipo de solicitud
-                    url: "/Oferente/ActualizarTitulo",
-                    data: formData,
-                    processData: false,  // Necesario para enviar FormData correctamente
-                    contentType: false,  // Necesario para enviar FormData correctamente
-                    success: function (data) {//en caso de que sale bien
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
 
-                        if (data.error) { //si data.error contiene algo
-
-                            if ($("#mensaje").length) {
-
-                                $("#mensaje").remove();
-
-                                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                            }
-                            else {
-                                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                            }
+        var idTitulo = fila.attr("id");
 
 
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/MostrarTitulo",
+            data: {
+                idTitulo: idTitulo,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
 
-                        }
-                        else {
+                if (data.error) {
+                    if ($("#mensaje").length) {
 
-                            ///recargar la lista de titulos
+                        $("#mensaje").remove();
 
-                            // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
-
-                            $.ajax({
-                                type: "GET",
-                                url: "/Oferente/CargarTitulos",
-                                data: {
-                                    identificacion: $("#identification").val(),
-                                    clave: $("#clave").val()
-                                },
-                                success: function (data) {
-                                    //recargar titulos
-                                    procesarRespuestaTitulos(data);
-                                },
-                                error: function (error) {
-                                    console.log("Error al cargar títulos: " + error);
-                                }
-                            });
-
-                        }
-                    },
-
-                    error: function (xhr, status, error) { //error en la solicitud de ajax
-                        console.error(error);
+                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
                     }
-                });
-            } else {
-                if ($("#mensaje").length) {
+                    else {
+                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
 
-                    $("#mensaje").remove();
+                    }
 
-                    $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
                 }
                 else {
-                    $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                    //en caso de todo salir bien se asigna los resultados del data a los inputs del modal
+
+
+                    var partesFecha = data.fechA_OBTENCION.split('T');
+                    var fechaTitulo = partesFecha[0];
+
+                    $("#nivelEducacion").val(data.tipO_TITULO);
+                    $("#titulo").val(data.especialidad);
+                    $("#institucion").val(data.nombrE_INSTITUCION);
+                    $("#fechaObtenido").val(fechaTitulo);
+                    $("#folio").val(data.folio);
+                    $("#asiento").val(data.asiento);
+
+
+                    //mostrar el modal 
+                    $("#agregarTituloModal").modal("show");
+                    eliminarMsjModal();
+
+                    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
+                    $("#agregarTitulo").hide();
+                    $("#actualizarTitulo").show();
 
                 }
-
+            },
+            error: function (error) {
+                console.log(error);
             }
-
         });
 
 
+    });
+
+
+
+    $("#listaTitulosVarios").on("click", ".btnEditarTitulo", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/MostrarTitulo",
+            data: {
+                idTitulo: idTitulo,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+
+                }
+                else {
+                    //en caso de todo salir bien se asigna los resultados del data a los inputs del modal
+
+
+                    var partesFecha = data.fechA_OBTENCION.split('T');
+                    var fechaTitulo = partesFecha[0];
+
+                    $("#nivelEducacion").val(data.tipO_TITULO);
+                    $("#titulo").val(data.especialidad);
+                    $("#institucion").val(data.nombrE_INSTITUCION);
+                    $("#fechaObtenido").val(fechaTitulo);
+                    $("#folio").val(data.folio);
+                    $("#asiento").val(data.asiento);
+
+
+                    //mostrar el modal 
+                    $("#agregarTituloModal").modal("show");
+                    eliminarMsjModal();
+
+                    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
+                    $("#agregarTitulo").hide();
+                    $("#actualizarTitulo").show();
+
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
 
 
     });
+
+
 
 
     //al dar click en el boton de agregar titulo se esconde el boton de actualizar que esta dentro del modal
@@ -604,6 +1093,138 @@ $(document).ready(function () {
 
 
         eliminarMsjModal();
+
+    });
+
+
+
+    //evento al precionar guardar cambios en el titulo
+    $("#actualizarTitulo").click(function (event) {
+
+        event.preventDefault();
+
+        //retorna true si estan completados todos los campos
+        if (verificarCamposModalTitulosActualizar()) {
+
+            // Obtener el formulario y los datos del formulario
+            var form = $("#formAgregarTitulo")[0];
+            var formData = new FormData(form);
+
+            // Agregar identificacion y clave al formData
+            formData.append("identificacion", $("#identification").val());
+            formData.append("clave", $("#clave").val());
+            formData.append("idTitulo", idTitulo);
+
+
+
+            $.ajax({
+                method: "POST",//tipo de solicitud
+                url: "/Oferente/ActualizarTitulo",
+                data: formData,
+                processData: false,  // Necesario para enviar FormData correctamente
+                contentType: false,  // Necesario para enviar FormData correctamente
+                success: function (data) {//en caso de que sale bien
+
+                    if (data.error) { //si data.error contiene algo
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+
+
+
+                    }
+                    else {
+
+                        ///recargar la lista de titulos
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarTitulos",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipo: 1
+                            },
+                            success: function (data) {
+                                //recargar titulos
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 1);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+
+                        //cargar otros titulos
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarTitulos",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipo: 3
+                            },
+                            success: function (data) {
+                                //recargar titulos
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 3);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+
+                        //cargar titulos universitarios
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarTitulos",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipo: 2
+                            },
+                            success: function (data) {
+                                //recargar titulos
+                                //console.log(data);
+                                procesarRespuestaTitulos(data, 2);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar títulos: " + error);
+                            }
+                        });
+
+                    }
+                },
+
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+        } else {
+            if ($("#mensaje").length) {
+
+                $("#mensaje").remove();
+
+                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+        }
 
     });
 
@@ -785,21 +1406,42 @@ $(document).ready(function () {
         // Aplica la máscara de número telefónico específica para Costa Rica
         Inputmask({ mask: '9999-9999' }).mask($('#contacto'));
 
-        //cargar referencias de la persona
+        //cargar referencias personales de la persona
         $.ajax({
             type: "GET",
-            url: "/Oferente/CargarReferenciasPersonales",
+            url: "/Oferente/CargarReferencias",
             data: {
                 identificacion: $("#identification").val(),
-                clave: $("#clave").val()
+                clave: $("#clave").val(),
+                tipoReferencia: '1'
             },
             success: function (data) {
 
-                //recargar titulos
-                procesarRespuestaReferencia(data);
+                //recargar refrencias
+                procesarRespuestaReferencia(data, 1);
             },
             error: function (error) {
-                console.log("Error al cargar títulos: " + error);
+                console.log("Error al cargar referencias: " + error);
+            }
+        });
+
+
+        //cargar referencias profesionales de la persona
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarReferencias",
+            data: {
+                identificacion: $("#identification").val(),
+                clave: $("#clave").val(),
+                tipoReferencia: '2'
+            },
+            success: function (data) {
+
+                //recargar refrencias
+                procesarRespuestaReferencia(data, 2);
+            },
+            error: function (error) {
+                console.log("Error al cargar referencias: " + error);
             }
         });
 
@@ -849,26 +1491,52 @@ $(document).ready(function () {
                     }
                     else {
                         console.log("exito");
-                        ///recargar la lista de referencias 
+                        ///recargar la lista de referencias
 
                         // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
 
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarReferenciasPersonales",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
-                            },
-                            success: function (data) {
+                        //tipo referencia guarda 1 si es personal, 2 si es profesional
+                        if ($("#tipoReferencia").val() == 1) {
 
-                                //recargar titulos
-                                procesarRespuestaReferencia(data);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
+                            $.ajax({
+                                type: "GET",
+                                url: "/Oferente/CargarReferencias",
+                                data: {
+                                    identificacion: $("#identification").val(),
+                                    clave: $("#clave").val()
+                                },
+                                success: function (data) {
+
+                                    //recargar titulos
+                                    procesarRespuestaReferencia(data, 1);
+                                },
+                                error: function (error) {
+                                    console.log("Error al cargar títulos: " + error);
+                                }
+                            });
+
+
+                        } else {
+                            //cargar referencias profesionales de la persona
+                            $.ajax({
+                                type: "GET",
+                                url: "/Oferente/CargarReferencias",
+                                data: {
+                                    identificacion: $("#identification").val(),
+                                    clave: $("#clave").val(),
+                                    tipoReferencia: '2'
+                                },
+                                success: function (data) {
+
+                                    //recargar refrencias
+                                    procesarRespuestaReferencia(data, 2);
+                                },
+                                error: function (error) {
+                                    console.log("Error al cargar referencias: " + error);
+                                }
+                            });
+                        }
+
 
                     }
                 },
@@ -896,8 +1564,8 @@ $(document).ready(function () {
     });
 
 
-
-    $("#listaReferencias").on("click", ".btnEliminarReferencia", function () {
+    //evento eliminar una referencia personal
+    $("#listaReferenciasPersonales").on("click", ".btnEliminarReferencia", function () {
 
         // Obtener el id de la fila que va ser el id del titulo 
         var fila = $(this).closest("tr");
@@ -951,15 +1619,101 @@ $(document).ready(function () {
 
                         $.ajax({
                             type: "GET",
-                            url: "/Oferente/CargarReferenciasPersonales",
+                            url: "/Oferente/CargarReferencias",
                             data: {
                                 identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
+                                clave: $("#clave").val(),
+                                tipoReferencia: '1'
                             },
                             success: function (data) {
 
                                 //recargar titulos
-                                procesarRespuestaReferencia(data);
+                                procesarRespuestaReferencia(data, 1);
+                            },
+                            error: function (error) {
+                                console.log("Error al cargar las referencias: " + error);
+                            }
+                        });
+
+                    }
+                },
+                error: function (xhr, status, error) { //error en la solicitud de ajax
+                    console.error(error);
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+    //evento eliminar una referencia profesional
+    $("#listaReferenciasProfesionales").on("click", ".btnEliminarReferencia", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idReferencia = fila.attr("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModal").modal("show");
+
+        $("#confirmarEliminar").click(function (event) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Oferente/EliminarReferencia",
+                data: {
+                    idReferencia: idReferencia,
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        }
+                        else {
+                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                        }
+                    }
+                    else {
+                        $("#confirmacionEliminarModal").modal("hide");
+
+                        if ($("#mensaje").length) {
+
+                            $("#mensaje").remove();
+
+                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+                        }
+                        else {
+                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+
+                        }
+
+
+                        ///recargar la lista de referencias
+
+                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/Oferente/CargarReferencias",
+                            data: {
+                                identificacion: $("#identification").val(),
+                                clave: $("#clave").val(),
+                                tipoReferencia: '2'
+                            },
+                            success: function (data) {
+
+                                //recargar titulos
+                                procesarRespuestaReferencia(data, 2);
                             },
                             error: function (error) {
                                 console.log("Error al cargar las referencias: " + error);
@@ -1268,6 +2022,11 @@ function limpiarModalTitulos() {
     document.getElementById("fechaObtenido").value = "";
     document.getElementById("folio").value = "";
     document.getElementById("asiento").value = "";
+    $("#divInstituto").hide();
+    $("#divCarrera").hide();
+
+    $("#divTitulo").show();
+    $("#divInstituto2").show();
 
     // Limpiar selección del dropdown
     var dropdown = document.getElementById("nivelEducacion");
@@ -1280,34 +2039,52 @@ function limpiarModalTitulos() {
 
 function verificarCamposModalTitulos() {
     // Obtén los valores de los campos
-    var nivelEducacion = document.getElementById("nivelEducacion").value;
-    var titulo = document.getElementById("titulo").value;
-    var institucion = document.getElementById("institucion").value;
-    var fechaObtenido = document.getElementById("fechaObtenido").value;
-    var folio = document.getElementById("folio").value;
-    var asiento = document.getElementById("asiento").value;
+    //var nivelEducacion = document.getElementById("nivelEducacion").value;
+    //var titulo = document.getElementById("titulo").value;
+    //var institucion = document.getElementById("institucion").value;
+    //var fechaObtenido = document.getElementById("fechaObtenido").value;
+    //var folio = document.getElementById("folio").value;
+    //var asiento = document.getElementById("asiento").value;
 
-    // Verifica que todos los campos tengan un valor
-    if (
-        nivelEducacion !== "" &&
-        titulo !== "" &&
-        institucion !== "" &&
-        fechaObtenido !== "" &&
-        folio !== "" &&
-        asiento !== ""
-    ) {
-        // Verifica si se ha seleccionado un archivo en el campo de imagen
-        var fotoTitulo = document.getElementById("fotoTitulo");
-        if (fotoTitulo.files.length > 0) {
-            return true;
-        } else {
+    //// Verifica que todos los campos tengan un valor
+    //if (
+    //    nivelEducacion !== "" &&
+    //    titulo !== "" &&
+    //    institucion !== "" &&
+    //    fechaObtenido !== "" &&
+    //    folio !== "" &&
+    //    asiento !== ""
+    //) {
+    //    // Verifica si se ha seleccionado un archivo en el campo de imagen
+    //    var fotoTitulo = document.getElementById("fotoTitulo");
+    //    if (fotoTitulo.files.length > 0) {
+    //        return true;
+    //    } else {
 
-            return false;
+    //        return false;
+    //    }
+    //}
+    //else {
+    //    return false;
+    //}
+    var camposValidos = true;
+
+    // Itera sobre los elementos con clase "form-group" que están visibles
+    $(".form-group:visible").each(function () {
+        // Comprueba el tipo de elemento y realiza validaciones según sea necesario
+        var elemento = $(this).find(":input");
+
+        if (elemento.prop("required") && elemento.val() === "") {
+            // Manejar caso de campo requerido vacío
+            camposValidos = false;
+            return false; // Sale del bucle each
         }
-    }
-    else {
-        return false;
-    }
+
+        // Agregar más validaciones según sea necesario
+
+    });
+
+    return camposValidos;
 }
 
 
@@ -1337,8 +2114,14 @@ function verificarCamposModalTitulosActualizar() {
 }
 
 
-function agregarTituloALaTabla(titulo) {
-    var tbody = document.getElementById("listaTitulo");
+function agregarTituloALaTabla(titulo, num) {
+    if (num == 1) {
+        var tbody = document.getElementById("listaTitulosSecundaria");
+    } else if (num == 2) {
+        var tbody = document.getElementById("listaTitulosUniversitarios");
+    } else {
+        var tbody = document.getElementById("listaTitulosVarios");
+    }
 
     var row = tbody.insertRow(-1);
     row.id = titulo.iD_DETALLE_TITULOS;
@@ -1398,13 +2181,47 @@ function agregarTituloALaTabla(titulo) {
 }
 
 
-function procesarRespuestaTitulos(data) {
-    var tbody = document.getElementById("listaTitulo");
+//el num va indicar cual tipo de titulo se va cargar, 1 secundaria, 2 universitario, 3 otros
+function procesarRespuestaTitulos(data, num) {
+    if (num == 1) {
+        console.log("1");
+        var tbody = document.getElementById("listaTitulosSecundaria");
+    } else if (num == 2) {
+        console.log("2");
+
+        var tbody = document.getElementById("listaTitulosUniversitarios");
+    } else {
+        console.log("3");
+
+        var tbody = document.getElementById("listaTitulosVarios");
+    }
+
     tbody.innerHTML = "";
 
-    data.forEach(function (titulo) {
-        agregarTituloALaTabla(titulo);
-    });
+    //verificar si se retorno algo en el data
+    if (data.vacio) {
+        console.log("vacio");
+
+        //no hay titulos para mostrar
+        var mensajeTr = document.createElement("tr");
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay titulos";
+
+        mensajeTr.appendChild(mensajeTd);
+        tbody.appendChild(mensajeTr);
+    }
+    else {
+        console.log(" no vacio");
+
+        data.forEach(function (titulo) {
+            agregarTituloALaTabla(titulo, num);
+        });
+    }
+
+
+
 
     $('#agregarTituloModal').modal('hide');
     limpiarModalTitulos();
@@ -1619,18 +2436,18 @@ function VerificarCamposModalAgregarReferencia() {
 
 
 
-function agregarReferenciaALaTabla(referencia) {
-    var tbody = document.getElementById("listaReferencias");
+function agregarReferenciaALaTabla(referencia, num) {
+    var tbody = num == 1 ? document.getElementById("listaReferenciasPersonales") : document.getElementById("listaReferenciasProfesionales");
 
     var row = tbody.insertRow(-1);
     row.id = referencia.iD_DETALLE_REFERENCIA;
 
-    var cellTipo = row.insertCell(0);
-    cellTipo.textContent = (referencia.tipo == '1' ? "Personal" : "Profesional");
-    cellTipo.style.textAlign = "center";
+    var cellReferente = row.insertCell(0);
+    cellReferente.textContent = num == 1 ? referencia.nombrE_APELLIDOS : referencia.nombrE_EMPRESA;
+    cellReferente.style.textAlign = "center";
 
     var cellContacto = row.insertCell(1);
-    cellContacto.textContent = (referencia.tipo == '1' ? referencia.nombrE_APELLIDOS : referencia.nombrE_EMPRESA) + " " + referencia.contacto.replace(/(\d{4})(\d{4})/, '$1-$2');
+    cellContacto.textContent = referencia.contacto.replace(/(\d{4})(\d{4})/, '$1-$2');
     cellContacto.style.textAlign = "center";
 
     var cellEstado = row.insertCell(2);
@@ -1663,10 +2480,11 @@ function agregarReferenciaALaTabla(referencia) {
 }
 
 
-function procesarRespuestaReferencia(data) {
-    var tbody = document.getElementById("listaReferencias");
+//el num va ser para indicar cual referencia quiere cargar, 1 personales, 2 profesionales
+function procesarRespuestaReferencia(data, num) {
+    var tbody = num == 1 ? document.getElementById("listaReferenciasPersonales") : document.getElementById("listaReferenciasProfesionales");
     tbody.innerHTML = "";
-
+    console.log(data);
     // Verificar si se retorno refrencias en el data
     if (data.vacio) {
         // No hay experiencias, mostrar el mensaje
@@ -1676,7 +2494,7 @@ function procesarRespuestaReferencia(data) {
         var mensajeTd = document.createElement("td");
         mensajeTd.colSpan = 4;
         mensajeTd.className = "text-center";
-        mensajeTd.textContent = "No hay referencias disponibles.";
+        mensajeTd.textContent = num == 1 ? "No hay referencias personales." : "No hay referencias profesionales.";
 
         // Agregar la celda al elemento tr
         mensajeTr.appendChild(mensajeTd);
@@ -1686,7 +2504,7 @@ function procesarRespuestaReferencia(data) {
 
     } else {
         data.forEach(function (referencias) {
-            agregarReferenciaALaTabla(referencias);
+            agregarReferenciaALaTabla(referencias, num);
         });
 
     }

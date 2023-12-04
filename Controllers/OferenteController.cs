@@ -1,6 +1,7 @@
 ﻿using AplicacionRHGit.Data;
 using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Expedientes;
+using AplicacionRHGit.Models.InstitucionesEducativas;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -123,7 +124,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification, string clave)
+        public IActionResult TitulosOferente(string identification = "0117860836", string clave = "123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -172,7 +173,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult ReferenciasOferente(string identification, string clave)
+        public IActionResult ReferenciasOferente(string identification = "0117860836", string clave = "123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -316,12 +317,12 @@ namespace AplicacionRHGit.Controllers
             {
                 OferentesDAO acceso = new OferentesDAO(_context);
 
-                int idRegistroAgregado=acceso.AñadirIdiomaExpediente(identificacion, idIdioma);
+                int idRegistroAgregado = acceso.AñadirIdiomaExpediente(identificacion, idIdioma);
 
                 if (idRegistroAgregado > 0)
                 {
                     //si todo sale bien
-                    return Json(new { exito=true });
+                    return Json(new { exito = true });
                 }
                 else
                 {
@@ -344,7 +345,7 @@ namespace AplicacionRHGit.Controllers
         public JsonResult MostrarIdiomaLista(string identificacion, string clave)
         {
             OferentesDAO oferentesDAO = new OferentesDAO(_context);
-            var idioma = oferentesDAO.CargarIdiomaPersona(identificacion,clave);
+            var idioma = oferentesDAO.CargarIdiomaPersona(identificacion, clave);
 
             try
             {
@@ -475,7 +476,7 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpGet]
-        public JsonResult CargarTitulos(string identificacion, string clave)
+        public JsonResult CargarTitulos(string identificacion, string clave, int tipo)
         {
             var idOferente = _context.Oferente
                 .Where(o => o.identificacion == identificacion && o.clave == clave)
@@ -493,22 +494,40 @@ namespace AplicacionRHGit.Controllers
                 .FirstOrDefault();
 
             var titulos = _context.DetalleTitulo
-                        .Where(dt => dt.ID_TITULO == idTitulo)
-                        .Join(
-                            _context.GradoAcademico,
-                            dt => dt.TIPO_TITULO,
-                            ga => ga.id,
-                            (dt, ga) => new
-                            {
-                                dt.ID_DETALLE_TITULOS,
-                                dt.ESPECIALIDAD,
-                                dt.ESTADO,
-                                dt.ASIENTO,
-                                ga.gradoAcademico
-                            }
-                        ).ToList();
+                 .Where(dt => dt.ID_TITULO == idTitulo)
+                 .Join(
+                     _context.GradoAcademico,
+                     dt => dt.TIPO_TITULO,
+                     ga => ga.id,
+                     (dt, ga) => new
+                     {
+                         dt.ID_DETALLE_TITULOS,
+                         dt.ESPECIALIDAD,
+                         dt.ESTADO,
+                         dt.ASIENTO,
+                         ga.gradoAcademico,
+                         ga.id
+                     }
+                 )
+                 .Where(result =>
+                     (tipo == 1 && result.id == 1) ||
+                     (tipo == 2 && (result.id == 4 || result.id == 5 || result.id == 6 || result.id == 7)) ||
+                     (tipo == 3 && (result.id == 2 || result.id == 3))
+                 )
+                 .ToList();
 
-            return Json(titulos);
+
+
+            if (titulos != null && titulos.Any())
+            {
+                return Json(titulos);
+            }
+            else
+            {
+                return Json(new { vacio = true });
+
+            }
+
         }
 
 
@@ -590,7 +609,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-       
+
 
 
 
@@ -671,6 +690,94 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        //[HttpGet]
+        //public JsonResult MostrarInstitutosTecnicos()
+        //{
+        //    //tecnicos
+        //    //no contiene grados
+        //    List<string> instituciones = _context.u_parauniversidades
+        //                                            .Select(u => u.nombre_parauniversidad)
+        //                                            .ToList();
+
+        //    return Json(instituciones);
+
+        //}
+
+        [HttpGet]
+        public JsonResult MostrarInstitutosDiplomados()
+        {
+            //contiene grados: diplomados
+            //si contiene nombre de carreras
+            List<string> instituciones = _context.u_paracarreras
+             .Select(c => c.universidad)
+             .Distinct()
+             .OrderBy(universidad => universidad)
+             .ToList();
+
+
+            return Json(instituciones);
+
+        }
+
+
+
+
+        [HttpGet]
+        public JsonResult MostrarCarrerasDiplomados(string instituto)
+        {
+            List<string> carreras = _context.u_paracarreras
+                  .Where(c => c.universidad == instituto)
+                  .Select(c => c.nombre_carrera)
+                  .Distinct()
+                  .OrderBy(nombreCarrera => nombreCarrera)
+                  .ToList();
+
+
+            return Json(carreras);
+        }
+
+
+
+
+        [HttpGet]
+        public JsonResult MostrarCarreras(string instituto)
+        {
+            //contiene grados bachillerato-maestria-licenciatura
+            //si contiene nombre de carreras
+
+            List<string> carreras = _context.u_carreras
+                     .Where(c => c.universidad.Contains(instituto))
+                     .Select(c => c.nombre_carrera)
+                     .Distinct()
+                     .OrderBy(nombreCarrera => nombreCarrera)
+                     .ToList();
+
+
+
+            return Json(carreras);
+
+
+        }
+
+        [HttpGet]
+        public JsonResult MostrarUniversidades()
+        {
+            //universidades
+            //no contiene grados
+            List<string> instituciones = _context.u_universidades
+                          .Select(u => u.siglas_universidad)
+                          .Distinct()
+                          .OrderBy(siglas => siglas)
+                          .ToList();
+
+
+
+
+            return Json(instituciones);
+
+        }
+
+
 
         ///////////////////////////////////////////////////////    SECCION REFERENCIAS ////////////////////////////////////////////////////////////////
 
@@ -739,22 +846,22 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpGet]
-        public JsonResult CargarReferenciasPersonales(string identificacion, string clave)
+        public JsonResult CargarReferencias(string identificacion, string clave, char tipoReferencia)
         {
             try
             {
 
                 OferentesDAO acceso = new OferentesDAO(_context);
 
-                List<DETALLE_REFERENCIAS> referencias = acceso.CargarReferenciasPersonales(identificacion, clave);    
+                List<DETALLE_REFERENCIAS> referencias = acceso.CargarReferencias(identificacion, clave, tipoReferencia);
 
-                if(referencias!=null)
+                if (referencias != null)
                 {
                     return Json(referencias);
                 }
                 else
                 {
-                   return Json(new { vacio=true });
+                    return Json(new { vacio = true });
 
                 }
 
@@ -796,6 +903,105 @@ namespace AplicacionRHGit.Controllers
                         }
 
                     }
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al eliminar la referencia" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+
+        ///////////////////////////////////////////////////////    SECCION EXPERIENCIAS ////////////////////////////////////////////////////////////////
+
+        [HttpPost]
+        public JsonResult AgregarExperiencia(IFormCollection formData)
+        {
+
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
+                int idExperiencia = acceso.AgregarExperiencia(formData);
+
+                if (idExperiencia != -1)
+                {
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al guardar la experiencia laboral" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+        [HttpGet]
+        public JsonResult CargarExperiencias(string identificacion, string clave)
+        {
+            try
+            {
+
+                OferentesDAO acceso = new OferentesDAO(_context);
+
+                List<DETALLE_EXPERIENCIA> experiencias = acceso.CargarExperiencias(identificacion, clave);
+
+                if (experiencias != null)
+                {
+                    return Json(experiencias);
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+
+
+        [HttpPost]
+        public JsonResult EliminarExperiencia(string idExperiencia, string identificacion)
+        {
+            try
+            {
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                if (oferentesDAO.EliminarExperiencia(idExperiencia) == 1)
+                {
+
 
                     return Json(new { exito = true });
 

@@ -8,11 +8,31 @@
 
     <div class="container mt-5">
         <div class="contenedorExpediente">
-            <h1 class="text-center">Lista de Títulos</h1>
 
+            <ul class="nav nav-tabs" id="myTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" id="informacionPersonal-tab" data-toggle="tab" href="#informacionPersonal">Información Personal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="ubicacion-tab" data-toggle="tab" href="#ubicacion">Ubicación</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="idiomas-tab" data-toggle="tab" href="#idiomas">Idiomas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="grupoProfesional-tab" data-toggle="tab" href="#grupoProfesional">Grupo Profesional</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contacto-tab" data-toggle="tab" href="#contacto">Contacto</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="experiencias-tab" data-toggle="tab" href="#experiencias">Experiencias Laborales</a>
+                </li>
+            </ul>
+            <h2 class="text-center">Secundaria</h2>
 
             <!-- Lista de Títulos -->
-            <table id="tablaTitulos" class="table table-bordered">
+            <table id="tablaTitulosSecundaria" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
                         <th>Especialidad</th>
@@ -21,11 +41,42 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="listaTitulo">
+                <tbody id="listaTitulosSecundaria">
                     
                 </tbody>
             </table>
 
+
+            <h2 class="text-center mt-5">Universitarios</h2>
+
+            <table id="tablaTitulosUniversitarios" class="table table-bordered">
+                <thead class="tabla-head">
+                    <tr class="text-center">
+                        <th>Especialidad</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="listaTitulosUniversitarios">
+                </tbody>
+            </table>
+
+
+            <h2 class="text-center mt-5">Otros</h2>
+
+            <table id="tablaTitulosVarios" class="table table-bordered">
+                <thead class="tabla-head">
+                    <tr class="text-center">
+                        <th>Especialidad</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="listaTitulosVarios">
+                </tbody>
+            </table>
           
 
             <!-- Botón para Añadir Título -->
@@ -63,47 +114,66 @@
                 <div class="modal-body">
                     <!-- Formulario para Añadir Título -->
                     <form id="formAgregarTitulo" method="post">
-                        <div class="form-group">
+                        <div class="form-group col-sm-6">
                             <label for="nivelEducacion">Nivel de Educación:</label>
                             <select class="form-control" id="nivelEducacion" name="nivelEducacion" required tabindex="1">
                                 @foreach (var grado in (SelectList)ViewData["Grados"])
-                                {
+                                {   
                                     <option value="@grado.Value">@grado.Text</option>
                                 }
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="divInstituto">
+                            <label for="instituto">Institución:</label>
+                            <select class="form-control" id="instituto" name="instituto" required tabindex="2">
+                   
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="divCarrera">
+                            <label for="carreras">Carrera:</label>
+                            <select class="form-control" id="carreras" name="carreras" required tabindex="3">
+                            </select>
+                        </div>
+
+
+
+                        <div class="form-group" id="divTitulo">
                             <label for="titulo">Título:</label>
-                            <input type="text" class="form-control" id="titulo" name="titulo" required tabindex="2" />
+                            <input type="text" class="form-control" id="titulo" name="titulo" required tabindex="4" />
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="divInstituto2">
                             <label for="institucion">Institución:</label>
-                            <input type="text" class="form-control" id="institucion" name="institucion" required tabindex="3" />
+                            <input type="text" class="form-control" id="institucion" name="institucion" required tabindex="5" />
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group col-sm-6">
                             <label for="fechaObtenido">Fecha Obtenido:</label>
-                            <input type="date" class="form-control" id="fechaObtenido" name="fechaObtenido" required tabindex="4" />
+                            <input type="date" class="form-control" id="fechaObtenido" name="fechaObtenido" required tabindex="6" />
                         </div>
 
-                        <div class="form-group">
-                            <label for="folio">Folio:</label>
-                            <input type="number" class="form-control" name="folio" id="folio" required tabindex="5" />
+                        <div class="row">
+                            <div class="form-group col-sm-6" id="divFolio">
+                                <label for="folio">Folio:</label>
+                                <input type="number" class="form-control" name="folio" id="folio" required tabindex="7" />
+                            </div>
+
+                            <div class="form-group col-sm-6" id="divAsiento">
+                                <label for="asiento">Asiento:</label>
+                                <input type="number" class="form-control" id="asiento" name="asiento" required tabindex="8" />
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="asiento">Asiento:</label>
-                            <input type="number" class="form-control" id="asiento" name="asiento" required tabindex="6" />
-                        </div>
+
 
 
                         <!-- Campo para subir foto -->
                         <div class="form-group">
                             <label for="fotoTitulo">Subir Foto del Título:</label>
                             <div>
-                                <input type="file" class="form-control-file" id="fotoTitulo" name="fotoTitulo" accept="image/*" required tabindex="7" />
+                                <input type="file" class="form-control-file" id="fotoTitulo" name="fotoTitulo" accept="image/*" required tabindex="9" />
                                 
                             </div>
                             

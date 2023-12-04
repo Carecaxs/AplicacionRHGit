@@ -286,13 +286,51 @@ namespace AplicacionRHGit.Data
                 {
                     ID_TITULO = idTitulo,
                     TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault()),
-                    ESPECIALIDAD = form["titulo"].FirstOrDefault(),
-                    NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault(),
                     FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault()),
-                    FOLIO = int.Parse(form["folio"].FirstOrDefault()),
-                    ASIENTO = int.Parse(form["asiento"].FirstOrDefault()),
                     ESTADO = 'P'
                 };
+
+                if (!string.IsNullOrEmpty(form["titulo"].FirstOrDefault()))
+                {
+                    // El título existe, puedes asignarlo a ESPECIALIDAD
+                    datosTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
+                }
+                else
+                {
+                    datosTitulo.ESPECIALIDAD = form["carreras"].FirstOrDefault();
+                }
+
+
+                if (!string.IsNullOrEmpty(form["institucion"].FirstOrDefault()))
+                {
+                    // El título existe, puedes asignarlo a ESPECIALIDAD
+                    datosTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
+                }
+                else
+                {
+                    datosTitulo.NOMBRE_INSTITUCION = form["instituto"].FirstOrDefault();
+                }
+
+                if (!string.IsNullOrEmpty(form["folio"].FirstOrDefault()))
+                {
+                    datosTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
+                }
+                else
+                {
+                    datosTitulo.FOLIO = 0;
+                }
+
+
+                if (!string.IsNullOrEmpty(form["asiento"].FirstOrDefault()))
+                {
+                    datosTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
+                }
+                else
+                {
+                    datosTitulo.ASIENTO = 0;
+                }
+
+
 
                 _context.DetalleTitulo.Add(datosTitulo);
                 _context.SaveChanges();
@@ -346,7 +384,9 @@ namespace AplicacionRHGit.Data
             //filtrar en una lista los titulos por id
             List<DETALLE_TITULO> titulos = _context.DetalleTitulo
             .Where(t => t.ID_TITULO == idTitulo)
+            .OrderByDescending(t => t.FECHA_OBTENCION)
             .ToList();
+
 
             if (titulos.Any())
             {
@@ -418,11 +458,51 @@ namespace AplicacionRHGit.Data
             {
                 // Modificar las propiedades
                 detalleTitulo.TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault());
-                detalleTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
-                detalleTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
                 detalleTitulo.FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault());
                 detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
                 detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
+
+
+                if (!string.IsNullOrEmpty(form["titulo"].FirstOrDefault()))
+                {
+                    // El título existe, puedes asignarlo a ESPECIALIDAD
+                    detalleTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
+                }
+                else
+                {
+                    detalleTitulo.ESPECIALIDAD = form["carreras"].FirstOrDefault();
+                }
+
+
+                if (!string.IsNullOrEmpty(form["institucion"].FirstOrDefault()))
+                {
+                    // El título existe, puedes asignarlo a ESPECIALIDAD
+                    detalleTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
+                }
+                else
+                {
+                    detalleTitulo.NOMBRE_INSTITUCION = form["instituto"].FirstOrDefault();
+                }
+
+
+                if (!string.IsNullOrEmpty(form["folio"].FirstOrDefault()))
+                {
+                    detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
+                }
+                else
+                {
+                    detalleTitulo.FOLIO = 0;
+                }
+
+
+                if (!string.IsNullOrEmpty(form["asiento"].FirstOrDefault()))
+                {
+                    detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
+                }
+                else
+                {
+                    detalleTitulo.ASIENTO = 0;
+                }
 
                 // Guardar los cambios
                 _context.SaveChanges();
@@ -505,7 +585,7 @@ namespace AplicacionRHGit.Data
 
 
 
-        public List<DETALLE_REFERENCIAS> CargarReferenciasPersonales(string identificacion, string clave)
+        public List<DETALLE_REFERENCIAS> CargarReferencias(string identificacion, string clave, char tipoReferencia)
         {
 
             var idOferente = _context.Oferente
@@ -521,13 +601,13 @@ namespace AplicacionRHGit.Data
 
             //consulta el id de la referencia donde contenga ese id de expediente
             var idReferencia = _context.Referencia
-            .Where(t => t.ID_EXPEDIENTE == idExpediente)
-            .Select(t => t.ID_REFERENCIA)
+            .Where(r => r.ID_EXPEDIENTE == idExpediente)
+            .Select(r => r.ID_REFERENCIA)
             .FirstOrDefault();
 
             //filtrar en una lista los titulos por id
             List<DETALLE_REFERENCIAS> referencias = _context.DetalleReferencia
-            .Where(r => r.ID_REFERENCIA == idReferencia)
+            .Where(r => r.ID_REFERENCIA == idReferencia && r.TIPO==tipoReferencia)
             .ToList();
 
             if (referencias.Any())
@@ -537,7 +617,6 @@ namespace AplicacionRHGit.Data
 
             return null;
         }
-
 
 
         public int EliminarReferencia(string idReferencia)
@@ -564,6 +643,136 @@ namespace AplicacionRHGit.Data
 
             }
         }
+
+
+
+
+
+        /////////////////////////////////////////////////// SECCIÓN DE EXPERIENCIAS ///////////////////////////////////////////////
+        //retorna el id del tetilo añadido si todos sale bien , -1 si no sale bien
+        public int AgregarExperiencia(IFormCollection form)
+        {
+            int retorno = -1;
+            var identificacion = form["identificacion"].FirstOrDefault();
+            var clave = form["clave"].FirstOrDefault();
+
+
+            try
+            {
+                //consulta el id del oferente con la identificacion y clave dada
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion && o.clave == clave)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id de la experiencia
+                var idExperiencia = _context.Experiencia
+                .Where(e => e.ID_EXPEDIENTE == idExpediente)
+                .Select(e => e.ID_EXPERIENCIA)
+                .FirstOrDefault();
+
+                DETALLE_EXPERIENCIA datosExperiencia = new DETALLE_EXPERIENCIA()
+                {
+                    ID_EXPERIENCIA = idExperiencia,
+                    NOMBRE_EMPRESA = form["nombreEmpresa"].FirstOrDefault(),
+                    DESCRIPCION_LABORES = form["labores"].FirstOrDefault(),
+                    inicio = int.Parse(form["inicio"].FirstOrDefault()),
+                    fin = int.Parse(form["fin"].FirstOrDefault()),
+                    TELEFONO = Regex.Replace(form["contacto"].FirstOrDefault(), @"\D", "")
+                };
+
+
+                _context.DetalleExperiencia.Add(datosExperiencia);
+                _context.SaveChanges();
+
+                retorno = datosExperiencia.ID_DETALLE_EXPERIENCIA;
+
+                return retorno;
+
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+
+        }
+
+
+
+
+        public List<DETALLE_EXPERIENCIA> CargarExperiencias(string identificacion, string clave)
+        {
+
+            var idOferente = _context.Oferente
+              .Where(o => o.identificacion == identificacion && o.clave == clave)
+              .Select(o => o.idOferente)
+              .FirstOrDefault();
+
+            //consulta el id del expediente de ese oferente
+            var idExpediente = _context.Expediente
+            .Where(e => e.idOferente == idOferente)
+            .Select(e => e.ID_EXPEDIENTE)
+            .FirstOrDefault();
+
+            //consulta el id de la experiencia
+            var idExperiencia = _context.Experiencia
+            .Where(e => e.ID_EXPEDIENTE == idExpediente)
+            .Select(e => e.ID_EXPERIENCIA)
+            .FirstOrDefault();
+
+            //filtrar en una lista los experiencias por id
+            List<DETALLE_EXPERIENCIA> experiencias = _context.DetalleExperiencia
+            .Where(e => e.ID_EXPERIENCIA == idExperiencia)
+            .OrderByDescending(e => e.fin)
+            .ToList();
+
+            if (experiencias.Any())
+            {
+                return experiencias;
+            }
+
+            return null;
+        }
+
+
+
+        //retorna 1 si se elimina, -1 si algo sale mal
+        public int EliminarExperiencia(string idExperiencia)
+        {
+            try
+            {
+                var experiencia = _context.DetalleExperiencia.Find(int.Parse(idExperiencia));
+
+                if (experiencia != null)
+                {
+                    _context.DetalleExperiencia.Remove(experiencia);
+                    _context.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    // Manejar el caso en que la referencia no se encontró
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
 
 
 
