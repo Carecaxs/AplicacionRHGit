@@ -10,7 +10,31 @@
     <div class="container mt-5">
         <div class="contenedorExpediente">
 
-            <h2 class="text-center">Referencias Personales</h2>
+
+            <form class="formEnlaces" method="post">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
+                    <li class="nav-item">
+                        <button id="enlaceDatosPersonales" class="nav-link">Expediente Personal</button>
+
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceExpedienteAcademico" class="nav-link">Expediente Academico</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceReferencias" class="nav-link">Perfil Laboral</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceExpLaboral" class="nav-link">Experiencia Laboral</button>
+
+                    </li>
+
+                </ul>
+            </form>
+
+            <h2 class="text-center mt-2">Referencias Personales</h2>
 
             <table id="tablaReferenciasPersonales" class="table table-bordered">
                 <thead class="tabla-head">

@@ -12,12 +12,26 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\ImagesTitulos\" />
     <Folder Include="wwwroot\ImagesTitulos\0117860836\" />
     <Folder Include="wwwroot\ImagesReferencias\" />
+    <Folder Include="wwwroot\ImagesDimex\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Oferente\CrearOfertaOferente.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Oferente\CrearOfertaOferente.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Oferente\CrearOfertaOferente.cshtml" />
   </ItemGroup>
 
 </Project>

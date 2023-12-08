@@ -1,32 +1,28 @@
 ﻿
 $(document).ready(function () {
+
     var identificationField = $("#identification");//input donde se pone la identificacion
+    $("#identification").inputmask({ mask: "99-9999-9999" });
+    
+
+
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
+        $('#btnCrearUsuario').hide();
+
         var selectedType = $(this).val();
         var mask = "";
         $("#identification").val('');
 
-        if (selectedType === "null") {
-            identificationField.prop("disabled", true); // Deshabilitar el campo
-        } else {
-            identificationField.prop("disabled", false); // habilitar el campo
-        }
+
 
         if (selectedType === "Cedula") {
             mask = "99-9999-9999";
-
+           
 
         } else if (selectedType === "Dimex") {
             mask = "99-999999-9999";
-
-        } else if (selectedType === "Pasaporte") {
-            mask = "a999999";
-
         }
-
-
         $("#identification").inputmask({ mask: mask });
-
     });
 
 
@@ -67,11 +63,25 @@ $(document).ready(function () {
         }
     });
 
+    if ($("#nombreVista").val() == "Ingresar") { //si esta en el documento de iniciar sesion
 
-    if ($("#registroForm").length > 0) { //si esta en el documento de creacion de perfil
+        $("#identification").focus();
+
+    }
+
+
+
+    if ($("#nombreVista").val() == "Crear") { //si esta en el documento de creacion de perfil
+        $('#btnCrearUsuario').hide();
+
+        $("#identification").focus();
+        
+
+        $("#campoVerificarDimex").hide();
 
         // Aplicar la máscara al campo de teléfono
         $('#telefono').inputmask('9999-9999');
+        $("#dimex").inputmask({ mask: "99-999999-9999" });
 
         esconderForm();
 
@@ -83,20 +93,28 @@ $(document).ready(function () {
             var selectedIdentificationType = $(this).val();
 
             // Habilitar o deshabilitar el campo de identificación según la opción seleccionada
-            if (selectedIdentificationType === "Dimex" || selectedIdentificationType === "Pasaporte") {
+            if (selectedIdentificationType === "Dimex") {
                 // Habilitar el campo de identificación
                 mostrarForm();
+                $("#campoNacimiento").hide();
+                $("#campoSexo").hide();
+                $("#campoVerificarDimex").show();
+
 
                 // habilitar campos
                 $("#nombre").prop("disabled", false);
                 $("#apellidos").prop("disabled", false);
+
                 $("#btnVerificarCedula").hide();
 
             } else {
+                $("#campoVerificarDimex").hide();
+
                 // Deshabilitar campos
 
                 $("#nombre").prop("disabled", true);
                 $("#apellidos").prop("disabled", true);
+
                 esconderForm();
                 $("#btnVerificarCedula").show();
 
@@ -116,7 +134,7 @@ $(document).ready(function () {
 
 
 
-       
+
 
 
 
@@ -165,15 +183,14 @@ $(document).ready(function () {
 
 
                 } else {
-      
+
 
                     if ($("#msjValidacionCedula").length) {
 
                         $("#msjValidacionCedula").remove();
                     }
 
-                    //se muestra el boton de confirmar
-                    $('#btnCrearUsuario').show();
+
 
 
                     // Actualizar el valor visual del campo #cedula
@@ -184,12 +201,13 @@ $(document).ready(function () {
                         $("#identificacion").val(identificacion);
 
                     }
-                    
 
                     // asignar valores a los inputs de la consulta
                     $("#nombre").val(data.nombre);
                     $("#apellidos").val(data.apellido1 + " " + data.apellido2);
-           
+                    $("#sexo").val((data.genero == '1' ? "Masculino" : "Femenino"));
+                    $("#nacimiento").val(cambiarFormatoFecha(data.fechaNacimiento));
+
 
                     mostrarForm();
 
@@ -205,13 +223,38 @@ $(document).ready(function () {
     });
 
 
+    $('#identification').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#correo').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#telefono').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#nombre').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#apellidos').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+    $('#dimex').on('keyup', function () {
+        verificarCondiciones();
+    });
+
+
 
     $("#btnCrearUsuario").click(function (event) {
 
         // Deshabilitar la acción predeterminada del formulario
         event.preventDefault();
 
-    
+
 
         //comprobacion de que la cedula se mande bien
         if (!ComprobarIdentificacion()) {
@@ -220,21 +263,37 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
             }
             else {
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Cédula incompleta" + "</p>");
 
             }
             return;
         }
 
-  
+
 
 
         //si todos estan completados
         if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#nombre').val() != "" && $('#apellidos').val() != "") {
 
+            //si se esta registrando con dimex hay que verificar que coincidan los dos campos donde tiene que digitar el dimex
+            if ($("#identificationType").val() == "Dimex") {
+                if ($("#identification").val() != $("#campoVerificarDimex").val()) {
+
+                    if ($("#msjFormulario").length) {
+
+                        $("#msjFormulario").remove();
+
+                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+                    }
+                    else {
+                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+
+                    }
+                }
+            }
             //retorna true si se valida el correo y telefono
             if (validarCorreoTelefono()) {
 
@@ -285,11 +344,11 @@ $(document).ready(function () {
                             // Muestra el modal
                             $("#confirmacionModal").modal("show");
 
-                           
+
                         }
                         else {
 
-                            $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+                            $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
 
                         }
 
@@ -311,10 +370,10 @@ $(document).ready(function () {
 
                 $("#msjFormulario").remove();
 
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
             }
             else {
-                $("#campoTelefono").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
 
             }
 
@@ -356,7 +415,7 @@ $(document).ready(function () {
                         //mostrar modal
                         $("#modalContraseña").modal("show");
 
-                       
+
                     }
                     else {
                         if (data.mensaje) {
@@ -464,7 +523,7 @@ $(document).ready(function () {
                             console.log("algo salio mal")
 
                             if (data.mensaje) {
-                               
+
                                 if ($("#msjInformativo").length) {
 
                                     $("#msjInformativo").remove();
@@ -500,7 +559,7 @@ $(document).ready(function () {
                 }
             }
 
-           
+
 
         }
 
@@ -519,7 +578,7 @@ $(document).ready(function () {
 
             $("#msjInformativo").remove();
         }
-      
+
 
         $.ajax({
             url: '/Login/CambiarVerificadoFalse',
@@ -687,7 +746,7 @@ $(document).ready(function () {
                     success: function (data) {
 
                         if (data.exitoso == true) {
-               
+
                             //////////////////aca me debe de redirigir a la cuenta del usuario///////////////////////////
 
 
@@ -708,9 +767,9 @@ $(document).ready(function () {
                             //asignar la accion al formulario
                             form.prop('action', actionUrl);
 
-                            form.submit(); 
-  
-               
+                            form.submit();
+
+
 
                         }
                         else {
@@ -787,7 +846,7 @@ $(document).ready(function () {
                         // Obtener el tipo de usuario del campo oculto o de donde sea necesario
                         var tipoUsuario = $('#tipoUsuario').val();
 
-                         //Construir la URL de destino en función del tipo de usuario                        
+                        //Construir la URL de destino en función del tipo de usuario                        
                         if (tipoUsuario == 'Reclutador') {
                             var actionUrl = '/Reclutador/nombreVista';
                         }
@@ -847,7 +906,10 @@ $(document).ready(function () {
     });
 
 
-    
+
+
+
+
 
 });
 
@@ -860,12 +922,10 @@ function esconderForm() {
     $("#campoApellidos").hide();//ocultar elemento que muestra los apellidos
     $("#campoCorreo").hide();
     $("#campoTelefono").hide();
-    //$("#campoProvincia").hide();
-    //$("#campoCantones").hide();
-    //$("#campoDistritos").hide();
-    //$("#campoNacimiento").hide();
-    //$("#campoDireccion").hide();
-    $('#btnCrearUsuario').hide();
+    $("#campoNacimiento").hide();
+    $("#campoSexo").hide();
+
+    console.log("hola");
 }
 
 function mostrarForm() {
@@ -873,16 +933,13 @@ function mostrarForm() {
     $("#campoApellidos").show();//mostrar elemento que muestra los apellidos
     $("#campoCorreo").show();
     $("#campoTelefono").show();
-    //$("#campoProvincia").show();
-    //$("#campoCantones").show();
-    //$("#campoDistritos").show();
-    //$("#campoNacimiento").show();
-    //$("#campoDireccion").show();
-    $('#btnCrearUsuario').show();
+    $("#campoNacimiento").show();
+    $("#campoSexo").show();
+
 
 }
 
-function validarCorreo(){
+function validarCorreo() {
 
     var correo = $("#correo").val();
 
@@ -958,6 +1015,9 @@ function LimpiarCampos() {
     $("#apellidos").val('');
     $("#correo").val('');
     $("#telefono").val('');
+    $("#nacimiento").val('');
+    $("#sexo").val('');
+
 }
 
 
@@ -979,24 +1039,36 @@ function ComprobarIdentificacion() {
     } else if (identificationType === 'Dimex') {
         // Validar que el DIMEX tenga la longitud deseada (ajusta según tus requisitos)
         if (identificationValue.length === 12) {
-            console.log("true");
+        
             return true;
         } else {
-            console.log("false");
+        
             return false;
 
         }
-    } else if (identificationType === 'Pasaporte') {
-        // Validar que el pasaporte tenga la longitud deseada (ajusta según tus requisitos)
-        if (identificationValue.length >= 6 && identificationValue.length <= 12) {
-            console.log("true");
-            return true;
-        } else {
-            console.log("false");
-            return false;
- 
-        }
-    } 
+    }
+
 
 }
 
+// Función para cambiar el formato de fecha
+function cambiarFormatoFecha(fechaEnFormatoOriginal) {
+    // Dividir la cadena en mes, día y año
+    var partes = fechaEnFormatoOriginal.split('/');
+
+    // Crear una nueva cadena con el formato deseado
+    var fechaEnNuevoFormato = partes[1] + '/' + partes[0] + '/' + partes[2];
+
+    return fechaEnNuevoFormato;
+}
+
+
+//funcion que detecta si todos los campos tienen contenido para mostrar boton de crear
+function verificarCondiciones() {
+    if ($('#identification').val() !== "" && $('#correo').val() !== "" && $('#telefono').val() !== "" &&
+        $('#nombre').val() !== "" && $('#apellidos').val() !== "") {
+        $('#btnCrearUsuario').show();
+    } else {
+        $('#btnCrearUsuario').hide();
+    }
+}

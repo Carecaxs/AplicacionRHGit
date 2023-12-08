@@ -1,0 +1,161 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutOferente.cshtml";
+}
+<main role="main" class="pb-3">
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="vistaActual" name="clave" type="hidden" value="@ViewBag.VistaActual" />
+
+
+    <div class="container mt-5">
+        <div class="contenedorExpediente">
+
+            <form class="formEnlaces" method="post">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
+                    <li class="nav-item">
+                        <button id="enlaceBuscar" class="nav-link">Buscar Vacantes</button>
+
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceCrear" class="nav-link">Crear Oferta</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceVerMisOfertas" class="nav-link">Ver mis Ofertas</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceVerVacantesAplicadas" class="nav-link">Ver Vacantes Aplicadas</button>
+
+                    </li>
+
+                </ul>
+            </form>
+
+            <h2 class="text-center mt-2">Buscar Vacantes</h2>
+
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <label for="provincias">Provincia:</label>
+                    <select id="provincias" class="form-control">
+                        <!-- Opciones de provincias -->
+                        <option value="null">Seleccione una opción</option>
+
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="cantones">Cantón:</label>
+                    <select id="cantones" class="form-control">
+                        <!-- Opciones de cantones -->
+                        <option value="null">Seleccione una opción</option>
+
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="materias">Materia:</label>
+                    <select id="materias" class="form-control">
+                        <!-- Opciones de materias -->
+                        <option value="null">Seleccione una opción</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive mt-5">
+                <table id="" class="table table-bordered">
+                    <thead class="tabla-head">
+                        <tr class="text-center">
+                            <th>Publicado</th>
+                            @*      <th>Institución</th> *@
+                            <th>Puesto</th>
+                            @*       <th>Materia</th>
+                            <th>Descripción</th> *@
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaOfertas">
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+                <div class="form-group col-sm-12">
+                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modal para ver detqalles de oferta -->
+    <div class="modal fade" id="verOfertaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ver Oferta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para ver oferta -->
+
+
+                    <input type="hidden" class="form-control" id="idOferta" />
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="tituloOferta">Oferta</label>
+                        <input type="text" class="form-control" id="tituloOferta" readonly tabindex="1" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="nombreInstitucion">Institución</label>
+                        <input type="text" class="form-control" id="nombreInstitucion" readonly tabindex="2" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="nombreMateria">Materia</label>
+                        <input type="text" class="form-control" id="nombreMateria" readonly tabindex="3" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="descripcionOferta">Requisitos</label>
+                        <textarea class="form-control" id="descripcionOferta" readonly tabindex="4"></textarea>
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-4">
+                        <label class="label-custom-font" for="publicacionOferta">Publicado</label>
+                        <input type="date" class="form-control" id="publicacionOferta" readonly tabindex="5" />
+                    </div>
+
+
+                    <div class="form-group mt-2 col-sm-12 text-end">
+                        <button id="btnPostularse" class="btn btn-success" tabindex="6">Postularse</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+</main>
+
+<script src="~/js/oferente/postulaciones.js"></script>

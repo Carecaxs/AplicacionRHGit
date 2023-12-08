@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVByaW5jaXBhbFxNZW51QWNjZXNvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Oferente/CrearOfertaOferente.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZlcmVudGVcQ3JlYXJPZmVydGFPZmVyZW50ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Oferente/DatosPersonalesOferente.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZlcmVudGVcRGF0b3NQZXJzb25hbGVzT2ZlcmVudGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -62,6 +66,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Oferente/TitulosOferente.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZlcmVudGVcVGl0dWxvc09mZXJlbnRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Oferente/VerOfertasOferente.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZlcmVudGVcVmVyT2ZlcnRhc09mZXJlbnRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Shared/Error.cshtml]

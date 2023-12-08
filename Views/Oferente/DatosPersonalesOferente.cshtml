@@ -13,10 +13,36 @@
         <div class="contenedorExpediente d-flex justify-content-center">
 
             <div class="">
-                <h2 class="text-center">Expediente Personal</h2>
+
+
+                <form class="formEnlaces" method="post">
+                    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                    <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                    <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
+                        <li class="nav-item">
+                            <button id="enlaceDatosPersonales" class="nav-link">Expediente Personal</button>
+
+                        </li>
+                        <li class="nav-item">
+                            <button id="enlaceExpedienteAcademico" class="nav-link">Expediente Academico</button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="enlaceReferencias" class="nav-link">Perfil Laboral</button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="enlaceExpLaboral" class="nav-link">Experiencia Laboral</button>
+
+                        </li>
+
+                    </ul>
+                </form>
+
+                <h2 class="text-center mt-2">Expediente Personal</h2>
 
 
                 <form id="expedienteForm">
+                    <input name="identificacion" type="hidden" value="@ViewBag.identificacion" />
 
                     <div class="row">
                         <!-- Sección: Información Personal -->
@@ -163,12 +189,43 @@
 
 
 
+                    <!-- Sección: subir dimex -->
+
+                    <fieldset id="seccionDinex" class="border p-3 mt-3">
+                        <legend class="w-auto">Dimex</legend>
+                        <hr />
+  
+                        <div class="row">
+             
+                            <div id="divSubirDinex" class="form-group col-sm-6">
+                                <label for="fotoDimex">Subir Foto Dimex:</label>
+                                <div>
+                                    <input type="file" class="form-control-file" id="fotoDimex" name="fotoDimex" accept="image/*" tabindex="8" />
+
+                                </div>
+                            </div>
+
+                            <button id="mostrarModalSubirDimex" class="btn btn-primary mt-3 col-sm-2" tabindex="9">Subir Imagen</button>
+
+                            <div class="form-group col-sm-4">
+                                <label for="estadoDimex">Estado</label>
+                                <div>
+                                    <input type="text" class="form-control" id="estadoDimex" name="estadoDimex" readonly />
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </fieldset>
+
+
 
    
 
 
                     <div class="form-group col-sm-12">
-                        <button id="btnGuardarCambios" class="btn btn-success mt-3 w-100" tabindex="8">Guardar Cambios</button>
+                        <button id="btnGuardarCambios" class="btn btn-success mt-3 w-100" tabindex="10">Guardar Cambios</button>
                     </div>
                 </form>
 
@@ -246,6 +303,29 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal de Confirmación subida dimex-->
+    <div class="modal fade" id="SubirDimexModal" tabindex="-1" role="dialog" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmacionModalLabel">Confirmación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas subir la imagen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarSubidaDimex">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </main>
 

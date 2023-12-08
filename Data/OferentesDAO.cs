@@ -2,6 +2,8 @@
 using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.Mensajeria;
+using AplicacionRHGit.Models.OfertasLaborales;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -66,8 +68,10 @@ namespace AplicacionRHGit.Data
         public List<GrupoProfesional> CargarGruposProfesionales()
         {
             List<GrupoProfesional> grupos = _context.GrupoProfesional.ToList();
-
             return grupos;
+
+
+
         }
 
 
@@ -359,6 +363,7 @@ namespace AplicacionRHGit.Data
             List<GradoAcademico> grados = _context.GradoAcademico.ToList();
 
             return grados;
+
         }
 
         public List<DETALLE_TITULO> CargarTitulos(string identificacion, string clave)
@@ -776,8 +781,114 @@ namespace AplicacionRHGit.Data
 
 
 
+        ///////////////////////////////////////////////////// seccion de ver ofertas ////////////////////////////////////////////////////////////////
+
+        //retorna id del registro agregado si sale bien, -1 si algo sale mal, -2 si ya existe la postulacion de ese oferente
+        public int AgregarPostulacion(int idOferta, string identificacion)
+        {
+            try
+            {
+                int retorno = -1;
+
+                // Obtener el idOferente usando la identificación
+                var idOferente = _context.Oferente
+                    .Where(o => o.identificacion == identificacion)
+                    .Select(o => o.idOferente)
+                    .FirstOrDefault();
+
+                // Verificar si ya existe una postulación para la oferta y el oferente
+                bool postulacionExistente = _context.Postulaciones_Oferente
+                    .Any(p => p.id_oferta == idOferta && p.idOferente == idOferente);
+
+                if (!postulacionExistente)
+                {
+                    // Si no existe, agregar la nueva postulación
+                    Postulaciones_Oferente postulacion = new Postulaciones_Oferente()
+                    {
+                        id_oferta = idOferta,
+                        idOferente = idOferente,
+                        estado = false
+                    };
+
+                    _context.Postulaciones_Oferente.Add(postulacion);
+                    _context.SaveChanges();
+
+                    retorno = postulacion.id;
+                }
+                else
+                {
+                    // Puedes manejar la lógica si la postulación ya existe
+                    // En este ejemplo, simplemente se asigna -2 como indicador de que ya existe.
+                    retorno = -2;
+                }
+
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción según tus necesidades
+                throw;
+            }
+        }
 
 
+
+
+        ///////////////////////////////////////////////////// seccion de crear oferta ////////////////////////////////////////////////////////////////
+
+        public int CrearOferta(string identificacion, int idProvincia, int idCanton, string descripcion, List<int> listaMaterias)
+        {
+
+            try
+            {
+                int idOfertaCreada = -1;
+
+                // Obtener el idOferente usando la identificación
+                var idOferente = _context.Oferente
+                    .Where(o => o.identificacion == identificacion)
+                    .Select(o => o.idOferente)
+                    .FirstOrDefault();
+
+                Oferta_Creada_Oferente ofertaCreada = new Oferta_Creada_Oferente()
+                {
+                    idOferente = idOferente,
+                    estado = false,
+                    descripcion = descripcion,
+                    fecha_publicacion = DateTime.Now,
+                    IdCanton = idCanton,
+                    IdProvincia = idProvincia
+                };
+
+                // Agregar la oferta principal a la base de datos
+                _context.Oferta_Creada_Oferente.Add(ofertaCreada);
+                _context.SaveChanges();
+
+                // Obtener el id de la oferta creada
+                idOfertaCreada = ofertaCreada.id;
+
+                // Insertar las materias asociadas a la oferta creada
+                foreach (int idMateria in listaMaterias)
+                {
+                    Materia_Oferta_Creada_Oferente materiaOferta = new Materia_Oferta_Creada_Oferente()
+                    {
+                        ID_Materia = idMateria,
+                        id_Ofertas_Creadas_Oferentes = idOfertaCreada
+                    };
+
+                    // Agregar la relación materia-oferta a la base de datos
+                    _context.Materia_Oferta_Creada_Oferente.Add(materiaOferta);
+                }
+
+                // Guardar los cambios en la base de datos
+                _context.SaveChanges();
+                return idOfertaCreada;
+
+            }
+            catch(Exception ex) 
+            {
+                throw;
+            }
+        }
 
 
     }

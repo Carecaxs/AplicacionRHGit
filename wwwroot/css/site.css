@@ -130,6 +130,8 @@ button.card-link {
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+
+
 .estado-pendiente {
     color: red;
    
@@ -143,4 +145,11 @@ button.card-link {
 .estado-verificado {
     color: green;
   
+}
+
+
+.label-custom-font {
+    font-family: 'Footlight MT', sans-serif; /* Cambia 'TuTipoDeFuente' con la fuente que desees usar */
+    font-weight: bold; /* Otras propiedades de la fuente que desees aplicar */
+    font-size:1.2rem;
 }

@@ -2,15 +2,213 @@
 
 $(document).ready(function () {
 
+
+
+    //seccion de enlaces
+    $("#enlaceReferencias").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/ReferenciasOferente';
+
+        // Tu lógica para enviar el formulario
+
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+    $("#enlaceDatosPersonales").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/DatosPersonalesOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#enlaceExpedienteAcademico").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/TitulosOferente';
+
+        // Tu lógica para enviar el formulario
+
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#enlaceExpLaboral").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/ExperienciaOferente';
+
+        // Tu lógica para enviar el formulario
+
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+
     //asignar a los campos nombre y appelidos valores
     $("#nombre").val($("#nombreOferente").val());
     $("#apellidos").val($("#apellidosOferente").val());
 
 
+    $("#mostrarModalSubirDimex").click(function (event) {
+        event.preventDefault();
+
+        var inputFile = document.getElementById('fotoDimex');
+        var file = inputFile.files[0];
+
+        // Validar si se seleccionó un archivo
+        if (file) {
+
+            $("#SubirDimexModal").modal("show");
+        } else {
+            // Si no se seleccionó un archivo, mostrar un mensaje de error o realizar la acción que prefieras
+            alert("Debes de seleccionar una imagen");
+        }
+
+    });
+
+    // Evento de clic para confirmar la subida de la imagen
+    $("#confirmarSubidaDimex").click(function (event) {
+
+        // Obtener el formulario y los datos del formulario
+        var form = $("#expedienteForm")[0];
+        var formData = new FormData(form);
+
+        $.ajax({
+            url: '/Oferente/SubirImagenDimex',  // Reemplaza con la URL correcta de tu controlador
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+
+                if (data.exito == true) {
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+                    }
+                    else {
+                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+
+                    }
+                }
+                else {
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+                    }
+                    else {
+                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+
+                    }
+                }
+            },
+            error: function (error) {
+                // Manejar errores si es necesario
+                console.log(error);
+            }
+        });
+
+
+
+        // Cierra el modal de confirmación
+        $("#SubirDimexModal").modal("hide");
+    });
+
+
+
     if ($("#nombreVista").val() == "DatosPersonalesOferente") {
 
 
-        //cargar titulos
+        //se verifica que tipo de identificacion es, dinex o cedula
+        //si es diferente a 10 es cedula
+        if ($("#identification").val().length != 10) {
+
+            $.ajax({
+                type: "Get",
+                url: "/Oferente/ObtenerEstadoDimex",
+                data: {
+                    identificacion: $("#identification").val()
+                },
+                success: function (data) {
+
+                    if (data.error) {
+                        console.log(data.error);
+                    }
+                    else {
+                        if (data.estadoVerificacionDimex == 3) {
+                            //estado 3 significa que ha sido rechazado el documento
+                            $("#estadoDimex").val("Rechazado");
+                        }
+                        else if (data.estadoVerificacionDimex == 2) {
+                            //estado 2 significa que ha sido verificado el documento
+                            //no se va mostrar las opciones para subir imagen
+                            $("#divSubirDinex").hide();
+                            $("#mostrarModalSubirDimex").hide();
+                            $("#estadoDimex").val("Verificado");
+
+                        }
+                        else if (data.estadoVerificacionDimex == 1) {
+                            //estado 1 significa que ha sido enviado el documento
+                            $("#divSubirDinex").hide();
+                            $("#mostrarModalSubirDimex").hide();
+                            $("#estadoDimex").val("Enviado");
+                        }
+                        else {
+                            $("#estadoDimex").val("Pendiente");
+
+                        }
+
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+        } else {
+            //si se encuentra en un perfil con cedula y no dinex no se mostrara la seccion de dinex
+            $("#seccionDinex").hide();
+        }
+
+
+        //cargar idiomas
         $.ajax({
             type: "Get",
             url: "/Oferente/MostrarIdiomaLista",
@@ -54,9 +252,10 @@ $(document).ready(function () {
                     .then(data => {
 
 
+
                         // Llena el ComboBox con los cantones recibidos de la API
                         data.forEach(cantones => {
-                            cantonesDropdown.append($("<option>").val(cantones.idCanton).text(cantones.nombreCanton));
+                            $("#cantones").append($("<option>").val(cantones.idCanton).text(cantones.nombreCanton));
                         });
                     })
                     .catch(error => {
@@ -99,7 +298,7 @@ $(document).ready(function () {
 
                     // Llena el ComboBox con los cantones recibidos de la API
                     data.forEach(distritos => {
-                        distritosDropdown.append($("<option>").val(distritos.idDistrito).text(distritos.nombreDistrito));
+                        $("#distritos").append($("<option>").val(distritos.idDistrito).text(distritos.nombreDistrito));
                     });
                 })
                 .catch(error => {
@@ -137,9 +336,14 @@ $(document).ready(function () {
                 }
                 else {
                     //recibo la fecha en un formato yyyy-mm-ddT00:00:00 entonces solo nos interesa la parte que esta antes de la T
-                    var partesFecha = data.nacimiento.split('T');
+                    if (data.nacimiento != "" && data.nacimiento != null) {
+                        var partesFecha = data.nacimiento.split('T');
+                        var nacimiento = partesFecha[0];
+                        $("#nacimiento").val((nacimiento != null) ? nacimiento : "");
+                    }
 
-                    var nacimiento = partesFecha[0];
+
+
                     var provincia = data.idProvincia;
                     var canton = data.idCanton;
                     var distrito = data.idDistrito;
@@ -151,13 +355,14 @@ $(document).ready(function () {
 
 
                     //asignar los valores a los inputs
-                    $("#nacimiento").val((nacimiento != null) ? nacimiento : "");
+
                     $("#direccion").val((direccion != null) ? direccion : "");
                     $("#genero").val((genero != 0) ? genero : 0);
                     $("#grupoProfesional").val((grupo != 0) ? grupo : 0);
 
 
                     CargarDatosUbicaciones(provincia, canton, distrito);
+
 
 
 
@@ -692,7 +897,7 @@ $(document).ready(function () {
                         });
 
 
-                       
+
 
 
                     }
@@ -769,12 +974,12 @@ $(document).ready(function () {
                             data: {
                                 identificacion: $("#identification").val(),
                                 clave: $("#clave").val(),
-                                tipo: 1
+                                tipo: 2
                             },
                             success: function (data) {
                                 //recargar titulos
                                 //console.log(data);
-                                procesarRespuestaTitulos(data, 1);
+                                procesarRespuestaTitulos(data, 2);
                             },
                             error: function (error) {
                                 console.log("Error al cargar títulos: " + error);
@@ -860,12 +1065,12 @@ $(document).ready(function () {
                             data: {
                                 identificacion: $("#identification").val(),
                                 clave: $("#clave").val(),
-                                tipo: 1
+                                tipo: 3
                             },
                             success: function (data) {
                                 //recargar titulos
                                 //console.log(data);
-                                procesarRespuestaTitulos(data, 1);
+                                procesarRespuestaTitulos(data, 3);
                             },
                             error: function (error) {
                                 console.log("Error al cargar títulos: " + error);
@@ -2005,10 +2210,18 @@ $(document).ready(function () {
 
 
 
+    
 
 
 
 });
+
+
+
+
+
+
+
 
 
 
@@ -2184,14 +2397,14 @@ function agregarTituloALaTabla(titulo, num) {
 //el num va indicar cual tipo de titulo se va cargar, 1 secundaria, 2 universitario, 3 otros
 function procesarRespuestaTitulos(data, num) {
     if (num == 1) {
-        console.log("1");
+
         var tbody = document.getElementById("listaTitulosSecundaria");
     } else if (num == 2) {
-        console.log("2");
+      
 
         var tbody = document.getElementById("listaTitulosUniversitarios");
     } else {
-        console.log("3");
+      
 
         var tbody = document.getElementById("listaTitulosVarios");
     }
@@ -2200,7 +2413,7 @@ function procesarRespuestaTitulos(data, num) {
 
     //verificar si se retorno algo en el data
     if (data.vacio) {
-        console.log("vacio");
+      
 
         //no hay titulos para mostrar
         var mensajeTr = document.createElement("tr");
@@ -2213,7 +2426,7 @@ function procesarRespuestaTitulos(data, num) {
         tbody.appendChild(mensajeTr);
     }
     else {
-        console.log(" no vacio");
+       
 
         data.forEach(function (titulo) {
             agregarTituloALaTabla(titulo, num);
@@ -2300,6 +2513,8 @@ function procesarRespuestaIdiomas(data) {
 }
 
 
+
+
 function CargarDatosUbicaciones(provincia, canton, distrito) {
     //cargar provincias
     //URL de tu API que devuelve las provincias
@@ -2329,7 +2544,8 @@ function CargarDatosUbicaciones(provincia, canton, distrito) {
             });
 
             // Ahora que las opciones se han cargado, establece la selección
-            provinciasDropdown.val((provincia != 0) ? provincia : 0);
+            provinciasDropdown.val((provincia != 0 && provincia != null) ? provincia : 0);
+
         })
         .catch(error => {
             console.error(error);
@@ -2644,5 +2860,8 @@ function limpiarCamposModalExperiencia() {
     $("#fin").val("");
     $("#labores").val("");
 }
+
+
+
 
 

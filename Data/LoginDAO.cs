@@ -1,4 +1,5 @@
 ﻿using AplicacionRHGit.Clases;
+using AplicacionRHGit.Models.Dimex;
 using AplicacionRHGit.Models.Expedientes;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +22,21 @@ namespace AplicacionRHGit.Data
 
         public TSE ObtenerDatosPersonaPorCedula(string cedula)
         {
-
-            var persona = _context.TSE.Where(p => p.cedula == cedula).FirstOrDefault();
-            
-            if (persona != null) { 
-                return persona;
-            }
-            else
+            using (UtilidadesContext context = new UtilidadesContext())
             {
-                return null;
+                var persona = context.TSE.Where(p => p.cedula == cedula).FirstOrDefault();
+                if (persona != null)
+                {
+                    return persona;
+                }
+                else
+                {
+                    return null;
+                }
             }
+                
+            
+     
         }
 
 
@@ -156,6 +162,19 @@ namespace AplicacionRHGit.Data
                             _context.Titulo.Add(titulo);
                             _context.Referencia.Add(refrencia);
                             _context.Experiencia.Add(experiencia);
+
+
+                            //comprobar si es cedula o dimex
+                            //si es dimex agreagamos un registro a la tabla verificacionDimex para poder validar mas adelante el dimex de la persona
+                            if (identificacion.Length != 10)
+                            {
+                                VerificacionDimex dimex = new VerificacionDimex()
+                                {
+                                    idOferente= oferente.idOferente,
+                                    estado=0
+                                };
+                                _context.VerificacionDimex.Add(dimex);
+                            }
 
                             //guardar cambios
                             _context.SaveChanges();

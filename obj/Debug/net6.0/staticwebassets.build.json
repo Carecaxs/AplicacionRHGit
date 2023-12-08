@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hODsgMzfZs0cntZHU98/m2UqtNDCAa36wMWG4wwI4r8=",
+  "Hash": "9GRAekIXPUzTbF2lGqaMfZBM2AegwfW9E0Hc1YngoR4=",
   "Source": "AplicacionRHGit",
   "BasePath": "_content/AplicacionRHGit",
   "Mode": "Default",
@@ -119,12 +119,12 @@
       "OriginalItemSpec": "wwwroot\\Images\\msjCodigo.png"
     },
     {
-      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCorreo.png",
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCorreo.jpeg",
       "SourceId": "AplicacionRHGit",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
       "BasePath": "_content/AplicacionRHGit",
-      "RelativePath": "Images/msjCorreo.png",
+      "RelativePath": "Images/msjCorreo.jpeg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -133,7 +133,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Images\\msjCorreo.png"
+      "OriginalItemSpec": "wwwroot\\Images\\msjCorreo.jpeg"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\oferenteInicio.jpg",
@@ -170,6 +170,23 @@
       "OriginalItemSpec": "wwwroot\\Images\\reclutamiento.png"
     },
     {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesDimex\\0117860836\\dimex.png",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "ImagesDimex/0117860836/dimex.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ImagesDimex\\0117860836\\dimex.png"
+    },
+    {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesReferencias\\0117860836\\2.png",
       "SourceId": "AplicacionRHGit",
       "SourceType": "Discovered",
@@ -202,40 +219,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ImagesReferencias\\0117860836\\6.png"
-    },
-    {
-      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\12.png",
-      "SourceId": "AplicacionRHGit",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
-      "BasePath": "_content/AplicacionRHGit",
-      "RelativePath": "ImagesTitulos/0117860836/12.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\ImagesTitulos\\0117860836\\12.png"
-    },
-    {
-      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\8.png",
-      "SourceId": "AplicacionRHGit",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
-      "BasePath": "_content/AplicacionRHGit",
-      "RelativePath": "ImagesTitulos/0117860836/8.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\ImagesTitulos\\0117860836\\8.png"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Login\\login.js",
@@ -287,6 +270,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Oferente\\paginaInicio.js"
+    },
+    {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\postulaciones.js",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "js/Oferente/postulaciones.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Oferente\\postulaciones.js"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",

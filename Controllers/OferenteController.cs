@@ -1,5 +1,6 @@
 ﻿using AplicacionRHGit.Data;
 using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.Dimex;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.InstitucionesEducativas;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -124,7 +125,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification = "0117860836", string clave = "123")
+        public IActionResult TitulosOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -173,7 +174,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult ReferenciasOferente(string identification = "0117860836", string clave = "123")
+        public IActionResult ReferenciasOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -246,6 +247,182 @@ namespace AplicacionRHGit.Controllers
         }
 
 
+        public IActionResult VerOfertasOferente(string identification, string clave)
+        {
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Oferente", clave);
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.VistaActual = "VerOfertasOferente";
+
+
+                    return View();
+                }
+                else
+                {
+                    return NotFound();
+
+                }
+
+
+
+            }
+            else
+            {
+                return NotFound();
+
+            }
+        }
+
+
+
+        public IActionResult CrearOfertaOferente(string identification, string clave)
+        {
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Oferente", clave);
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.VistaActual = "CrearOfertaOferente";
+
+
+                    return View();
+                }
+                else
+                {
+                    return NotFound();
+
+                }
+
+
+
+            }
+            else
+            {
+                return NotFound();
+
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPost]
+        public JsonResult SubirImagenDimex(IFormCollection formData)
+        {
+            try
+            {
+                var foto = formData.Files["fotoDimex"];
+                if (foto != null && foto.Length > 0)
+                {
+                    // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+
+                    var carpetaDimex = Path.Combine(hostingEnvironment.WebRootPath, "ImagesDimex", formData["identificacion"].FirstOrDefault());
+
+
+                    // Crear la carpeta si no existe
+                    if (!Directory.Exists(carpetaDimex))
+                    {
+                        Directory.CreateDirectory(carpetaDimex);
+                    }
+
+                    // Obtener la extensión del archivo
+                    var extension = Path.GetExtension(foto.FileName);
+
+                    string parametroNombreImagen = "dimex";
+                    var nombreImagen = $"{parametroNombreImagen}{extension}";
+
+                    // Obtener la ruta completa de la imagen
+                    var rutaImagen = Path.Combine(carpetaDimex, nombreImagen);
+
+                    //comprobar si ya hay subida una imagen
+                    // Comprobar si existe un archivo con el nombre "dimex" en la carpeta
+                    var archivosConNombreDimex = Directory.GetFiles(carpetaDimex, "dimex.*");
+                    if (archivosConNombreDimex.Length > 0)
+                    {
+                        // Eliminar archivos existentes con el nombre "dimex"
+                        foreach (var archivoExistente in archivosConNombreDimex)
+                        {
+                            System.IO.File.Delete(archivoExistente);
+                        }
+
+                    }
+
+                    // Guardar la imagen en el servidor
+                    using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                    {
+                        foto.CopyTo(stream);
+                    }
+
+                    //actualizar estado a enviado
+                    //obtener id del oferente 
+                    var idOferente = _context.Oferente
+                                .Where(oferente => oferente.identificacion == formData["identificacion"].FirstOrDefault())
+                                .Select(oferente => oferente.idOferente)
+                                .FirstOrDefault();
+
+                    var verificacionDimex = _context.VerificacionDimex.SingleOrDefault(d => d.idOferente == idOferente);
+                    if (verificacionDimex != null)
+                    {
+                        verificacionDimex.estado = 1;
+                        _context.SaveChanges();
+                    }
+
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { exito = false });
+
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult ObtenerEstadoDimex(string identificacion)
+        {
+            try
+            {
+                //obtener id del oferente 
+                var idOferente = _context.Oferente
+                            .Where(oferente => oferente.identificacion == identificacion)
+                            .Select(oferente => oferente.idOferente)
+                            .FirstOrDefault();
+
+                var estadoVerificacionDimex = _context.VerificacionDimex
+                               .Where(verificacion => verificacion.idOferente == idOferente)
+                               .Select(verificacion => verificacion.estado)
+                               .FirstOrDefault();
+
+                return Json(new { estadoVerificacionDimex });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
 
         [HttpGet]
         public JsonResult ObtenerDatosPersonalesEx(string identificacion)
@@ -493,28 +670,29 @@ namespace AplicacionRHGit.Controllers
                 .Select(t => t.ID_TITULO)
                 .FirstOrDefault();
 
+
             var titulos = _context.DetalleTitulo
-                 .Where(dt => dt.ID_TITULO == idTitulo)
-                 .Join(
-                     _context.GradoAcademico,
-                     dt => dt.TIPO_TITULO,
-                     ga => ga.id,
-                     (dt, ga) => new
-                     {
-                         dt.ID_DETALLE_TITULOS,
-                         dt.ESPECIALIDAD,
-                         dt.ESTADO,
-                         dt.ASIENTO,
-                         ga.gradoAcademico,
-                         ga.id
-                     }
-                 )
-                 .Where(result =>
-                     (tipo == 1 && result.id == 1) ||
-                     (tipo == 2 && (result.id == 4 || result.id == 5 || result.id == 6 || result.id == 7)) ||
-                     (tipo == 3 && (result.id == 2 || result.id == 3))
-                 )
-                 .ToList();
+            .Where(dt => dt.ID_TITULO == idTitulo)
+            .Join(
+                _context.GradoAcademico,
+                dt => dt.TIPO_TITULO,
+                ga => ga.id,
+                (dt, ga) => new
+                {
+                    dt.ID_DETALLE_TITULOS,
+                    dt.ESPECIALIDAD,
+                    dt.ESTADO,
+                    dt.ASIENTO,
+                    ga.gradoAcademico,
+                    ga.id
+                }
+            )
+            .Where(result =>
+                (tipo == 1 && result.id == 1) ||
+                (tipo == 2 && (result.id == 4 || result.id == 5 || result.id == 6 || result.id == 7)) ||
+                (tipo == 3 && (result.id == 2 || result.id == 3))
+            )
+            .ToList();
 
 
 
@@ -527,6 +705,8 @@ namespace AplicacionRHGit.Controllers
                 return Json(new { vacio = true });
 
             }
+
+
 
         }
 
@@ -706,16 +886,20 @@ namespace AplicacionRHGit.Controllers
         [HttpGet]
         public JsonResult MostrarInstitutosDiplomados()
         {
-            //contiene grados: diplomados
-            //si contiene nombre de carreras
-            List<string> instituciones = _context.u_paracarreras
+            using (UtilidadesContext context = new UtilidadesContext())
+            {
+                //contiene grados: diplomados
+                //si contiene nombre de carreras
+                List<string> instituciones = context.u_paracarreras
              .Select(c => c.universidad)
              .Distinct()
              .OrderBy(universidad => universidad)
              .ToList();
 
 
-            return Json(instituciones);
+                return Json(instituciones);
+            }
+
 
         }
 
@@ -725,15 +909,19 @@ namespace AplicacionRHGit.Controllers
         [HttpGet]
         public JsonResult MostrarCarrerasDiplomados(string instituto)
         {
-            List<string> carreras = _context.u_paracarreras
-                  .Where(c => c.universidad == instituto)
-                  .Select(c => c.nombre_carrera)
-                  .Distinct()
-                  .OrderBy(nombreCarrera => nombreCarrera)
-                  .ToList();
+            using (UtilidadesContext context = new UtilidadesContext())
+            {
+                List<string> carreras = context.u_paracarreras
+                .Where(c => c.universidad == instituto)
+                .Select(c => c.nombre_carrera)
+                .Distinct()
+                .OrderBy(nombreCarrera => nombreCarrera)
+                .ToList();
 
 
-            return Json(carreras);
+                return Json(carreras);
+            }
+
         }
 
 
@@ -742,10 +930,14 @@ namespace AplicacionRHGit.Controllers
         [HttpGet]
         public JsonResult MostrarCarreras(string instituto)
         {
-            //contiene grados bachillerato-maestria-licenciatura
-            //si contiene nombre de carreras
 
-            List<string> carreras = _context.u_carreras
+
+            using (UtilidadesContext context = new UtilidadesContext())
+            {
+                //contiene grados bachillerato-maestria-licenciatura
+                //si contiene nombre de carreras
+
+                List<string> carreras = context.u_carreras
                      .Where(c => c.universidad.Contains(instituto))
                      .Select(c => c.nombre_carrera)
                      .Distinct()
@@ -754,7 +946,9 @@ namespace AplicacionRHGit.Controllers
 
 
 
-            return Json(carreras);
+                return Json(carreras);
+            }
+
 
 
         }
@@ -764,16 +958,20 @@ namespace AplicacionRHGit.Controllers
         {
             //universidades
             //no contiene grados
-            List<string> instituciones = _context.u_universidades
-                          .Select(u => u.siglas_universidad)
-                          .Distinct()
-                          .OrderBy(siglas => siglas)
-                          .ToList();
+            using (UtilidadesContext context = new UtilidadesContext())
+            {
+                List<string> instituciones = context.u_universidades
+                  .Select(u => u.siglas_universidad)
+                  .Distinct()
+                  .OrderBy(siglas => siglas)
+                  .ToList();
 
 
 
 
-            return Json(instituciones);
+                return Json(instituciones);
+            }
+
 
         }
 
@@ -855,7 +1053,7 @@ namespace AplicacionRHGit.Controllers
 
                 List<DETALLE_REFERENCIAS> referencias = acceso.CargarReferencias(identificacion, clave, tipoReferencia);
 
-                if (referencias != null)
+                if (referencias != null && referencias.Any())
                 {
                     return Json(referencias);
                 }
@@ -1026,8 +1224,218 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        ///////////////////////////////////////////////////////    SECCION ver OFERTAS LABORALES ////////////////////////////////////////////////////////////////
+
+
+        [HttpGet]
+        public JsonResult CargarOfertas(int provincia, int canton, int idMateria)
+        {
+            try
+            {
+
+
+                var consulta = from oferta in _context.Oferta_Laboral
+                               join institucion in _context.Institucion on oferta.id_institucion equals institucion.ID_INSTITUCION
+                               join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
+
+                               where (provincia == 0 || institucion.IdProvincia == provincia) &&
+                                     (canton == 0 || institucion.IdCanton == canton) &&
+                                     (idMateria == 0 || oferta.id_materia == idMateria) &&
+                                     (oferta.estado == false) &&
+                                     (oferta.cantidadVacantes > 0)
+                               orderby oferta.fecha_publicacion descending  // Ordenar por fecha de publicación de mayor a menor
+                               select new
+                               {
+                                   idOferta = oferta.id_oferta,
+                                   nombreOferta = oferta.titulo,
+                                   descripcionOferta = oferta.descripcion,
+                                   publicacionOferta = oferta.fecha_publicacion,
+                                   nombreInstitucion = institucion.NOMBRE,
+                                   nombreMateria = materia.Nombre
+                               };
+
+
+                if (consulta != null && consulta.Any())
+                {
+                    return Json(consulta);
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+        }
+
+
+        [HttpGet]
+        public JsonResult ObtenerDatosOferta(int idOferta)
+        {
+            try
+            {
+
+
+                var consulta = (from oferta in _context.Oferta_Laboral
+                                join institucion in _context.Institucion on oferta.id_institucion equals institucion.ID_INSTITUCION
+                                join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
+
+                                where (idOferta == 0 || oferta.id_oferta == idOferta)
+                                select new
+                                {
+                                    idOferta = oferta.id_oferta,
+                                    nombreOferta = oferta.titulo,
+                                    descripcionOferta = oferta.descripcion,
+                                    publicacionOferta = oferta.fecha_publicacion,
+                                    nombreInstitucion = institucion.NOMBRE,
+                                    nombreMateria = materia.Nombre
+                                }).FirstOrDefault();
+
+
+                if (consulta != null)
+                {
+                    return Json(consulta);
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+
+
+
+        }
+
+
+
+
+        [HttpGet]
+        public JsonResult CargarMaterias()
+        {
+            var materias = _context.Materia.ToList();
+
+            if (materias != null && materias.Any())
+            {
+                return Json(materias);
+
+            }
+            else
+            {
+                return Json(new { vacio = true });
+
+            }
+        }
+
+
+
+        [HttpPost]
+        public JsonResult AgregarPostulacion(int idOferta, string identificacion)
+        {
+            try
+            {
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                int retorno = oferentesDAO.AgregarPostulacion(idOferta, identificacion);
+                if (retorno > 0)
+                {
+                    //sale bien 
+                    return Json(new { exito = true });
+
+                }
+                else if (retorno == -2)
+                {
+                    return Json(new { exito = false, existe = true });
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        ///////////////////////////////////////////////////////    SECCION crear OFERTAS LABORALES ////////////////////////////////////////////////////////////////
+
+        [HttpPost]
+        public JsonResult CrearOferta(IFormCollection form)
+        {
+            try
+            {
+                int idProvincia = int.Parse(form["provincias"].FirstOrDefault());
+                // Recibir la cadena JSON del campo "listaMaterias" en el formulario
+                string listaMateriasJson = form["listaMaterias"];
+
+                // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
+                List<int> listaMaterias = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaMateriasJson);
+
+    
+                int idCanton = int.Parse(form["cantones"].FirstOrDefault());
+                string descripcion = form["descripcion"].FirstOrDefault();
+                string identificacion = form["identificacion"].FirstOrDefault();
+
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+
+                int retorno = oferentesDAO.CrearOferta(identificacion, idProvincia, idCanton, descripcion, listaMaterias);
+
+                if (retorno>0)
+                {
+                    return Json(new { exito = true});
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+
 
     }
+
 }
 
 

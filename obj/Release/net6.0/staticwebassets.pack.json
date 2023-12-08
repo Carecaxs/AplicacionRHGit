@@ -5,12 +5,16 @@
       "PackagePath": "staticwebassets\\AplicacionRHGit.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesDimex\\0117860836\\dimex.png",
+      "PackagePath": "staticwebassets\\ImagesDimex\\0117860836\\dimex.png"
+    },
+    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesReferencias\\0117860836\\2.png",
       "PackagePath": "staticwebassets\\ImagesReferencias\\0117860836\\2.png"
     },
     {
-      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesTitulos\\0117860836\\8.png",
-      "PackagePath": "staticwebassets\\ImagesTitulos\\0117860836\\8.png"
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\ImagesReferencias\\0117860836\\6.png",
+      "PackagePath": "staticwebassets\\ImagesReferencias\\0117860836\\6.png"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondo.jpg",
@@ -21,8 +25,8 @@
       "PackagePath": "staticwebassets\\Images\\msjCodigo.png"
     },
     {
-      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCorreo.png",
-      "PackagePath": "staticwebassets\\Images\\msjCorreo.png"
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCorreo.jpeg",
+      "PackagePath": "staticwebassets\\Images\\msjCorreo.jpeg"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\oferenteInicio.jpg",
@@ -51,6 +55,10 @@
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\paginaInicio.js",
       "PackagePath": "staticwebassets\\js\\Oferente\\paginaInicio.js"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\postulaciones.js",
+      "PackagePath": "staticwebassets\\js\\Oferente\\postulaciones.js"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",
