@@ -15,12 +15,16 @@ namespace AplicacionRHGit.Models.Expedientes
         public int TIPO_TITULO { get; set; }
 
 
-        public string NOMBRE_INSTITUCION { get; set; }
+        public int ID_INSTITUCION { get; set; }
 
 
         public string ESPECIALIDAD { get; set; }
-        public DateTime FECHA_OBTENCION { get; set; }
+        public DateTime FECHA_INICIO { get; set; }
+        public DateTime FECHA_FIN { get; set; }
+
+        public int TOMO { get; set; }
         public int FOLIO { get; set; }
+
         public int ASIENTO { get; set; }
         public char ESTADO { get; set; }
 

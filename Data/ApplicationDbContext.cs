@@ -3,6 +3,7 @@ using AplicacionRHGit.Models.Dimex;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.InstitucionesEducativas;
 using AplicacionRHGit.Models.OfertasLaborales;
+using AplicacionRHGit.Models.Ubicaciones;
 using Microsoft.EntityFrameworkCore;
 using Proyecto.Models;
 
@@ -35,6 +36,10 @@ namespace AplicacionRHGit.Data
         public DbSet<Postulaciones_Oferente> Postulaciones_Oferente { get; set; }
         public DbSet<Oferta_Creada_Oferente> Oferta_Creada_Oferente { get; set; }
         public DbSet<Materia_Oferta_Creada_Oferente> Materia_Oferta_Creada_Oferente { get; set; }
+        public DbSet<Provincia> Provincia { get; set; }
+        public DbSet<Canton> Canton { get; set; }
+        public DbSet<CentrosEducativos> CentrosEducativos { get; set; }
+
 
 
 

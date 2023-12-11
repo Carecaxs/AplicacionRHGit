@@ -258,7 +258,7 @@ namespace AplicacionRHGit.Data
 
 
         //retorna el id del tetilo añadido si todos sale bien , -1 si no sale bien
-        public int AgregarTitulo(IFormCollection form)
+        public int AgregarTituloSecundaria(IFormCollection form)
         {
             int retorno = -1;
             var identificacion = form["identificacion"].FirstOrDefault();
@@ -289,52 +289,16 @@ namespace AplicacionRHGit.Data
                 DETALLE_TITULO datosTitulo = new DETALLE_TITULO()
                 {
                     ID_TITULO = idTitulo,
-                    TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault()),
-                    FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault()),
-                    ESTADO = 'P'
-                };
-
-                if (!string.IsNullOrEmpty(form["titulo"].FirstOrDefault()))
-                {
-                    // El título existe, puedes asignarlo a ESPECIALIDAD
-                    datosTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
-                }
-                else
-                {
-                    datosTitulo.ESPECIALIDAD = form["carreras"].FirstOrDefault();
-                }
-
-
-                if (!string.IsNullOrEmpty(form["institucion"].FirstOrDefault()))
-                {
-                    // El título existe, puedes asignarlo a ESPECIALIDAD
-                    datosTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
-                }
-                else
-                {
-                    datosTitulo.NOMBRE_INSTITUCION = form["instituto"].FirstOrDefault();
-                }
-
-                if (!string.IsNullOrEmpty(form["folio"].FirstOrDefault()))
-                {
-                    datosTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
-                }
-                else
-                {
-                    datosTitulo.FOLIO = 0;
-                }
-
-
-                if (!string.IsNullOrEmpty(form["asiento"].FirstOrDefault()))
-                {
-                    datosTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
-                }
-                else
-                {
-                    datosTitulo.ASIENTO = 0;
-                }
-
-
+                    TIPO_TITULO = 1,
+                    FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault()),
+                    FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault()),
+                    ESTADO = 'P',
+                    ESPECIALIDAD="Bachillerato Secundaria",
+                    ID_INSTITUCION= int.Parse(form["instituto"].FirstOrDefault()),
+                    TOMO=0,
+                    FOLIO=0,
+                    ASIENTO=0
+            };
 
                 _context.DetalleTitulo.Add(datosTitulo);
                 _context.SaveChanges();
@@ -389,7 +353,7 @@ namespace AplicacionRHGit.Data
             //filtrar en una lista los titulos por id
             List<DETALLE_TITULO> titulos = _context.DetalleTitulo
             .Where(t => t.ID_TITULO == idTitulo)
-            .OrderByDescending(t => t.FECHA_OBTENCION)
+            .OrderByDescending(t => t.FECHA_FIN)
             .ToList();
 
 
@@ -428,32 +392,8 @@ namespace AplicacionRHGit.Data
         }
 
 
-        public DETALLE_TITULO MostrarTitulo(string idTitulo)
-        {
-            try
-            {
-                var titulo = _context.DetalleTitulo.Find(int.Parse(idTitulo));
-
-                if (titulo != null)
-                {
-
-                    return titulo;
-                }
-                else
-                {
-                    return  null;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-
-            }
-        }
-
-
         //este metodo actualiza los datos del titulo
-        public int ActualizarTitulo(IFormCollection form)
+        public int ActualizarTituloSecundaria(IFormCollection form)
         {
             var idDetalleTitulo = form["idTitulo"].FirstOrDefault();
 
@@ -462,52 +402,10 @@ namespace AplicacionRHGit.Data
             if (detalleTitulo != null)
             {
                 // Modificar las propiedades
-                detalleTitulo.TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault());
-                detalleTitulo.FECHA_OBTENCION = DateTime.Parse(form["fechaObtenido"].FirstOrDefault());
-                detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
-                detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
-
-
-                if (!string.IsNullOrEmpty(form["titulo"].FirstOrDefault()))
-                {
-                    // El título existe, puedes asignarlo a ESPECIALIDAD
-                    detalleTitulo.ESPECIALIDAD = form["titulo"].FirstOrDefault();
-                }
-                else
-                {
-                    detalleTitulo.ESPECIALIDAD = form["carreras"].FirstOrDefault();
-                }
-
-
-                if (!string.IsNullOrEmpty(form["institucion"].FirstOrDefault()))
-                {
-                    // El título existe, puedes asignarlo a ESPECIALIDAD
-                    detalleTitulo.NOMBRE_INSTITUCION = form["institucion"].FirstOrDefault();
-                }
-                else
-                {
-                    detalleTitulo.NOMBRE_INSTITUCION = form["instituto"].FirstOrDefault();
-                }
-
-
-                if (!string.IsNullOrEmpty(form["folio"].FirstOrDefault()))
-                {
-                    detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
-                }
-                else
-                {
-                    detalleTitulo.FOLIO = 0;
-                }
-
-
-                if (!string.IsNullOrEmpty(form["asiento"].FirstOrDefault()))
-                {
-                    detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
-                }
-                else
-                {
-                    detalleTitulo.ASIENTO = 0;
-                }
+                detalleTitulo.TIPO_TITULO = 1;
+                detalleTitulo.FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault());
+                detalleTitulo.FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault());
+                detalleTitulo.ID_INSTITUCION = int.Parse(form["instituto"].FirstOrDefault());
 
                 // Guardar los cambios
                 _context.SaveChanges();
@@ -518,9 +416,6 @@ namespace AplicacionRHGit.Data
                 return -1;
             }
 
-            
-
-          
         }
 
 

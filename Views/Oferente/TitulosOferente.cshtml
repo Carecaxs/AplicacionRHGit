@@ -46,9 +46,14 @@
                 <tbody id="listaTitulosSecundaria">
                 </tbody>
             </table>
-
-
-            <h2 class="text-center mt-5">Universitarios</h2>
+            <!-- Botón para Añadir titulo secundaria -->
+            <div class="form-group col-sm-12">
+                <button id="abrirModalAgregarTituloSecundaria" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloSecundariaModal">
+                    Añadir Título
+                </button>
+            </div>
+            <hr class="mt-5"/>
+            <h2 class="text-center">Universitarios</h2>
 
             <table id="tablaTitulosUniversitarios" class="table table-bordered">
                 <thead class="tabla-head">
@@ -61,6 +66,7 @@
                 </thead>
                 <tbody id="listaTitulosUniversitarios">
                 </tbody>
+
             </table>
 
 
@@ -80,12 +86,7 @@
             </table>
 
 
-            <!-- Botón para Añadir Título -->
-            <div class="form-group col-sm-12">
-                <button id="abrirModalAgregarTitulo" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloModal">
-                    Añadir Título
-                </button>
-            </div>
+
             <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
                 <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
@@ -215,7 +216,83 @@
 
 
 
+    <!-- Modal para Añadir Diplomado -->
+    <div class="modal fade" id="agregarTituloSecundariaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Título Secundaria-->
+                    <form id="formAgregarTituloSecundaria" method="post">
 
+                        <div class="row mt-3 divUbicacionSecundaria">
+                            <div class="col-md-6">
+                                <label for="provinciasSecudaria">Provincia:</label>
+                                <select id="provinciasSecudaria" class="form-control provincias" tabindex="1">
+                                    <!-- Opciones de provincias -->
+                                    <option value="null">Seleccione una opción</option>
+
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cantonesSecundaria">Cantón:</label>
+                                <select id="cantonesSecundaria" class="form-control cantones" tabindex="2">
+                                    <!-- Opciones de cantones -->
+                                    <option value="null">Seleccione una opción</option>
+
+                                </select>
+                            </div>
+         
+
+                        </div>
+                        <div class="form-group" id="divInstitutoSecundaria">
+                            <label for="institutoSecundaria">Institución:</label>
+                            <select id="institutoSecundaria" class="form-control" name="instituto" required tabindex="3">
+                           
+
+                            </select>
+                        </div>
+
+                        
+                        <div class="form-group col-sm-6">
+                            <label for="fechaInicio">Fecha Inicio:</label>
+                            <input id="fechaInicioSecundaria" type="text" class="form-control" name="fechaInicio" required tabindex="4" />
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label for="fechaFin">Fecha Fin:</label>
+                            <input id="fechaFinSecundaria" type="text" class="form-control" name="fechaFin" required tabindex="5" />
+                        </div>
+
+
+
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group">
+                            <label for="fotoTituloSecundaria">Subir Foto del Título:</label>
+                            <div>
+                                <input id="fotoTituloSecundaria" type="file" class="form-control-file" name="fotoTitulo" accept="image/*" required tabindex="6" />
+                                
+                            </div>
+                            <img id="previewImage" src="#" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
+
+                        </div>
+                        <!-- Agrega un botón para rotar la imagen -->
+                        <button id="rotateLeft" class="btn btn-primary" data-method="rotate" data-option="-90" title="Girar a la izquierda">Girar Izquierda</button>
+                        <button id="rotateRight" class="btn btn-primary" data-method="rotate" data-option="90" title="Girar a la derecha">Girar Derecha</button>
+
+                        <button id="agregarTituloSecundaria" class="btn btn-success mt-2" tabindex="7">Guardar Título</button>
+                        <button id="actualizarTituloSecundaria" class="btn btn-success mt-2" tabindex="8">Guardar Cambios</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </main>

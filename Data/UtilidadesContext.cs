@@ -15,6 +15,8 @@ namespace AplicacionRHGit.Data
         public DbSet<u_carreras> u_carreras { get; set; }
         public DbSet<u_universidades> u_universidades { get; set; }
 
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

@@ -3,6 +3,7 @@ using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Dimex;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.InstitucionesEducativas;
+using AplicacionRHGit.Models.Ubicaciones;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -125,7 +126,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification, string clave)
+        public IActionResult TitulosOferente(string identification="0117860836", string clave="123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -145,13 +146,6 @@ namespace AplicacionRHGit.Controllers
                     // Pasar los datos a la vista
                     ViewData["Grados"] = new SelectList(grados, "id", "gradoAcademico");
 
-
-
-                    List<DETALLE_TITULO> titulos = oferentesDAO.CargarTitulos(identification, clave);
-                    if (titulos != null)
-                    {
-                        ViewData["Titulos"] = new SelectList(titulos);
-                    }
 
 
 
@@ -247,7 +241,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult VerOfertasOferente(string identification, string clave)
+        public IActionResult BuscarOfertasOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -259,7 +253,7 @@ namespace AplicacionRHGit.Controllers
                     ViewBag.nombre = persona.nombre;
                     ViewBag.identificacion = identification;
                     ViewBag.clave = clave;
-                    ViewBag.VistaActual = "VerOfertasOferente";
+                    ViewBag.VistaActual = "BuscarOfertasOferente";
 
 
                     return View();
@@ -295,6 +289,42 @@ namespace AplicacionRHGit.Controllers
                     ViewBag.identificacion = identification;
                     ViewBag.clave = clave;
                     ViewBag.VistaActual = "CrearOfertaOferente";
+
+
+                    return View();
+                }
+                else
+                {
+                    return NotFound();
+
+                }
+
+
+
+            }
+            else
+            {
+                return NotFound();
+
+            }
+        }
+
+
+
+
+        public IActionResult VerOfertasOferente(string identification="0117860836", string clave="123")
+        {
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Oferente", clave);
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.VistaActual = "VerOfertasOferente";
 
 
                     return View();
@@ -590,13 +620,13 @@ namespace AplicacionRHGit.Controllers
 
         ////////////////////////////////////////////////   seccion titulos ///////////////////////////////////////////////////////
         [HttpPost]
-        public JsonResult AgregarTitulo(IFormCollection formData)
+        public JsonResult AgregarTituloSecundaria(IFormCollection formData)
         {
 
             try
             {
                 OferentesDAO acceso = new OferentesDAO(_context);
-                int idTitulo = acceso.AgregarTitulo(formData);
+                int idTitulo = acceso.AgregarTituloSecundaria(formData);
 
                 if (idTitulo != -1)
                 {
@@ -761,8 +791,21 @@ namespace AplicacionRHGit.Controllers
         [HttpGet]
         public JsonResult MostrarTitulo(string idTitulo, string identificacion)
         {
-            OferentesDAO oferentesDAO = new OferentesDAO(_context);
-            var titulo = oferentesDAO.MostrarTitulo(idTitulo);
+            var titulo = from detalleTitulo in _context.DetalleTitulo
+                            where detalleTitulo.ID_DETALLE_TITULOS == int.Parse(idTitulo)
+                            select new
+                            {
+                                idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                idTitulo=detalleTitulo.ID_TITULO,
+                                tipoTitulo = detalleTitulo.TIPO_TITULO,
+                                idInstituto = detalleTitulo.ID_INSTITUCION,
+                                fechaInicio = detalleTitulo.FECHA_INICIO,
+                                fechaFin = detalleTitulo.FECHA_FIN,
+                                tomo = detalleTitulo.TOMO,
+                                folio = detalleTitulo.FOLIO,
+                                asiento = detalleTitulo.ASIENTO,
+                                estado = detalleTitulo.ESTADO
+                            };
 
             try
             {
@@ -793,80 +836,80 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        [HttpPost]
-        public JsonResult ActualizarTitulo(IFormCollection formData)
-        {
-            var fotoTitulo = formData.Files["fotoTitulo"];
-            OferentesDAO acceso = new OferentesDAO(_context);
+        //[HttpPost]
+        //public JsonResult ActualizarTitulo(IFormCollection formData)
+        //{
+        //    var fotoTitulo = formData.Files["fotoTitulo"];
+        //    OferentesDAO acceso = new OferentesDAO(_context);
 
-            if (fotoTitulo != null && fotoTitulo.Length > 0)
-            {
-                //eliminar foto existente y agregar la nueva
+        //    if (fotoTitulo != null && fotoTitulo.Length > 0)
+        //    {
+        //        //eliminar foto existente y agregar la nueva
 
-                if (acceso.ActualizarTitulo(formData) == 1)
-                {
-                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
-
-
-                    // Buscar el archivo en el directorio
-                    string[] archivos = Directory.GetFiles(carpetaCedula, formData["idTitulo"].FirstOrDefault() + ".*");
-
-                    if (archivos.Length > 0)
-                    {
-                        if (System.IO.File.Exists(archivos[0]))
-                        {
-                            // Elimina el archivo
-                            System.IO.File.Delete(archivos[0]);
-
-                        }
-
-                    }
+        //        if (acceso.ActualizarTitulo(formData) == 1)
+        //        {
+        //            var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        //            var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
 
 
-                    //ahora vamos agregar la nueva imagen
-                    var extension = Path.GetExtension(fotoTitulo.FileName);
+        //            // Buscar el archivo en el directorio
+        //            string[] archivos = Directory.GetFiles(carpetaCedula, formData["idTitulo"].FirstOrDefault() + ".*");
 
-                    // Crear un nombre único para la imagen (id del detalle_titulo)
-                    var nombreImagen = $"{formData["idTitulo"].FirstOrDefault()}{extension}";
+        //            if (archivos.Length > 0)
+        //            {
+        //                if (System.IO.File.Exists(archivos[0]))
+        //                {
+        //                    // Elimina el archivo
+        //                    System.IO.File.Delete(archivos[0]);
 
-                    // Obtener la ruta completa de la imagen
-                    var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+        //                }
 
-                    // Guardar la imagen en el servidor
-                    using (var stream = new FileStream(rutaImagen, FileMode.Create))
-                    {
-                        fotoTitulo.CopyTo(stream);
-                    }
-
-
-                    return Json(new { exito = true });
-
-                }
-                else
-                {
-                    return Json(new { exito = false });
-
-                }
-            }
-            else
-            {
-                //se actualizan los datos sin cambiar la imagen
-                if (acceso.ActualizarTitulo(formData) == 1)
-                {
-                    return Json(new { exito = true });
-
-                }
-                else
-                {
-                    return Json(new { exito = false });
-
-                }
-            }
+        //            }
 
 
+        //            //ahora vamos agregar la nueva imagen
+        //            var extension = Path.GetExtension(fotoTitulo.FileName);
 
-        }
+        //            // Crear un nombre único para la imagen (id del detalle_titulo)
+        //            var nombreImagen = $"{formData["idTitulo"].FirstOrDefault()}{extension}";
+
+        //            // Obtener la ruta completa de la imagen
+        //            var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+        //            // Guardar la imagen en el servidor
+        //            using (var stream = new FileStream(rutaImagen, FileMode.Create))
+        //            {
+        //                fotoTitulo.CopyTo(stream);
+        //            }
+
+
+        //            return Json(new { exito = true });
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { exito = false });
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //se actualizan los datos sin cambiar la imagen
+        //        if (acceso.ActualizarTitulo(formData) == 1)
+        //        {
+        //            return Json(new { exito = true });
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { exito = false });
+
+        //        }
+        //    }
+
+
+
+        //}
 
 
 
@@ -971,6 +1014,28 @@ namespace AplicacionRHGit.Controllers
 
                 return Json(instituciones);
             }
+
+
+        }
+
+
+
+        [HttpGet]
+        public JsonResult MostrarInstitutosSecundaria(int idCanton)
+        {
+
+            var instituciones = _context.CentrosEducativos
+                           .Where(ce => (idCanton == 0 || ce.Cod_Cant == idCanton) && ce.Tipo_Ins == 3)
+                           .Select(ce => new
+                           {
+                               codInstitucion = ce.Cod_Presupuestario,
+                               nombreInstitucion = ce.Nombre_Institucion
+                           })
+                           .ToList();
+
+
+
+            return Json(instituciones);
 
 
         }
@@ -1224,7 +1289,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        ///////////////////////////////////////////////////////    SECCION ver OFERTAS LABORALES ////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////    SECCION buscar OFERTAS LABORALES ////////////////////////////////////////////////////////////////
 
 
         [HttpGet]
@@ -1430,6 +1495,73 @@ namespace AplicacionRHGit.Controllers
 
 
         }
+
+
+
+
+
+
+        ///////////////////////////////////////////////////////    SECCION ver mis OFERTAS LABORALES ////////////////////////////////////////////////////////////////
+
+
+        [HttpGet]
+        public JsonResult CargarMisOfertas(string identificacion)
+        {
+            try
+            {
+
+                // Obtener el idOferente usando la identificación
+                var idOferente = _context.Oferente
+                    .Where(o => o.identificacion == identificacion)
+                    .Select(o => o.idOferente)
+                    .FirstOrDefault();
+
+
+                var ofertas = from oferta in _context.Oferta_Creada_Oferente
+                              where oferta.idOferente == idOferente && oferta.estado == false
+                              join materiaOferta in _context.Materia_Oferta_Creada_Oferente
+                              on oferta.id equals materiaOferta.id_Ofertas_Creadas_Oferentes
+                              join materia in _context.Materia
+                                  on materiaOferta.ID_Materia equals materia.ID_Materia
+                              join provincia in _context.Provincia on oferta.IdProvincia equals provincia.IdProvincia
+                              join canton in _context.Canton on oferta.IdCanton equals canton.IdCanton
+
+                              select new
+                              {
+                                  idOferta = oferta.id,
+                                  descripcionOferta = oferta.descripcion,
+                                  publicacionOferta = oferta.fecha_publicacion,
+                                  estadoOferta = oferta.estado,
+                                  materia = materia.Nombre,
+                                  provincia = provincia.NombreProvincia,
+                                  canton = canton.NombreCanton
+                              };
+
+
+                if (ofertas != null)
+                {
+                    return Json(ofertas);
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+
+            }
+
+        }
+
+
+
+
 
 
 
