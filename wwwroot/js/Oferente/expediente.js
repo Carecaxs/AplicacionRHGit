@@ -539,83 +539,22 @@ $(document).ready(function () {
 
 
 
-    $('#instituto').on('change', function () {
+    $('#institutoUniversitario').on('change', function () {
+        if ($(this).val() != null && $(this).val() != "") {
+            CargarCarrerasUniversitarias();
+        }
+ 
+        
+    });
 
 
-
-        switch (tipoCarrera) {
-            case 1:
-
-
-                $.ajax({
-                    type: "GET",
-                    url: "/Oferente/MostrarCarrerasDiplomados",
-                    data: {
-                        instituto: $(this).find(":selected").text()
-                    },
-                    success: function (data) {
-
-
-                        // Obtener el elemento select
-                        var selectCarreras = $('#carreras');
-
-                        // Limpiar opciones existentes
-                        selectCarreras.empty();
-
-                        // Iterar sobre la lista de instituciones y agregar opciones al select
-                        $.each(data, function (index, carreras) {
-
-                            selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
-                        });
-
-                        $("#divCarrera").show();
-                        $("#divFolio").show();
-                        $("#divAsiento").show();
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-
-                break;
-            case 2:
-
-                $.ajax({
-                    type: "GET",
-                    url: "/Oferente/MostrarCarreras",
-                    data: {
-                        instituto: $(this).find(":selected").text()
-                    },
-                    success: function (data) {
-
-
-                        // Obtener el elemento select
-                        var selectCarreras = $('#carreras');
-
-                        // Limpiar opciones existentes
-                        selectCarreras.empty();
-
-                        // Iterar sobre la lista de instituciones y agregar opciones al select
-                        $.each(data, function (index, carreras) {
-
-                            selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
-                        });
-
-                        $("#divCarrera").show();
-                        $("#divFolio").show();
-                        $("#divAsiento").show();
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-                break;
-
+    $('#institutoDiploma').on('change', function () {
+        if ($(this).val() != null && $(this).val() != "") {
+            CargarCarrerasDiplomas();
         }
 
 
     });
-
 
 
 
@@ -628,14 +567,11 @@ $(document).ready(function () {
         AgregarMascarasPaginaTitulos();
 
 
-        let tipoCarrera;//variable guarda si se va mostrar carreras de diplomado (1) o bachillerato, licenciatura, maestria (2),
-        //y si es tecnico o secundaria(3)
-
         //cargar titulos secundaria
         CargarTitulos(1);
 
         ////cargar titulos universitarios
-        //CargarTitulos(2);
+        CargarTitulos(2);
 
 
         ////cargar otros titulos
@@ -643,40 +579,36 @@ $(document).ready(function () {
 
     }
 
+    $('#abrirModalAgregarTituloUniversitario').click(function () {
+
+        CargarGradosUniversitarios();
+        CargarUniversidades();
+    });
+
+
+    $('#abrirModalAgregarTituloDiploma').click(function () {
+
+        CargarUniversidades();
+    });
+
+
     //evento al elegir imagen de titulo
-    var cropper;
-    $('#fotoTituloSecundaria').change(function () {
-      
+
+    $('.fotoTitulo').change(function () {
+        console.log("echo");
         var input = this;
 
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                $('#previewImage').attr('src', e.target.result).show();
-
-                // Inicializa Cropper.js
-                cropper = new Cropper(document.getElementById('previewImage'), {
-                    zoomable: false,
-                    scalable: false,
-                    aspectRatio: 1, // Puedes ajustar esto según tus necesidades
-                });
+                $('.previewImage').attr('src', e.target.result).show();
             };
 
             reader.readAsDataURL(input.files[0]);
         }
     });
 
-    $('#rotateLeft').click(function (e) {
-        e.preventDefault();
-        cropper.rotateTo(cropper.getData().rotate - 90);
-    });
-
-    $('#rotateRight').click(function () {
-        e.preventDefault();
-
-        cropper.rotateTo(cropper.getData().rotate + 90);
-    });
 
     $(".provincias").change(function () {
         if ($(".provincias").val() != "null") {//verificar que la opcion no sea "seleccione una provincia"
@@ -702,11 +634,18 @@ $(document).ready(function () {
     });
 
 
+    $("#nivelEducacionUniversitaria").change(function () {
+        if ($("#institutoUniversitario").val() != null && $("#institutoUniversitario").val() != "") {
+            CargarCarrerasUniversitarias();
+        }
+
+    });
+
     $("#cantonesSecundaria").change(function () {
         if ($("#cantonesSecundaria").val() == "null") {//verificar que la opcion no sea "seleccione una provincia"
 
             //si no se escongun canton valido no se hace nada
-            $("#cantones").find("option:not(:first)").remove();
+            $("#cantonesSecundaria").find("option:not(:first)").remove();
 
         }
         else {
@@ -724,7 +663,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         //retorna true si estan completados todos los campos
-        if (verificarCamposModalTitulos()) {
+        if (verificarCamposModalTitulos("#formAgregarTituloSecundaria")) {
             AgregarTituloSecundaria();
             limpiarCamposModalSecundaria();
 
@@ -736,16 +675,81 @@ $(document).ready(function () {
 
                 $("#mensaje").remove();
 
-                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
             }
             else {
-                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
 
             }
 
         }
 
     });
+
+
+    //evento al tocar boton de agregar titulo universitario dentro del modal 
+    $("#agregarTituloUniversitaria").click(function (event) {
+
+        event.preventDefault();
+
+        //retorna true si estan completados todos los campos
+        if (verificarCamposModalTitulos($("#formAgregarTituloUniversitario"))) {
+            console.log("entra");
+            AgregarTituloUniversidad();
+            limpiarCamposModalUniversitario();
+
+            // Cerrar modal
+            $('#agregarTituloUniversitarioModal').modal('hide');
+
+        } else {
+            if ($("#mensaje").length) {
+
+
+                $("#mensaje").remove();
+
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+        }
+
+    });
+
+
+
+    $("#agregarTituloDiploma").click(function (event) {
+
+        event.preventDefault();
+
+        //retorna true si estan completados todos los campos
+        if (verificarCamposModalTitulos($("#formAgregarTituloDiploma"))) {
+            AgregarTituloDiploma();
+            limpiarCamposDiploma();
+
+            // Cerrar modal
+            $('#agregarTituloDiplomaModal').modal('hide');
+
+        } else {
+            if ($("#mensaje").length) {
+
+
+                $("#mensaje").remove();
+
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+            }
+            else {
+                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+            }
+
+        }
+
+    });
+
+
 
 
 
@@ -989,10 +993,10 @@ $(document).ready(function () {
 
                         $("#mensaje").remove();
 
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosSecundaria").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
                     }
                     else {
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosSecundaria").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
 
                     }
 
@@ -1002,6 +1006,32 @@ $(document).ready(function () {
 
                     CargarDatosTituloSecundaria(data[0]);
                     $('#agregarTituloSecundariaModal').modal('show');
+
+
+                    //evento al precionar guardar cambios en el titulo de secundaria
+                    $("#actualizarTituloSecundaria").click(function (event) {
+
+                        event.preventDefault();
+
+                        //retorna true si estan completados todos los campos
+                        if (verificarCamposModalTitulos("#formAgregarTituloSecundaria")) {
+                            ActualizarTituloSecundria(idTitulo);
+
+                        } else {
+                            if ($("#mensaje").length) {
+
+                                $("#mensaje").remove();
+
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                            }
+                            else {
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+                            }
+
+                        }
+
+                    });
                 }
             },
             error: function (error) {
@@ -1035,10 +1065,10 @@ $(document).ready(function () {
 
                         $("#mensaje").remove();
 
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosUniversitarios").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
                     }
                     else {
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosUniversitarios").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
 
                     }
 
@@ -1046,26 +1076,35 @@ $(document).ready(function () {
                 else {
                     //en caso de todo salir bien se asigna los resultados del data a los inputs del modal
 
-
-                    var partesFecha = data.fechA_OBTENCION.split('T');
-                    var fechaTitulo = partesFecha[0];
-
-                    $("#nivelEducacion").val(data.tipO_TITULO);
-                    $("#titulo").val(data.especialidad);
-                    $("#institucion").val(data.nombrE_INSTITUCION);
-                    $("#fechaObtenido").val(fechaTitulo);
-                    $("#folio").val(data.folio);
-                    $("#asiento").val(data.asiento);
+                    CargarDatosTituloUniversitario(data[0]);
+                    $('#agregarTituloUniversitarioModal').modal('show');
 
 
-                    //mostrar el modal 
-                    $("#agregarTituloModal").modal("show");
-                    eliminarMsjModal();
+                    //evento al precionar guardar cambios en el titulo de secundaria
+                    $("#actualizarTituloUniversitaria").click(function (event) {
 
-                    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
-                    $("#agregarTitulo").hide();
-                    $("#actualizarTitulo").show();
+                        event.preventDefault();
 
+                        //retorna true si estan completados todos los campos
+                        if (verificarCamposModalTitulos("#formAgregarTituloUniversitario")) {
+                            ActualizarTituloUniversitario(idTitulo);
+
+                        } else {
+                            console.log("holis");
+                            if ($("#mensaje").length) {
+
+                                $("#mensaje").remove();
+
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                            }
+                            else {
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+                            }
+
+                        }
+
+                    });
                 }
             },
             error: function (error) {
@@ -1159,136 +1198,20 @@ $(document).ready(function () {
     });
 
 
-
-    //evento al precionar guardar cambios en el titulo
-    $("#actualizarTitulo").click(function (event) {
-
-        event.preventDefault();
-
-        //retorna true si estan completados todos los campos
-        if (verificarCamposModalTitulosActualizar()) {
-
-            // Obtener el formulario y los datos del formulario
-            var form = $("#formAgregarTitulo")[0];
-            var formData = new FormData(form);
-
-            // Agregar identificacion y clave al formData
-            formData.append("identificacion", $("#identification").val());
-            formData.append("clave", $("#clave").val());
-            formData.append("idTitulo", idTitulo);
+    $("#abrirModalAgregarTituloUniversitario").click(function (event) {
+        $("#actualizarTituloUniversitaria").hide();
+        $("#agregarTituloUniversitaria").show();
 
 
-
-            $.ajax({
-                method: "POST",//tipo de solicitud
-                url: "/Oferente/ActualizarTitulo",
-                data: formData,
-                processData: false,  // Necesario para enviar FormData correctamente
-                contentType: false,  // Necesario para enviar FormData correctamente
-                success: function (data) {//en caso de que sale bien
-
-                    if (data.error) { //si data.error contiene algo
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-
-
-
-                    }
-                    else {
-
-                        ///recargar la lista de titulos
-
-                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
-
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarTitulos",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val(),
-                                tipo: 1
-                            },
-                            success: function (data) {
-                                //recargar titulos
-                                //console.log(data);
-                                procesarRespuestaTitulos(data, 1);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
-
-
-                        //cargar otros titulos
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarTitulos",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val(),
-                                tipo: 3
-                            },
-                            success: function (data) {
-                                //recargar titulos
-                                //console.log(data);
-                                procesarRespuestaTitulos(data, 3);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
-
-
-                        //cargar titulos universitarios
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarTitulos",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val(),
-                                tipo: 2
-                            },
-                            success: function (data) {
-                                //recargar titulos
-                                //console.log(data);
-                                procesarRespuestaTitulos(data, 2);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
-
-                    }
-                },
-
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
-        } else {
-            if ($("#mensaje").length) {
-
-                $("#mensaje").remove();
-
-                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
-            }
-            else {
-                $("#agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
-
-            }
-
-        }
+        //se muestran nuevamente los divs que se ocultan a la hora de actualizar
+        $("#divEducacionUniversidad, #divInstitutoUniversitario, #divCarreraUniversitaria").show();
 
     });
+
+   
+
+
+
 
 
     $("#btnAgregarIdiomaModal").click(function (event) {
@@ -1440,10 +1363,14 @@ $(document).ready(function () {
 
 
     //evento al cerrar modal 
-    $('#agregarTituloModal').on('hidden.bs.modal', function () {
-        limpiarModalTitulos();
+    $('#agregarTituloUniversitarioModal').on('hidden.bs.modal', function () {
+        limpiarCamposModalUniversitario();
     });
 
+
+    $('#agregarTituloSecundariaModal').on('hidden.bs.modal', function () {
+        limpiarCamposModalSecundaria();
+    });
 
 
 
@@ -2084,140 +2011,212 @@ $(document).ready(function () {
 
 //////////////////////////////////////////////  seccion de funciones //////////////////////////////////////////////////////////////
 
-function limpiarModalTitulos() {
-    // Limpiar valores de los campos de texto
-    document.getElementById("nivelEducacion").value = "";
-    document.getElementById("titulo").value = "";
-    document.getElementById("institucion").value = "";
-    document.getElementById("fechaObtenido").value = "";
-    document.getElementById("folio").value = "";
-    document.getElementById("asiento").value = "";
-    $("#divInstituto").hide();
-    $("#divCarrera").hide();
 
-    $("#divTitulo").show();
-    $("#divInstituto2").show();
 
-    // Limpiar selección del dropdown
-    var dropdown = document.getElementById("nivelEducacion");
-    dropdown.selectedIndex = 0;
 
-    // Limpiar el input de tipo archivo
-    document.getElementById("fotoTitulo").value = "";
-
-}
-
-function verificarCamposModalTitulos() {
-
+function verificarCamposModalTitulos(formulario) {
     var camposValidos = true;
 
-    // Itera sobre los elementos con clase "form-group" que están visibles
-    $(".form-group:visible").each(function () {
-        // Comprueba el tipo de elemento y realiza validaciones según sea necesario
-        var elemento = $(this).find(":input");
+    // Recorrer todos los campos visibles dentro del formulario
+    formulario.find(':visible').each(function () {
+        var elemento = $(this);
 
-        if (elemento.prop("required") && elemento.val() === "") {
+        // Verificar si el campo es de tipo file
+        if (elemento.attr('type') === 'file') {
+            if (formulario.find('.agregarTitulo:visible').length > 0) {
+                console.log("entra");
+                if (elemento[0].files.length < 1) {
+                    // si no hay archivos seleccionados
+                    camposValidos = false;
+                    return false;
+                }
+            }
+        }
+
+        if (elemento.attr('type') !== 'file' && elemento.prop('required') && elemento.val() === '') {
             // Manejar caso de campo requerido vacío
+            console.log(elemento);
             camposValidos = false;
             return false; // Sale del bucle each
         }
-
-        // Agregar más validaciones según sea necesario
-
     });
 
     return camposValidos;
 }
 
+//function verificarCamposModalTitulos() {
 
-function verificarCamposModalTitulosActualizar() {
-    // Obtén los valores de los campos
-    var nivelEducacion = document.getElementById("nivelEducacion").value;
-    var titulo = document.getElementById("titulo").value;
-    var institucion = document.getElementById("institucion").value;
-    var fechaObtenido = document.getElementById("fechaObtenido").value;
-    var folio = document.getElementById("folio").value;
-    var asiento = document.getElementById("asiento").value;
+//    var camposValidos = true;
 
-    // Verifica que todos los campos tengan un valor
-    if (
-        nivelEducacion !== "" &&
-        titulo !== "" &&
-        institucion !== "" &&
-        fechaObtenido !== "" &&
-        folio !== "" &&
-        asiento !== ""
-    ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+//    // Itera sobre los elementos con clase "form-group" que están visibles
+//    $(".form-group:visible").each(function () {
+//        // Comprueba el tipo de elemento y realiza validaciones según sea necesario
+
+//        // Verificar la visibilidad del botón
+//        var isVisible = $("#agregarTituloSecundaria").is(":visible");
+//        if (isVisible) {
+//            // Obtener el único input de tipo file visible dentro de la clase .form-group
+//            var inputFotoTitulo = $(".form-group:visible input[type=file]");
+//            if (inputFotoTitulo[0].files.length < 1) {
+//                return false;
+//            } 
+//        }
+//        var elemento = $(this).find(":input");
+
+//        if (elemento.prop("required") && elemento.val() === "" && elemento.attr("type") !== "file") {
+//            // Manejar caso de campo requerido vacío, excluyendo los elementos de tipo file
+//            camposValidos = false;
+      
+//        }
+
+//        // Agregar más validaciones según sea necesario
+
+//    });
+
+//    return camposValidos;
+//}
+
 
 
 function agregarTituloALaTabla(titulo, num) {
     if (num == 1) {
         var tbody = document.getElementById("listaTitulosSecundaria");
+
+        var row = tbody.insertRow(-1);
+        row.id = titulo.idDetalleTitulo;
+
+        var cellEspecialidad = row.insertCell(0);
+        cellEspecialidad.textContent = titulo.especialidad;
+        cellEspecialidad.style.textAlign = "center";
+
+        var cellInstituto = row.insertCell(1);
+        cellInstituto.textContent = titulo.institucion;
+        cellInstituto.style.textAlign = "center";
+
+        let fechaInicio = titulo.fechaInicio.split('T');
+        let partesFechaInicio = fechaInicio[0].split('-');
+
+
+        
+        var cellInicio = row.insertCell(2);
+        cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
+        cellInicio.style.textAlign = "center";
+
+        let fechaFin = titulo.fechaFin.split('T');
+        let partesFechaFin = fechaFin[0].split('-');
+
+
+        var cellFin = row.insertCell(3);
+        cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
+        cellFin.style.textAlign = "center";
+
+        var cellEstado = row.insertCell(4);
+        if (titulo.estado == 'P') {
+            cellEstado.textContent = "Pendiente";
+            cellEstado.classList.add('estado-pendiente');
+        } else if (titulo.estado == 'R') {
+            cellEstado.textContent = "Revisado";
+            cellEstado.classList.add('estado-revisado');
+        } else if (titulo.estado == 'V') {
+            cellEstado.textContent = "Verificado";
+            cellEstado.classList.add('estado-verificado');
+        }
+        cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+        var cellAcciones = row.insertCell(5);
+        cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+        var btnEditar = document.createElement("button");
+        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100";
+        btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm mt-1 w-100";
+        btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
+
+
+        // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnEditar);
+        cellAcciones.appendChild(btnEliminar);
+
+
+
+
+
+
+
+
     } else if (num == 2) {
         var tbody = document.getElementById("listaTitulosUniversitarios");
+
+        
     } else {
         var tbody = document.getElementById("listaTitulosVarios");
     }
 
-    var row = tbody.insertRow(-1);
-    row.id = titulo.iD_DETALLE_TITULOS;
+    if (num != 1) {
+        var row = tbody.insertRow(-1);
+        row.id = titulo.idDetalleTitulo;
 
-    var cellEspecialidad = row.insertCell(0);
-    cellEspecialidad.textContent = titulo.especialidad;
-    cellEspecialidad.style.textAlign = "center";
+        var cellTipo = row.insertCell(0);
+        cellTipo.textContent = titulo.tipoTitulo;
+        cellTipo.style.textAlign = "center";
 
-    var cellTipo = row.insertCell(1);
-    cellTipo.textContent = titulo.gradoAcademico;
-    cellTipo.style.textAlign = "center";
+        var cellEspecialidad = row.insertCell(1);
+        cellEspecialidad.textContent = titulo.especialidad;
+        cellEspecialidad.style.textAlign = "center";
 
-    var cellEstado = row.insertCell(2);
-    if (titulo.estado == 'P') {
-        cellEstado.textContent = "Pendiente";
-        cellEstado.classList.add('estado-pendiente');
-    } else if (titulo.estado == 'R') {
-        cellEstado.textContent = "Revisado";
-        cellEstado.classList.add('estado-revisado');
-    } else if (titulo.estado == 'V') {
-        cellEstado.textContent = "Verificado";
-        cellEstado.classList.add('estado-verificado');
+        var cellInstituto = row.insertCell(2);
+        cellInstituto.textContent = titulo.institucion;
+        cellInstituto.style.textAlign = "center";
+
+        let fechaInicio = titulo.fechaInicio.split('T');
+        let partesFechaInicio = fechaInicio[0].split('-');
+
+
+
+        var cellInicio = row.insertCell(3);
+        cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
+        cellInicio.style.textAlign = "center";
+
+        let fechaFin = titulo.fechaFin.split('T');
+        let partesFechaFin = fechaFin[0].split('-');
+
+
+        var cellFin = row.insertCell(4);
+        cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
+        cellFin.style.textAlign = "center";
+
+        var cellEstado = row.insertCell(5);
+        if (titulo.estado == 'P') {
+            cellEstado.textContent = "Pendiente";
+            cellEstado.classList.add('estado-pendiente');
+        } else if (titulo.estado == 'R') {
+            cellEstado.textContent = "Revisado";
+            cellEstado.classList.add('estado-revisado');
+        } else if (titulo.estado == 'V') {
+            cellEstado.textContent = "Verificado";
+            cellEstado.classList.add('estado-verificado');
+        }
+        cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+        var cellAcciones = row.insertCell(6);
+        cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+        var btnEditar = document.createElement("button");
+        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100";
+        btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm mt-1 w-100";
+        btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
+
+
+        // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnEditar);
+        cellAcciones.appendChild(btnEliminar);
     }
-    cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
-
-    var cellAcciones = row.insertCell(3);
-    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
-
-    // Crear un contenedor div para los botones de editar y eliminar
-    var divBotones = document.createElement("div");
-    divBotones.className = "row";
-    divBotones.style.justifyContent = "center"; // Estilo en línea para centrar horizontalmente
-    divBotones.style.alignItems = "center"; // Estilo en línea para centrar verticalmente
-
-    var divEditar = document.createElement("div");
-    divEditar.className = "col-sm-6";
-    var btnEditar = document.createElement("button");
-    btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100";
-    btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
-    divEditar.appendChild(btnEditar);
-
-    var divEliminar = document.createElement("div");
-    divEliminar.className = "col-sm-6";
-    var btnEliminar = document.createElement("button");
-    btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm w-100";
-    btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
-
-    divEliminar.appendChild(btnEliminar);
-
-    divBotones.appendChild(divEditar);
-    divBotones.appendChild(divEliminar);
-
-    // Agregar el contenedor div a la celda de acciones
-    cellAcciones.appendChild(divBotones);
+   
 
 
 }
@@ -2262,11 +2261,6 @@ function procesarRespuestaTitulos(data, num) {
         });
     }
 
-
-
-
-    $('#agregarTituloModal').modal('hide');
-    limpiarModalTitulos();
 }
 
 
@@ -2805,6 +2799,7 @@ function AgregarTituloSecundaria() {
     var form = $("#formAgregarTituloSecundaria")[0];
     var formData = new FormData(form);
 
+
     // Agregar identificacion y clave al formData
     formData.append("identificacion", $("#identification").val());
     formData.append("clave", $("#clave").val());
@@ -2849,6 +2844,114 @@ function AgregarTituloSecundaria() {
     });
 }
 
+function AgregarTituloUniversidad() {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarTituloUniversitario")[0];
+    var formData = new FormData(form);
+
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+    formData.append("textoCarrera", $("#carrerasUniversitarias").find('option:selected').text());
+
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/AgregarTituloUniversidad",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de titulos
+
+                CargarTitulos(2);
+
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+
+function AgregarTituloDiploma() {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarTituloDiploma")[0];
+    var formData = new FormData(form);
+
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+    formData.append("textoCarrera", $("#carrerasDiploma").find('option:selected').text());
+    formData.append("nivelEducacion", "2");
+
+
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/AgregarTituloUniversidad",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de titulos
+
+                CargarTitulos(3);
+
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
 
 function CargarDatosTituloSecundaria(data) {
 
@@ -2857,12 +2960,17 @@ function CargarDatosTituloSecundaria(data) {
     $("#divInstitutoSecundaria").hide();
 
     var fechaInicio = data.fechaInicio.split('T');
+    let partesFechaInicio = fechaInicio[0].split('-');
+
+
     var fechaFin = data.fechaFin.split('T');
+    let partesFechaFin = fechaFin[0].split('-');
 
 
 
-    $("#fechaInicioSecundaria").val(fechaInicio[0]);
-    $("#fechaFinSecundaria").val(fechaFin[0]);
+
+    $("#fechaInicioSecundaria").val(partesFechaInicio[2] + partesFechaInicio[1] + partesFechaInicio[0]);
+    $("#fechaFinSecundaria").val(partesFechaFin[2] + partesFechaFin[1] + partesFechaFin[0]);
 
     //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
     $("#agregarTituloSecundaria").hide();
@@ -2870,9 +2978,40 @@ function CargarDatosTituloSecundaria(data) {
 }
 
 
+
+function CargarDatosTituloUniversitario(data) {
+
+
+
+
+    //se muestran nuevamente los divs que se ocultan a la hora de actualizar
+    $("#divEducacionUniversidad, #divInstitutoUniversitario, #divCarreraUniversitaria").hide();
+
+    var fechaInicio = data.fechaInicio.split('T');
+    let partesFechaInicio = fechaInicio[0].split('-');
+
+
+    var fechaFin = data.fechaFin.split('T');
+    let partesFechaFin = fechaFin[0].split('-');
+
+
+
+
+    $("#fechaInicioUniversitarias").val(partesFechaInicio[2] + partesFechaInicio[1] + partesFechaInicio[0]);
+    $("#fechaFinUniversitarias").val(partesFechaFin[2] + partesFechaFin[1] + partesFechaFin[0]);
+    $("#tomoUniversitario").val(data.tomo);
+    $("#folioUniversitario").val(data.folio);
+    $("#asientoUniversitario").val(data.asiento);
+
+
+    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
+    $("#actualizarTituloUniversitaria").show();
+    $("#agregarTituloUniversitaria").hide();
+}
+
 function AgregarMascarasPaginaTitulos() {
     // Aplicar la máscara al campo de fecha de inicio
-    $('#fechaInicioSecundaria').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
+    $('#fechaInicioSecundaria, #fechaFinSecundaria, #fechaInicioUniversitarias, #fechaFinUniversitarias').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
 
     // Escuchar al evento de foco en el campo
     $('#fechaInicioSecundaria').on('focus', function () {
@@ -2880,10 +3019,27 @@ function AgregarMascarasPaginaTitulos() {
         $(this).val('');
     });
 
-    $('#fechaFinSecundaria').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
     $('#fechaFinSecundaria').on('focus', function () {
         // Limpiar el valor para permitir cambios
         $(this).val('');
+    });
+
+    $('#fechaInicioUniversitarias').on('focus', function () {
+        // Limpiar el valor para permitir cambios
+        $(this).val('');
+    });
+
+    $('#fechaFinUniversitarias').on('focus', function () {
+        // Limpiar el valor para permitir cambios
+        $(this).val('');
+    });
+
+    $('#tomoUniversitario, #folioUniversitario, #asientoUniversitario').inputmask('numeric', {
+        'alias': 'numeric',
+        'autoGroup': false,
+        'digits': 0,
+        'digitsOptional': false,
+        'placeholder': ''
     });
 }
 
@@ -2907,6 +3063,63 @@ function limpiarCamposModalSecundaria() {
 
     // Restablecer el formulario si es necesario
     // $('#formAgregarTituloSecundaria')[0].reset();
+    // Limpiar la vista previa de la imagen
+    $('.previewImage').attr('src', '').hide();
+
+    if ($("#mensaje").length) {
+
+        $("#mensaje").remove();
+
+    }
+}
+function limpiarCamposDiploma() {
+    // Limpiar campos de institución y carrera
+    $('#institutoDiploma').val('');
+    $('#carrerasDiploma').val('');
+
+    // Limpiar campos de fecha de inicio y fin
+    $('#fechaInicioDiploma').val('');
+    $('#fechaFinDiploma').val('');
+
+    // Limpiar campos de tomo, folio y asiento
+    $('#tomoDiploma').val('');
+    $('#folioDiploma').val('');
+    $('#asientoDiploma').val('');
+
+    // Limpiar campo de foto
+    $('#fotoTituloDiploma').val('');
+
+    // Ocultar la imagen de vista previa
+    $('.previewImage').hide();
+
+    // Restablecer el formulario si es necesario
+    // $('#formAgregarTituloDiploma')[0].reset();
+}
+
+
+
+
+function limpiarCamposModalUniversitario() {
+    // Limpiar campos de texto
+    $('#formAgregarTituloUniversitario input[type="text"]').val('');
+
+    // Limpiar campos de selección
+    $('#formAgregarTituloUniversitario select').val('');
+
+    // Limpiar campo de carga de archivos
+    $('#formAgregarTituloUniversitario input[type="file"]').val('');
+
+    // Ocultar la vista previa de la imagen
+    $('#formAgregarTituloUniversitario .previewImage').hide();
+
+    // Limpiar la vista previa de la imagen
+    $('.previewImage').attr('src', '').hide();
+
+    if ($("#mensaje").length) {
+
+        $("#mensaje").remove();
+
+    }
 }
 
 
@@ -2930,4 +3143,271 @@ function previewImage(input, cropper) {
 
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function ObtenerMes(numeroMes) {
+    switch (numeroMes) {
+        case '01':
+            return 'Enero';
+        case '02':
+            return 'Febrero';
+        case '03':
+            return 'Marzo';
+        case '04':
+            return 'Abril';
+        case '05':
+            return 'Mayo';
+        case '06':
+            return 'Junio';
+        case '07':
+            return 'Julio';
+        case '08':
+            return 'Agosto';
+        case '09':
+            return 'Septiembre';
+        case '10':
+            return 'Octubre';
+        case '11':
+            return 'Noviembre';
+        case '12':
+            return 'Diciembre';
+        default:
+            return 'Mes no válido';
+    }
+}
+
+
+function CargarGradosUniversitarios() {
+   
+        $.ajax({
+            type: "GET",
+            url: "/Oferente/CargarGrados",
+            success: function (data) {
+
+
+                // Obtener el elemento select
+                var selectGrados = $('#nivelEducacionUniversitaria');
+
+                // Limpiar opciones existentes
+                selectGrados.empty();
+
+                // Iterar sobre la lista de instituciones y agregar opciones al select
+                $.each(data, function (index, grado) {
+                    if (grado.id != 1 && grado.id != 2) {
+                        selectGrados.append('<option value="' + grado.id + '">' + grado.gradoAcademico + '</option>');
+                    }
+                    
+                });
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+}
+
+function CargarUniversidades() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/MostrarUniversidades",
+        success: function (data) {
+
+
+            // Obtener el elemento select
+            var selectInstitutos = $('.universidades');
+
+            // Limpiar opciones existentes
+            selectInstitutos.empty();
+            selectInstitutos.append('<option value="0">' + "Seleccione un opción" + '</option>');
+
+
+            // Iterar sobre la lista de instituciones y agregar opciones al select
+            $.each(data, function (index, institucion) {
+                selectInstitutos.append('<option value="' + institucion.id_universidad + '">' + institucion.siglas_universidad + '</option>');
+            });
+
+         
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+
+
+
+function CargarCarrerasUniversitarias() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/MostrarCarreras",
+        data: {
+            instituto: $("#institutoUniversitario").find(":selected").text(),
+            grado: $("#nivelEducacionUniversitaria").find(":selected").text()
+        },
+        success: function (data) {
+          
+
+            // Obtener el elemento select
+            var selectCarreras = $('#carrerasUniversitarias');
+
+            // Limpiar opciones existentes
+            selectCarreras.empty();
+
+            // Iterar sobre la lista de instituciones y agregar opciones al select
+            $.each(data, function (index, carreras) {
+
+                selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
+            });
+
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function CargarCarrerasDiplomas() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/MostrarCarreras",
+        data: {
+            instituto: $("#institutoDiploma").find(":selected").text(),
+            grado: "Diplomado"
+        },
+        success: function (data) {
+
+
+            // Obtener el elemento select
+            var selectCarreras = $('#carrerasDiploma');
+
+            // Limpiar opciones existentes
+            selectCarreras.empty();
+
+            // Iterar sobre la lista de instituciones y agregar opciones al select
+            $.each(data, function (index, carreras) {
+
+                selectCarreras.append('<option value="' + carreras + '">' + carreras + '</option>');
+            });
+
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function ActualizarTituloSecundria(idTitulo) {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarTituloSecundaria")[0];
+    var formData = new FormData(form);
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+    formData.append("idTitulo", idTitulo);
+
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/AgregarTituloSecundaria",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de titulos
+
+                // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+                CargarTitulos(1);
+                $('#agregarTituloSecundariaModal').modal('hide');
+                alert("Titulo actualizado exitosamente");
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+function ActualizarTituloUniversitario(idTitulo) {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarTituloUniversitario")[0];
+    var formData = new FormData(form);
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+    formData.append("idTitulo", idTitulo);
+
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/ActualizarTituloUniversitario",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de titulos
+
+                // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+                CargarTitulos(2);
+                $('#agregarTituloUniversitarioModal').modal('hide');
+                alert("Titulo actualizado exitosamente");
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
 }

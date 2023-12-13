@@ -4,8 +4,10 @@ using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.Mensajeria;
 using AplicacionRHGit.Models.OfertasLaborales;
 using Azure.Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AplicacionRHGit.Data
@@ -320,6 +322,140 @@ namespace AplicacionRHGit.Data
         }
 
 
+        //este metodo actualiza los datos del titulo
+        public int ActualizarTituloSecundaria(IFormCollection form)
+        {
+            var idDetalleTitulo = form["idTitulo"].FirstOrDefault();
+
+            var detalleTitulo = _context.DetalleTitulo.Find(int.Parse(idDetalleTitulo));
+
+            if (detalleTitulo != null)
+            {
+                // Modificar las propiedades
+                detalleTitulo.FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault());
+                detalleTitulo.FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault());
+
+                // Guardar los cambios
+                _context.SaveChanges();
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+
+        }
+
+
+
+        public int ActualizarTituloUniversitario(IFormCollection form)
+        {
+            var idDetalleTitulo = form["idTitulo"].FirstOrDefault();
+
+            var detalleTitulo = _context.DetalleTitulo.Find(int.Parse(idDetalleTitulo));
+
+            if (detalleTitulo != null)
+            {
+                // Modificar las propiedades
+                detalleTitulo.FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault());
+                detalleTitulo.FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault());
+                detalleTitulo.TOMO = int.Parse(form["tomo"].FirstOrDefault());
+                detalleTitulo.FOLIO = int.Parse(form["folio"].FirstOrDefault());
+                detalleTitulo.ASIENTO = int.Parse(form["asiento"].FirstOrDefault());
+
+                // Guardar los cambios
+                _context.SaveChanges();
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+
+        }
+
+
+        //retorna el id del tetilo añadido si todos sale bien , -1 si no sale bien
+        public int AgregarTituloUniversidad(IFormCollection form)
+        {
+            int retorno = -1;
+            var identificacion = form["identificacion"].FirstOrDefault();
+            var clave = form["clave"].FirstOrDefault();
+
+
+            try
+            {
+                //consulta el id del oferente con la identificacion y clave dada
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion && o.clave == clave)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                int idTitulo = _context.Titulo
+                .Where(t => t.ID_EXPEDIENTE == idExpediente)
+                .Select(t => t.ID_TITULO)
+                .FirstOrDefault();
+
+
+                DETALLE_TITULO datosTitulo = new DETALLE_TITULO()
+                {
+                    ID_TITULO = idTitulo,
+                    TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault()),
+                    ESTADO = 'P',
+                    ESPECIALIDAD = form["textoCarrera"].FirstOrDefault(),
+                    ID_INSTITUCION = int.Parse(form["instituto"].FirstOrDefault()),
+                    TOMO = int.Parse(form["tomo"].FirstOrDefault()),
+                    FOLIO = int.Parse(form["folio"].FirstOrDefault()),
+                    ASIENTO = int.Parse(form["asiento"].FirstOrDefault())
+                };
+
+                DateTime fechaInicio;
+                if (DateTime.TryParse(form["fechaInicio"].FirstOrDefault(), out fechaInicio))
+                {
+                    datosTitulo.FECHA_INICIO = fechaInicio;
+                }
+   
+
+                DateTime fechaFin;
+                if (DateTime.TryParse(form["fechaFin"].FirstOrDefault(), out fechaFin))
+                {
+                    datosTitulo.FECHA_FIN = fechaFin;
+                }
+
+                _context.DetalleTitulo.Add(datosTitulo);
+                _context.SaveChanges();
+
+                retorno = datosTitulo.ID_DETALLE_TITULOS;
+
+                return retorno;
+
+
+
+            }
+            catch (FormatException ex)
+            {
+                // Manejar la excepción de formato aquí
+                Console.WriteLine($"Error de formato: {ex.Message}");
+                throw;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+
+        }
+
+
 
         //retornar una lista de los grados academicos almacenados en la BD
         public List<GradoAcademico> CargarGradosAcademicos()
@@ -392,31 +528,7 @@ namespace AplicacionRHGit.Data
         }
 
 
-        //este metodo actualiza los datos del titulo
-        public int ActualizarTituloSecundaria(IFormCollection form)
-        {
-            var idDetalleTitulo = form["idTitulo"].FirstOrDefault();
 
-            var detalleTitulo = _context.DetalleTitulo.Find(int.Parse(idDetalleTitulo));
-
-            if (detalleTitulo != null)
-            {
-                // Modificar las propiedades
-                detalleTitulo.TIPO_TITULO = 1;
-                detalleTitulo.FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault());
-                detalleTitulo.FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault());
-                detalleTitulo.ID_INSTITUCION = int.Parse(form["instituto"].FirstOrDefault());
-
-                // Guardar los cambios
-                _context.SaveChanges();
-                return 1;
-            }
-            else
-            {
-                return -1;
-            }
-
-        }
 
 
 

@@ -13,7 +13,7 @@ namespace AplicacionRHGit.Data
         public DbSet<u_parauniversidades> u_parauniversidades { get; set; }
         public DbSet<u_paracarreras> u_paracarreras { get; set; }
         public DbSet<u_carreras> u_carreras { get; set; }
-        public DbSet<u_universidades> u_universidades { get; set; }
+
 
 
 

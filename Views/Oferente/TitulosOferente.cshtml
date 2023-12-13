@@ -33,13 +33,15 @@
 
             <h2 class="text-center mt-2">Secundaria</h2>
 
-            <!-- Lista de Títulos -->
+            <!-- Lista de Títulos Secundaria-->
             <table id="tablaTitulosSecundaria" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Especialidad</th>
-                        <th>Tipo</th>
-                        <th>Estado</th>
+                        <th>Titulo</th>
+                        <th>Instituto</th>
+                        <th>Año Inicio</th>
+                        <th>Año Final</th>
+                        <th>Estado del Titulo</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -48,19 +50,31 @@
             </table>
             <!-- Botón para Añadir titulo secundaria -->
             <div class="form-group col-sm-12">
-                <button id="abrirModalAgregarTituloSecundaria" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarTituloSecundariaModal">
+                <button id="abrirModalAgregarTituloSecundaria" type="button" class="btn btn-primary mt-1 w-100" data-toggle="modal" data-target="#agregarTituloSecundariaModal">
                     Añadir Título
                 </button>
             </div>
+
+
+
+
+
+
+
             <hr class="mt-5"/>
             <h2 class="text-center">Universitarios</h2>
+
+            <!-- Lista de Títulos Universitarios-->
 
             <table id="tablaTitulosUniversitarios" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
+                        <th>Titulo</th>
                         <th>Especialidad</th>
-                        <th>Tipo</th>
-                        <th>Estado</th>
+                        <th>Instituto</th>
+                        <th>Año Inicio</th>
+                        <th>Año Final</th>
+                        <th>Estado del Titulo</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -68,23 +82,34 @@
                 </tbody>
 
             </table>
+            <div class="form-group col-sm-12">
+                <button id="abrirModalAgregarTituloUniversitario" type="button" class="btn btn-primary mt-1 w-100" data-toggle="modal" data-target="#agregarTituloUniversitarioModal">
+                    Añadir Título
+                </button>
+            </div>
 
-
-            <h2 class="text-center mt-5">Otros</h2>
+            <h2 class="text-center mt-5">Diplomas</h2>
 
             <table id="tablaTitulosVarios" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
+                        <th>Titulo</th>
                         <th>Especialidad</th>
-                        <th>Tipo</th>
-                        <th>Estado</th>
+                        <th>Instituto</th>
+                        <th>Año Inicio</th>
+                        <th>Año Final</th>
+                        <th>Estado del Titulo</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="listaTitulosVarios">
                 </tbody>
             </table>
-
+            <div class="form-group col-sm-12">
+                <button id="abrirModalAgregarTituloDiploma" type="button" class="btn btn-primary mt-1 w-100" data-toggle="modal" data-target="#agregarTituloDiplomaModal">
+                    Añadir Título
+                </button>
+            </div>
 
 
             <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
@@ -116,7 +141,7 @@
                 <div class="modal-body">
                     <!-- Formulario para Añadir Título -->
                     <form id="formAgregarTitulo" method="post">
-                        <div class="form-group col-sm-6">
+                 @*        <div class="form-group col-sm-6">
                             <label for="nivelEducacion">Nivel de Educación:</label>
                             <select class="form-control" id="nivelEducacion" name="nivelEducacion" required tabindex="1">
                                 @foreach (var grado in (SelectList)ViewData["Grados"])
@@ -124,7 +149,7 @@
                                     <option value="@grado.Value">@grado.Text</option>
                                 }
                             </select>
-                        </div>
+                        </div> *@
 
                         <div class="form-group" id="divInstituto">
                             <label for="instituto">Institución:</label>
@@ -275,18 +300,175 @@
                         <div class="form-group">
                             <label for="fotoTituloSecundaria">Subir Foto del Título:</label>
                             <div>
-                                <input id="fotoTituloSecundaria" type="file" class="form-control-file" name="fotoTitulo" accept="image/*" required tabindex="6" />
+                                <input id="fotoTituloSecundaria" type="file" class="form-control-file fotoTitulo" name="fotoTitulo" accept="image/*" required tabindex="6" />
                                 
                             </div>
-                            <img id="previewImage" src="#" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
+                            <img class="previewImage" src="#" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
+                    
+                        </div>
+      
+                        <button id="agregarTituloSecundaria" class="btn btn-success mt-2 agregarTitulo" tabindex="7">Guardar Título</button>
+                        <button id="actualizarTituloSecundaria" class="btn btn-success mt-2 actualizarTitulo" tabindex="8">Guardar Cambios</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Modal para Añadir Titulo Bachillerato, Licenciatura, Maestria -->
+    <div class="modal fade" id="agregarTituloUniversitarioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Título Secundaria-->
+                    <form id="formAgregarTituloUniversitario" method="post">
+
+                        <div class="form-group col-sm-6" id="divEducacionUniversidad">
+                            <label for="nivelEducacionUniversitaria">Nivel de Educación:</label>
+                            <select class="form-control" id="nivelEducacionUniversitaria" name="nivelEducacion" required tabindex="1">
+                                
+                            </select>
+                        </div>
+                        
+                        <div class="form-group col-sm-6" id="divInstitutoUniversitario">
+                            <label for="institutoUniversitario">Institución:</label>
+                            <select id="institutoUniversitario" class="form-control universidades" name="instituto" required tabindex="2">
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="divCarreraUniversitaria">
+                            <label for="carrerasUniversitarias">Carrera:</label>
+                            <select class="form-control" id="carrerasUniversitarias" name="carreras" required tabindex="3">
+                            </select>
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label for="fechaInicioUniversitarias">Fecha Inicio:</label>
+                            <input id="fechaInicioUniversitarias" type="text" class="form-control" name="fechaInicio" required tabindex="4" />
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label for="fechaFinUniversitarias">Fecha Fin:</label>
+                            <input id="fechaFinUniversitarias" type="text" class="form-control" name="fechaFin" required tabindex="5" />
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-4" id="divFolio">
+                                <label for="tomoUniversitario">Tomo:</label>
+                                <input type="text" class="form-control" name="tomo" id="tomoUniversitario" required tabindex="6" />
+                            </div>
+
+                            <div class="form-group col-sm-4" id="divFolio">
+                                <label for="folioUniversitario">Folio:</label>
+                                <input type="text" class="form-control" name="folio" id="folioUniversitario" required tabindex="7" />
+                            </div>
+
+                            <div class="form-group col-sm-4" id="divAsiento">
+                                <label for="asientoUniversitario">Asiento:</label>
+                                <input type="text" class="form-control" id="asientoUniversitario" name="asiento" required tabindex="8" />
+                            </div>
+                        </div>
+
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group">
+                            <label for="fotoTituloSecundaria">Subir Foto del Título:</label>
+                            <div>
+                                <input id="fotoTituloUniversitaria" type="file" class="form-control-file fotoTitulo" name="fotoTitulo" accept="image/*" required tabindex="9" />
+
+                            </div>
+                            <img src="#" class="previewImage" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
 
                         </div>
-                        <!-- Agrega un botón para rotar la imagen -->
-                        <button id="rotateLeft" class="btn btn-primary" data-method="rotate" data-option="-90" title="Girar a la izquierda">Girar Izquierda</button>
-                        <button id="rotateRight" class="btn btn-primary" data-method="rotate" data-option="90" title="Girar a la derecha">Girar Derecha</button>
 
-                        <button id="agregarTituloSecundaria" class="btn btn-success mt-2" tabindex="7">Guardar Título</button>
-                        <button id="actualizarTituloSecundaria" class="btn btn-success mt-2" tabindex="8">Guardar Cambios</button>
+                        <button id="agregarTituloUniversitaria" class="btn btn-success mt-2 agregarTitulo" tabindex="10">Guardar Título</button>
+                        <button id="actualizarTituloUniversitaria" class="btn btn-success mt-2 actualizarTitulo" tabindex="11">Guardar Cambios</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal para Añadir Titulo Diploma -->
+    <div class="modal fade" id="agregarTituloDiplomaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Título Secundaria-->
+                    <form id="formAgregarTituloDiploma" method="post">
+      
+
+                        <div class="form-group col-sm-6" id="divInstitutoDiploma">
+                            <label for="institutoDiploma">Institución:</label>
+                            <select id="institutoDiploma" class="form-control universidades" name="instituto" required tabindex="2">
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="divCarreraDiploma">
+                            <label for="carrerasDiploma">Carrera:</label>
+                            <select class="form-control" id="carrerasDiploma" name="carreras" required tabindex="3">
+                            </select>
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label for="fechaInicioDiploma">Fecha Inicio:</label>
+                            <input id="fechaInicioDiploma" type="text" class="form-control" name="fechaInicio" required tabindex="4" />
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label for="fechaFinDiploma">Fecha Fin:</label>
+                            <input id="fechaFinDiploma" type="text" class="form-control" name="fechaFin" required tabindex="5" />
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <label for="tomoDiploma">Tomo:</label>
+                                <input type="text" class="form-control" name="tomo" id="tomoDiploma" required tabindex="6" />
+                            </div>
+
+                            <div class="form-group col-sm-4">
+                                <label for="folioDiploma">Folio:</label>
+                                <input type="text" class="form-control" name="folio" id="folioDiploma" required tabindex="7" />
+                            </div>
+
+                            <div class="form-group col-sm-4" >
+                                <label for="asientoDiploma">Asiento:</label>
+                                <input type="text" class="form-control" id="asientoDiploma" name="asiento" required tabindex="8" />
+                            </div>
+                        </div>
+
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group">
+                            <label for="fotoTituloDiploma">Subir Foto del Título:</label>
+                            <div>
+                                <input id="fotoTituloDiploma" type="file" class="form-control-file fotoTitulo" name="fotoTitulo" accept="image/*" required tabindex="9" />
+
+                            </div>
+                            <img src="#" class="previewImage" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
+
+                        </div>
+
+                        <button id="agregarTituloDiploma" class="btn btn-success mt-2 agregarTitulo" tabindex="10">Guardar Título</button>
+                        <button id="actualizarTituloDiploma" class="btn btn-success mt-2 actualizarTitulo" tabindex="11">Guardar Cambios</button>
 
                     </form>
                 </div>

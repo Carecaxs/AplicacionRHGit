@@ -39,7 +39,7 @@ namespace AplicacionRHGit.Data
         public DbSet<Provincia> Provincia { get; set; }
         public DbSet<Canton> Canton { get; set; }
         public DbSet<CentrosEducativos> CentrosEducativos { get; set; }
-
+        public DbSet<u_universidades> u_universidades { get; set; }
 
 
 

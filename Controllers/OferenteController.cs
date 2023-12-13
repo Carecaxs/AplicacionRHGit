@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
+using System.Linq;
 
 namespace AplicacionRHGit.Controllers
 {
@@ -126,7 +127,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult TitulosOferente(string identification="0117860836", string clave="123")
+        public IActionResult TitulosOferente(string identification = "0117860836", string clave = "123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -143,8 +144,7 @@ namespace AplicacionRHGit.Controllers
                     //almacenar en un viewData los grados academicos para mostrarlo en un combo
                     OferentesDAO oferentesDAO = new OferentesDAO(_context);
                     List<GradoAcademico> grados = oferentesDAO.CargarGradosAcademicos();
-                    // Pasar los datos a la vista
-                    ViewData["Grados"] = new SelectList(grados, "id", "gradoAcademico");
+
 
 
 
@@ -312,7 +312,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult VerOfertasOferente(string identification="0117860836", string clave="123")
+        public IActionResult VerOfertasOferente(string identification = "0117860836", string clave = "123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -626,11 +626,14 @@ namespace AplicacionRHGit.Controllers
             try
             {
                 OferentesDAO acceso = new OferentesDAO(_context);
+
                 int idTitulo = acceso.AgregarTituloSecundaria(formData);
 
                 if (idTitulo != -1)
                 {
+
                     var fotoTitulo = formData.Files["fotoTitulo"];
+
                     if (fotoTitulo != null && fotoTitulo.Length > 0)
                     {
                         // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
@@ -659,6 +662,8 @@ namespace AplicacionRHGit.Controllers
                         using (var stream = new FileStream(rutaImagen, FileMode.Create))
                         {
                             fotoTitulo.CopyTo(stream);
+
+
                         }
 
                     }
@@ -682,6 +687,77 @@ namespace AplicacionRHGit.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult AgregarTituloUniversidad(IFormCollection formData)
+        {
+
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
+
+                int idTitulo = acceso.AgregarTituloUniversidad(formData);
+
+                if (idTitulo != -1)
+                {
+
+                    var fotoTitulo = formData.Files["fotoTitulo"];
+
+                    if (fotoTitulo != null && fotoTitulo.Length > 0)
+                    {
+                        // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                        var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+
+                        var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
+
+
+                        // Crear la carpeta si no existe
+                        if (!Directory.Exists(carpetaCedula))
+                        {
+                            Directory.CreateDirectory(carpetaCedula);
+                        }
+
+                        // Obtener la extensión del archivo
+                        var extension = Path.GetExtension(fotoTitulo.FileName);
+
+                        // Crear un nombre único para la imagen (id del detalle_titulo)
+                        var nombreImagen = $"{idTitulo}{extension}";
+
+                        // Obtener la ruta completa de la imagen
+                        var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                        // Guardar la imagen en el servidor
+                        using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                        {
+                            fotoTitulo.CopyTo(stream);
+
+
+                        }
+
+                    }
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al guardar el titulo" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+
+
         [HttpGet]
         public JsonResult CargarTitulos(string identificacion, string clave, int tipo)
         {
@@ -701,40 +777,118 @@ namespace AplicacionRHGit.Controllers
                 .FirstOrDefault();
 
 
-            var titulos = _context.DetalleTitulo
-            .Where(dt => dt.ID_TITULO == idTitulo)
-            .Join(
-                _context.GradoAcademico,
-                dt => dt.TIPO_TITULO,
-                ga => ga.id,
-                (dt, ga) => new
-                {
-                    dt.ID_DETALLE_TITULOS,
-                    dt.ESPECIALIDAD,
-                    dt.ESTADO,
-                    dt.ASIENTO,
-                    ga.gradoAcademico,
-                    ga.id
-                }
-            )
-            .Where(result =>
-                (tipo == 1 && result.id == 1) ||
-                (tipo == 2 && (result.id == 4 || result.id == 5 || result.id == 6 || result.id == 7)) ||
-                (tipo == 3 && (result.id == 2 || result.id == 3))
-            )
-            .ToList();
-
-
-
-            if (titulos != null && titulos.Any())
+            switch (tipo)
             {
-                return Json(titulos);
-            }
-            else
-            {
-                return Json(new { vacio = true });
+                case 1:
+                    //consulta para secundaria
+                    var titulos = (from detalleTitulo in _context.DetalleTitulo
+                                   join institucion in _context.CentrosEducativos on detalleTitulo.ID_INSTITUCION equals institucion.Cod_Presupuestario
+                                   join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                   where detalleTitulo.TIPO_TITULO == 1
+                                   select new
+                                   {
+                                       idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                       idTitulo = detalleTitulo.ID_TITULO,
+                                       especialidad = detalleTitulo.ESPECIALIDAD,
+                                       folio = detalleTitulo.FOLIO,
+                                       asiento = detalleTitulo.ASIENTO,
+                                       estado = detalleTitulo.ESTADO,
+                                       tipoTitulo = grado.gradoAcademico,
+                                       fechaInicio = detalleTitulo.FECHA_INICIO,
+                                       fechaFin = detalleTitulo.FECHA_FIN,
+                                       tomo = detalleTitulo.TOMO,
+                                       institucion = institucion.Nombre_Institucion,
+                                       codPrespuestario=institucion.Cod_Presupuestario
+                                   })
+                   .GroupBy(t => t.codPrespuestario) // Agrupar por Cod_Presupuestario
+                   .Select(group => group.First()) // Seleccionar el primer elemento de cada grupo
+                   .ToList();
 
+
+                    if (titulos != null && titulos.Any())
+                    {
+                        return Json(titulos);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
+
+
+                case 2:
+
+
+                    //consulta para universidades
+                    var titulo = (from detalleTitulo in _context.DetalleTitulo
+                                  join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                  join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
+                                  where (detalleTitulo.TIPO_TITULO == 3 || detalleTitulo.TIPO_TITULO == 4 ||
+                                         detalleTitulo.TIPO_TITULO == 5 || detalleTitulo.TIPO_TITULO == 6 || detalleTitulo.TIPO_TITULO == 7)
+                                  select new
+                                  {
+                                      idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                      idTitulo = detalleTitulo.ID_TITULO,
+                                      especialidad = detalleTitulo.ESPECIALIDAD,
+                                      folio = detalleTitulo.FOLIO,
+                                      asiento = detalleTitulo.ASIENTO,
+                                      estado = detalleTitulo.ESTADO,
+                                      tipoTitulo = grado.gradoAcademico,
+                                      fechaInicio = detalleTitulo.FECHA_INICIO,
+                                      fechaFin = detalleTitulo.FECHA_FIN,
+                                      tomo = detalleTitulo.TOMO,
+                                      institucion = institutos.nombre_universidad
+                                  }).ToList();
+
+
+
+                    if (titulo != null && titulo.Any())
+                    {
+                        return Json(titulo);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
+
+                case 3:
+                    //consulta para diplomados
+                    var tituloVarios = (from detalleTitulo in _context.DetalleTitulo
+                                  join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                  join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
+                                  where (detalleTitulo.TIPO_TITULO == 2)
+                                  select new
+                                  {
+                                      idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                      idTitulo = detalleTitulo.ID_TITULO,
+                                      especialidad = detalleTitulo.ESPECIALIDAD,
+                                      folio = detalleTitulo.FOLIO,
+                                      asiento = detalleTitulo.ASIENTO,
+                                      estado = detalleTitulo.ESTADO,
+                                      tipoTitulo = grado.gradoAcademico,
+                                      fechaInicio = detalleTitulo.FECHA_INICIO,
+                                      fechaFin = detalleTitulo.FECHA_FIN,
+                                      tomo = detalleTitulo.TOMO,
+                                      institucion = institutos.nombre_universidad
+                                  }).ToList();
+
+
+
+                    if (tituloVarios != null && tituloVarios.Any())
+                    {
+                        return Json(tituloVarios);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
             }
+
+
+
+            return Json(new { vacio = true });
 
 
 
@@ -792,20 +946,20 @@ namespace AplicacionRHGit.Controllers
         public JsonResult MostrarTitulo(string idTitulo, string identificacion)
         {
             var titulo = from detalleTitulo in _context.DetalleTitulo
-                            where detalleTitulo.ID_DETALLE_TITULOS == int.Parse(idTitulo)
-                            select new
-                            {
-                                idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
-                                idTitulo=detalleTitulo.ID_TITULO,
-                                tipoTitulo = detalleTitulo.TIPO_TITULO,
-                                idInstituto = detalleTitulo.ID_INSTITUCION,
-                                fechaInicio = detalleTitulo.FECHA_INICIO,
-                                fechaFin = detalleTitulo.FECHA_FIN,
-                                tomo = detalleTitulo.TOMO,
-                                folio = detalleTitulo.FOLIO,
-                                asiento = detalleTitulo.ASIENTO,
-                                estado = detalleTitulo.ESTADO
-                            };
+                         where detalleTitulo.ID_DETALLE_TITULOS == int.Parse(idTitulo)
+                         select new
+                         {
+                             idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                             idTitulo = detalleTitulo.ID_TITULO,
+                             tipoTitulo = detalleTitulo.TIPO_TITULO,
+                             idInstituto = detalleTitulo.ID_INSTITUCION,
+                             fechaInicio = detalleTitulo.FECHA_INICIO,
+                             fechaFin = detalleTitulo.FECHA_FIN,
+                             tomo = detalleTitulo.TOMO,
+                             folio = detalleTitulo.FOLIO,
+                             asiento = detalleTitulo.ASIENTO,
+                             estado = detalleTitulo.ESTADO
+                         };
 
             try
             {
@@ -833,84 +987,170 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        [HttpGet]
+        public JsonResult CargarGrados()
+        {
+            OferentesDAO oferentesDAO = new OferentesDAO(_context);
+            List<GradoAcademico> grados = oferentesDAO.CargarGradosAcademicos();
+            return Json(grados);
+
+        }
 
 
 
-        //[HttpPost]
-        //public JsonResult ActualizarTitulo(IFormCollection formData)
-        //{
-        //    var fotoTitulo = formData.Files["fotoTitulo"];
-        //    OferentesDAO acceso = new OferentesDAO(_context);
-
-        //    if (fotoTitulo != null && fotoTitulo.Length > 0)
-        //    {
-        //        //eliminar foto existente y agregar la nueva
-
-        //        if (acceso.ActualizarTitulo(formData) == 1)
-        //        {
-        //            var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        //            var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
 
 
-        //            // Buscar el archivo en el directorio
-        //            string[] archivos = Directory.GetFiles(carpetaCedula, formData["idTitulo"].FirstOrDefault() + ".*");
+        [HttpPost]
+        public JsonResult ActualizarTituloSecundaria(IFormCollection formData)
+        {
+            var fotoTitulo = formData.Files["fotoTitulo"];
+            OferentesDAO acceso = new OferentesDAO(_context);
 
-        //            if (archivos.Length > 0)
-        //            {
-        //                if (System.IO.File.Exists(archivos[0]))
-        //                {
-        //                    // Elimina el archivo
-        //                    System.IO.File.Delete(archivos[0]);
+            if (fotoTitulo != null && fotoTitulo.Length > 0)
+            {
+                //eliminar foto existente y agregar la nueva
 
-        //                }
-
-        //            }
-
-
-        //            //ahora vamos agregar la nueva imagen
-        //            var extension = Path.GetExtension(fotoTitulo.FileName);
-
-        //            // Crear un nombre único para la imagen (id del detalle_titulo)
-        //            var nombreImagen = $"{formData["idTitulo"].FirstOrDefault()}{extension}";
-
-        //            // Obtener la ruta completa de la imagen
-        //            var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
-
-        //            // Guardar la imagen en el servidor
-        //            using (var stream = new FileStream(rutaImagen, FileMode.Create))
-        //            {
-        //                fotoTitulo.CopyTo(stream);
-        //            }
+                if (acceso.ActualizarTituloSecundaria(formData) == 1)
+                {
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
 
 
-        //            return Json(new { exito = true });
+                    // Buscar el archivo en el directorio
+                    string[] archivos = Directory.GetFiles(carpetaCedula, formData["idTitulo"].FirstOrDefault() + ".*");
 
-        //        }
-        //        else
-        //        {
-        //            return Json(new { exito = false });
+                    if (archivos.Length > 0)
+                    {
+                        if (System.IO.File.Exists(archivos[0]))
+                        {
+                            // Elimina el archivo
+                            System.IO.File.Delete(archivos[0]);
 
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //se actualizan los datos sin cambiar la imagen
-        //        if (acceso.ActualizarTitulo(formData) == 1)
-        //        {
-        //            return Json(new { exito = true });
+                        }
 
-        //        }
-        //        else
-        //        {
-        //            return Json(new { exito = false });
-
-        //        }
-        //    }
+                    }
 
 
+                    //ahora vamos agregar la nueva imagen
+                    var extension = Path.GetExtension(fotoTitulo.FileName);
 
-        //}
+                    // Crear un nombre único para la imagen (id del detalle_titulo)
+                    var nombreImagen = $"{formData["idTitulo"].FirstOrDefault()}{extension}";
 
+                    // Obtener la ruta completa de la imagen
+                    var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                    // Guardar la imagen en el servidor
+                    using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                    {
+                        fotoTitulo.CopyTo(stream);
+                    }
+
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            else
+            {
+                //se actualizan los datos sin cambiar la imagen
+                if (acceso.ActualizarTituloSecundaria(formData) == 1)
+                {
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+
+
+
+        }
+
+
+
+        [HttpPost]
+        public JsonResult ActualizarTituloUniversitario(IFormCollection formData)
+        {
+            var fotoTitulo = formData.Files["fotoTitulo"];
+            OferentesDAO acceso = new OferentesDAO(_context);
+
+            if (fotoTitulo != null && fotoTitulo.Length > 0)
+            {
+                //eliminar foto existente y agregar la nueva
+
+                if (acceso.ActualizarTituloUniversitario(formData) == 1)
+                {
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", formData["identificacion"].FirstOrDefault());
+
+
+                    // Buscar el archivo en el directorio
+                    string[] archivos = Directory.GetFiles(carpetaCedula, formData["idTitulo"].FirstOrDefault() + ".*");
+
+                    if (archivos.Length > 0)
+                    {
+                        if (System.IO.File.Exists(archivos[0]))
+                        {
+                            // Elimina el archivo
+                            System.IO.File.Delete(archivos[0]);
+
+                        }
+
+                    }
+
+
+                    //ahora vamos agregar la nueva imagen
+                    var extension = Path.GetExtension(fotoTitulo.FileName);
+
+                    // Crear un nombre único para la imagen (id del detalle_titulo)
+                    var nombreImagen = $"{formData["idTitulo"].FirstOrDefault()}{extension}";
+
+                    // Obtener la ruta completa de la imagen
+                    var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                    // Guardar la imagen en el servidor
+                    using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                    {
+                        fotoTitulo.CopyTo(stream);
+                    }
+
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            else
+            {
+                //se actualizan los datos sin cambiar la imagen
+                if (acceso.ActualizarTituloUniversitario(formData) == 1)
+                {
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+
+
+
+        }
 
 
         //[HttpGet]
@@ -971,9 +1211,9 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpGet]
-        public JsonResult MostrarCarreras(string instituto)
+        public JsonResult MostrarCarreras(string instituto, string grado)
         {
-
+            var gradoConsulta = grado.Split();
 
             using (UtilidadesContext context = new UtilidadesContext())
             {
@@ -981,7 +1221,7 @@ namespace AplicacionRHGit.Controllers
                 //si contiene nombre de carreras
 
                 List<string> carreras = context.u_carreras
-                     .Where(c => c.universidad.Contains(instituto))
+                     .Where(c => c.universidad.Contains(instituto) && c.grado.Contains(gradoConsulta[0]))
                      .Select(c => c.nombre_carrera)
                      .Distinct()
                      .OrderBy(nombreCarrera => nombreCarrera)
@@ -1001,19 +1241,16 @@ namespace AplicacionRHGit.Controllers
         {
             //universidades
             //no contiene grados
-            using (UtilidadesContext context = new UtilidadesContext())
-            {
-                List<string> instituciones = context.u_universidades
-                  .Select(u => u.siglas_universidad)
-                  .Distinct()
-                  .OrderBy(siglas => siglas)
-                  .ToList();
+            var instituciones = _context.u_universidades
+              .Distinct()
+              .OrderBy(u => u.nombre_universidad)
+              .ToList();
 
 
 
 
-                return Json(instituciones);
-            }
+
+            return Json(instituciones);
 
 
         }
@@ -1039,6 +1276,27 @@ namespace AplicacionRHGit.Controllers
 
 
         }
+
+
+        //[HttpGet]
+        //public JsonResult MostrarInstitutosUniversitarios()
+        //{
+
+        //    var instituciones = _context.CentrosEducativos
+        //                   .Where(ce => (idCanton == 0 || ce.Cod_Cant == idCanton) && ce.Tipo_Ins == 3)
+        //                   .Select(ce => new
+        //                   {
+        //                       codInstitucion = ce.Cod_Presupuestario,
+        //                       nombreInstitucion = ce.Nombre_Institucion
+        //                   })
+        //                   .ToList();
+
+
+
+        //    return Json(instituciones);
+
+
+        //}
 
 
 
@@ -1467,7 +1725,7 @@ namespace AplicacionRHGit.Controllers
                 // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
                 List<int> listaMaterias = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaMateriasJson);
 
-    
+
                 int idCanton = int.Parse(form["cantones"].FirstOrDefault());
                 string descripcion = form["descripcion"].FirstOrDefault();
                 string identificacion = form["identificacion"].FirstOrDefault();
@@ -1476,9 +1734,9 @@ namespace AplicacionRHGit.Controllers
 
                 int retorno = oferentesDAO.CrearOferta(identificacion, idProvincia, idCanton, descripcion, listaMaterias);
 
-                if (retorno>0)
+                if (retorno > 0)
                 {
-                    return Json(new { exito = true});
+                    return Json(new { exito = true });
 
                 }
                 else
@@ -1550,7 +1808,7 @@ namespace AplicacionRHGit.Controllers
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { error = ex.Message });
 
