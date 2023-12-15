@@ -52,14 +52,15 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+
 
                 }
             }
             else
             {
 
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
 
@@ -114,20 +115,20 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
 
         }
 
 
-        public IActionResult TitulosOferente(string identification = "0117860836", string clave = "123")
+        public IActionResult TitulosOferente(string identification, string clave)
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -153,7 +154,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
 
@@ -162,7 +163,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -189,7 +190,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
 
@@ -198,7 +199,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -226,7 +227,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
 
@@ -235,7 +236,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -260,8 +261,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
-
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
                 }
 
 
@@ -269,7 +269,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -295,7 +295,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
 
@@ -304,7 +304,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -331,7 +331,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
                 }
 
@@ -340,7 +340,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
         }
@@ -428,6 +428,113 @@ namespace AplicacionRHGit.Controllers
         }
 
 
+
+        [HttpPost]
+        public JsonResult SubirFotoPerfil(IFormCollection formData)
+        {
+            try
+            {
+                var foto = formData.Files["inputFotoPerfil"];
+                if (foto != null && foto.Length > 0)
+                {
+                    // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+
+                    var carpetaFotosPerfil = Path.Combine(hostingEnvironment.WebRootPath, "ImagesPerfilExpediente", formData["identificacion"].FirstOrDefault());
+
+
+                    // Crear la carpeta si no existe
+                    if (!Directory.Exists(carpetaFotosPerfil))
+                    {
+                        Directory.CreateDirectory(carpetaFotosPerfil);
+                    }
+
+                    // Obtener la extensión del archivo
+                    var extension = Path.GetExtension(foto.FileName);
+
+                    string parametroNombreImagen = "fotoPerfil";
+                    var nombreImagen = $"{parametroNombreImagen}{extension}";
+
+                    // Obtener la ruta completa de la imagen
+                    var rutaImagen = Path.Combine(carpetaFotosPerfil, nombreImagen);
+
+                    //comprobar si ya hay subida una imagen
+                    // Comprobar si existe un archivo con el nombre "dimex" en la carpeta
+                    var archivosConNombreDimex = Directory.GetFiles(carpetaFotosPerfil, "fotoPerfil.*");
+                    if (archivosConNombreDimex.Length > 0)
+                    {
+                        // Eliminar archivos existentes con el nombre "dimex"
+                        foreach (var archivoExistente in archivosConNombreDimex)
+                        {
+                            System.IO.File.Delete(archivoExistente);
+                        }
+
+                    }
+
+                    // Guardar la imagen en el servidor
+                    using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                    {
+                        foto.CopyTo(stream);
+                    }
+
+                    return Json(new { exito = true });
+
+
+                }
+                else
+                {
+                    return Json(new { exito = false });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { exito = false });
+
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerUrlImagen(string identificacion)
+        {
+
+            try
+            {
+
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesPerfilExpediente", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, "fotoPerfil.*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesPerfilExpediente", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio=true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error=ex.Message });
+
+            }
+        }
+
+
         [HttpGet]
         public JsonResult ObtenerEstadoDimex(string identificacion)
         {
@@ -487,15 +594,14 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpPost]
-        public JsonResult GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
-            string direccion, int grupoP)
+        public JsonResult GuardarCambiosDatosPersonalesEx(IFormCollection form)
         {
             try
             {
                 OferentesDAO acceso = new OferentesDAO(_context);
 
 
-                if (acceso.GuardarCambiosDatosPersonalesEx(identificacion, nacimiento, genero, provincia, canton, distrito, direccion, grupoP) > 0)
+                if (acceso.GuardarCambiosDatosPersonalesEx(form) > 0)
                 {
                     //si todo sale bien
                     return Json(new { mensaje = "Expediente actualizado exitosamente" });
@@ -514,7 +620,92 @@ namespace AplicacionRHGit.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult AñadirGrupoProfesionalExpediente(string identificacion, int idGrupoProf)
+        {
+            try
+            {
+                OferentesDAO acceso = new OferentesDAO(_context);
 
+                int idRegistroAgregado = acceso.AñadirGrupoProfesionalExpediente(identificacion, idGrupoProf);
+
+                if (idRegistroAgregado > 0)
+                {
+                    //si todo sale bien
+                    return Json(new { exito = true });
+                }
+                else
+                {
+                    return Json(new { error = "Ya tienes este grupo profesional agregado" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+        [HttpGet]
+        public JsonResult CargarGrupoProfesionalOferente(string identificacion, string clave)
+        {
+            OferentesDAO oferentesDAO = new OferentesDAO(_context);
+            var grupos = oferentesDAO.CargarGrupoProfesionalOferente(identificacion, clave);
+
+            try
+            {
+
+                if (grupos != null)
+                {
+                    return Json(grupos);
+
+                }
+                else
+                {
+                    return Json(new { error = true });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+        [HttpPost]
+        public JsonResult EliminarGrupoProfesionalOferente(string idGrupoProf, string identificacion)
+        {
+            try
+            {
+                OferentesDAO oferentesDAO = new OferentesDAO(_context);
+                if (oferentesDAO.EliminarGrupoProfesionalOferente(idGrupoProf, identificacion) == 1)
+                {
+
+                    return Json(new { exito = true });
+
+                }
+                else
+                {
+                    return Json(new { error = "Hubo un problema al eliminar el grupo profesional" });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
 
 
         [HttpPost]
@@ -1298,6 +1489,46 @@ namespace AplicacionRHGit.Controllers
 
         //}
 
+        [HttpGet]
+        public JsonResult ObtenerUrlTitulo(string identificacion, int idTitulo)
+        {
+
+            try
+            {
+
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idTitulo + ".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesTitulos", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
 
 
         ///////////////////////////////////////////////////////    SECCION REFERENCIAS ////////////////////////////////////////////////////////////////
@@ -1406,7 +1637,7 @@ namespace AplicacionRHGit.Controllers
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
                 if (oferentesDAO.EliminarReferencia(idReferencia) == 1)
                 {
-                    //eliminar foto de ese titulo
+                    //eliminar foto de esa refeencia
                     var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
                     var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesReferencias", identificacion);
 
@@ -1444,6 +1675,45 @@ namespace AplicacionRHGit.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult ObtenerUrlEvaluacion(string identificacion, int idReferencia)
+        {
+
+            try
+            {
+
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesReferencias", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idReferencia+".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesReferencias", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
 
 
         ///////////////////////////////////////////////////////    SECCION EXPERIENCIAS ////////////////////////////////////////////////////////////////
@@ -1459,6 +1729,38 @@ namespace AplicacionRHGit.Controllers
 
                 if (idExperiencia != -1)
                 {
+                    var fotoEvaluacion = formData.Files["fotoEvaluacion"];
+                    if (fotoEvaluacion != null && fotoEvaluacion.Length > 0)
+                    {
+                        // Obtener la ruta donde se guardará la imagen (usando el número de cédula como nombre de carpeta)
+                        var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+
+                        var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesEvaluaciones", formData["identificacion"].FirstOrDefault());
+
+
+                        // Crear la carpeta si no existe
+                        if (!Directory.Exists(carpetaCedula))
+                        {
+                            Directory.CreateDirectory(carpetaCedula);
+                        }
+
+                        // Obtener la extensión del archivo
+                        var extension = Path.GetExtension(fotoEvaluacion.FileName);
+
+                        // Crear un nombre único para la imagen (id del detalle_titulo)
+                        var nombreImagen = $"{idExperiencia}{extension}";
+
+                        // Obtener la ruta completa de la imagen
+                        var rutaImagen = Path.Combine(carpetaCedula, nombreImagen);
+
+                        // Guardar la imagen en el servidor
+                        using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                        {
+                            fotoEvaluacion.CopyTo(stream);
+                        }
+
+                    }
 
                     return Json(new { exito = true });
 
@@ -1477,6 +1779,47 @@ namespace AplicacionRHGit.Controllers
 
             }
         }
+
+
+        [HttpGet]
+        public JsonResult ObtenerUrlExperiencia(string identificacion, int idExperiencia)
+        {
+
+            try
+            {
+
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesEvaluaciones", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idExperiencia + ".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesEvaluaciones", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
 
 
 
@@ -1522,7 +1865,24 @@ namespace AplicacionRHGit.Controllers
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
                 if (oferentesDAO.EliminarExperiencia(idExperiencia) == 1)
                 {
+                    //eliminar foto de esa evaluacion
+                    var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                    var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesEvaluaciones", identificacion);
 
+
+                    // Buscar el archivo en el directorio
+                    string[] archivos = Directory.GetFiles(carpetaCedula, idExperiencia + ".*");
+
+                    if (archivos.Length > 0)
+                    {
+                        if (System.IO.File.Exists(archivos[0]))
+                        {
+                            // Elimina el archivo
+                            System.IO.File.Delete(archivos[0]);
+
+                        }
+
+                    }
 
                     return Json(new { exito = true });
 

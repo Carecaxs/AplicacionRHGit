@@ -82,14 +82,13 @@ namespace AplicacionRHGit.Data
 
 
         //retorna 1 si todos sale bien , -1 si no sale bien
-        public int GuardarCambiosDatosPersonalesEx(string identificacion, string nacimiento, int genero, int provincia, int canton, int distrito,
-            string direccion, int grupoP)
+        public int GuardarCambiosDatosPersonalesEx(IFormCollection form)
         {
             try
             {
                 //consulta el id del oferente con la cedula dada
                 var idOferente = _context.Oferente
-                .Where(o => o.identificacion == identificacion)
+                .Where(o => o.identificacion == form["identificacion"].FirstOrDefault())
                 .Select(o => o.idOferente)
                 .FirstOrDefault();
 
@@ -103,14 +102,14 @@ namespace AplicacionRHGit.Data
                 {
  
                     // Convierte la fecha al formato 'YYYY-MM-DD' antes de insertarla en la base de datos
-                    expediente.nacimiento = DateTime.Parse(nacimiento);
-                    expediente.IdProvincia = (provincia==0 ? null : provincia);
-                    expediente.IdCanton = (canton == 0 ? null : canton); ;
-                    expediente.IdDistrito = (distrito == 0 ? null : distrito); 
-                    expediente.direccion = direccion;
-                    expediente.genero = genero;
-                    expediente.grupoProfesional = grupoP;
-
+                    expediente.nacimiento = DateTime.Parse(form["nacimiento"].FirstOrDefault());
+                    expediente.IdProvincia = (int.Parse(form["provincias"].FirstOrDefault()) == 0 ? null : int.Parse(form["provincias"].FirstOrDefault()));
+                    expediente.IdCanton = (int.Parse(form["cantones"].FirstOrDefault()) == 0 ? null : int.Parse(form["cantones"].FirstOrDefault())); ;
+                    expediente.IdDistrito = (int.Parse(form["distritos"].FirstOrDefault()) == 0 ? null : int.Parse(form["distritos"].FirstOrDefault())); 
+                    expediente.direccion = form["direccion"].FirstOrDefault();
+                    expediente.genero = int.Parse(form["genero"].FirstOrDefault());
+                    expediente.telefonoOpcional= form["telefonoOpcional"].FirstOrDefault();
+                    expediente.correoOpcional = form["correoOpcional"].FirstOrDefault();
 
                     // Realiza el cambio en la base de datos
                     _context.SaveChanges();
@@ -249,6 +248,121 @@ namespace AplicacionRHGit.Data
             }
         }
 
+
+
+        //cargar lista de grupos profesionales de oferente
+        public List<GrupoProfesional> CargarGrupoProfesionalOferente(string identificacion, string clave)
+        {
+
+            var idOferente = _context.Oferente
+              .Where(o => o.identificacion == identificacion && o.clave == clave)
+              .Select(o => o.idOferente)
+              .FirstOrDefault();
+
+            //consulta el id del expediente de ese oferente
+            var idExpediente = _context.Expediente
+            .Where(e => e.idOferente == idOferente)
+            .Select(e => e.ID_EXPEDIENTE)
+            .FirstOrDefault();
+
+
+
+            var gruposP = (from gpo in _context.GrupoProfesionalOferente
+                           join g in _context.GrupoProfesional on gpo.id_grupoProfesional equals g.idGrupoProfesional
+                           where gpo.ID_EXPEDIENTE == idExpediente
+                           select g).ToList();
+
+            return gruposP;
+
+        }
+
+
+        //retorna el id del registro agregado si sale bien, -1 si no
+        public int AñadirGrupoProfesionalExpediente(string identificacion, int idGrupoProf)
+        {
+            try
+            {
+
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+
+                //verificar que no tenga el grupo agregado
+                bool tieneGrupo = _context.GrupoProfesionalOferente
+                .Any(g => g.ID_EXPEDIENTE == idExpediente && g.id_grupoProfesional == idGrupoProf);
+
+                if (!tieneGrupo)
+                {
+                    GrupoProfesionalOferente agregar = new GrupoProfesionalOferente()
+                    {
+                        id_grupoProfesional= idGrupoProf,
+                        ID_EXPEDIENTE = idExpediente
+                    };
+
+                    _context.GrupoProfesionalOferente.Add(agregar);
+                    _context.SaveChanges();
+
+                    return agregar.ID;
+                }
+                else
+                {
+                    return -1;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
+
+        public int EliminarGrupoProfesionalOferente(string idGrupoProf, string identificacion)
+        {
+            try
+            {
+                var idOferente = _context.Oferente
+                .Where(o => o.identificacion == identificacion)
+                .Select(o => o.idOferente)
+                .FirstOrDefault();
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                var grupo = _context.GrupoProfesionalOferente
+                  .FirstOrDefault(g => g.ID_EXPEDIENTE == idExpediente && g.id_grupoProfesional == int.Parse(idGrupoProf));
+
+
+                if (grupo != null)
+                {
+                    _context.GrupoProfesionalOferente.Remove(grupo);
+                    _context.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    // Manejar el caso en que la referencia no se encontró
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
 
 
 

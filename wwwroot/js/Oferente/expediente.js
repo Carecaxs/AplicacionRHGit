@@ -2,6 +2,15 @@
 
 $(document).ready(function () {
 
+    cargarImagenPerfil();
+    $("#fotoPerfil").on("click", function () {
+        // Obtener la URL de la imagen original
+        var urlImagenOriginal = $(this).attr("src");
+
+        // Asignar la URL de la imagen original al modal
+        $("#imagenAmpliada").attr("src", urlImagenOriginal);
+    });
+
 
 
     //seccion de enlaces
@@ -81,6 +90,12 @@ $(document).ready(function () {
     $("#apellidos").val($("#apellidosOferente").val());
 
 
+
+
+
+    ////// seccion de datos personales expediente ///////////
+
+
     $("#mostrarModalSubirDimex").click(function (event) {
         event.preventDefault();
 
@@ -101,60 +116,41 @@ $(document).ready(function () {
     // Evento de clic para confirmar la subida de la imagen
     $("#confirmarSubidaDimex").click(function (event) {
 
-        // Obtener el formulario y los datos del formulario
-        var form = $("#expedienteForm")[0];
-        var formData = new FormData(form);
-
-        $.ajax({
-            url: '/Oferente/SubirImagenDimex',  // Reemplaza con la URL correcta de tu controlador
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-
-                if (data.exito == true) {
-
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
-                    }
-                    else {
-                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
-
-                    }
-                }
-                else {
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
-                    }
-                    else {
-                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
-
-                    }
-                }
-            },
-            error: function (error) {
-                // Manejar errores si es necesario
-                console.log(error);
-            }
-        });
-
-
+        SubirDimex();
 
         // Cierra el modal de confirmación
         $("#SubirDimexModal").modal("hide");
+
+    });
+
+    //evento al seleccionar una foto para el perfil
+    $('#inputFotoPerfil').change(function () {
+
+        mostrarFoto();
+    });
+
+    //evento al confirmar foto perfil
+    $("#confirmarFotoPerfil").click(function (event) {
+
+        SubirFotoPerfil();
+        // metodo para cargar la imagen
+        cargarImagenPerfil();
+
+        //cerrar modal
+        $("#seleccionarFotoModal").modal("hide");
     });
 
 
 
     if ($("#nombreVista").val() == "DatosPersonalesOferente") {
+        //poner activo al enlace de los encabezados de datos personales
+        $("#enlaceDatosPersonales").addClass("active");
 
+        AgregarMascarasPaginaDatosPersonales();
+        MostrarGruposProfesionalesOferente();
+
+        //cargar idiomas del oferente
+        CargarIdiomasOferente();
 
         //se verifica que tipo de identificacion es, dinex o cedula
         //si es diferente a 10 es cedula
@@ -207,26 +203,26 @@ $(document).ready(function () {
             $("#seccionDinex").hide();
         }
 
+        //evento para eliminar Idioma de expediente
+        $("#listaIdiomas").on("click", ".btnEliminarIdioma", function (event) {
 
-        //cargar idiomas
-        $.ajax({
-            type: "Get",
-            url: "/Oferente/MostrarIdiomaLista",
-            data: {
-                identificacion: $("#identification").val(),
-                clave: $("#clave").val()
-            },
-            success: function (data) {
-                //recargar titulos
+            event.preventDefault();
+            // Obtén el data-id del li padre
+            var idIdioma = $(this).closest("li").data("id");
+            EliminarIdiomaOferente(idIdioma);
 
-                procesarRespuestaIdiomas(data);
-            },
-            error: function (error) {
-                console.log("Error al cargar idiomas: " + error);
-            }
+
         });
 
+        $("#listaGrupoProfesional").on("click", ".btnEliminarGrupo", function (event) {
 
+            event.preventDefault();
+            // Obtén el data-id del li padre
+            var idGrupo = $(this).closest("li").data("id");
+            EliminarGrupoProfesionalOferente(idGrupo);
+
+
+        });
 
 
 
@@ -239,28 +235,9 @@ $(document).ready(function () {
                 $("#distritos").find("option:not(:first)").remove();
 
                 var idProvincia = $("#provincias").val();//agarrar el id de la provincia elegida
-
-                const apiCanton = 'https://apisproyectorg.somee.com/api/Ubicaciones/Cantones/';
-
-                fetch(apiCanton + (idProvincia))
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('No se pudo obtener los cantones.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
+                CargarCanton(idProvincia);
 
 
-
-                        // Llena el ComboBox con los cantones recibidos de la API
-                        data.forEach(cantones => {
-                            $("#cantones").append($("<option>").val(cantones.idCanton).text(cantones.nombreCanton));
-                        });
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
             }
             else {
                 //eliminar opciones anteriores de cantones y distritos menos la primera que seria "selecciones una opción"
@@ -307,75 +284,7 @@ $(document).ready(function () {
 
         });
 
-
-
-        $.ajax({
-            type: "Get",//tipo de solicitud
-            url: "/Oferente/ObtenerDatosPersonalesEx",
-            data: {//se envia el parametro
-                identificacion: $("#identification").val(),
-
-            },
-            success: function (data) {//en caso de que sale bien
-
-                if (data.error) { //si data.error contiene algo
-
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                    }
-                    else {
-                        $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                    }
-
-
-
-                }
-                else {
-                    //recibo la fecha en un formato yyyy-mm-ddT00:00:00 entonces solo nos interesa la parte que esta antes de la T
-                    if (data.nacimiento != "" && data.nacimiento != null) {
-                        var partesFecha = data.nacimiento.split('T');
-                        var nacimiento = partesFecha[0];
-                        $("#nacimiento").val((nacimiento != null) ? nacimiento : "");
-                    }
-
-
-
-                    var provincia = data.idProvincia;
-                    var canton = data.idCanton;
-                    var distrito = data.idDistrito;
-                    var direccion = data.direccion;
-                    var genero = data.genero;
-                    var grupo = data.grupoProfesional;
-
-
-
-
-                    //asignar los valores a los inputs
-
-                    $("#direccion").val((direccion != null) ? direccion : "");
-                    $("#genero").val((genero != 0) ? genero : 0);
-                    $("#grupoProfesional").val((grupo != 0) ? grupo : 0);
-
-
-                    CargarDatosUbicaciones(provincia, canton, distrito);
-
-
-
-
-
-                }
-            },
-            error: function (xhr, status, error) { //error en la solicitud de ajax
-                console.error(error);
-            }
-        });
-
-
-
+        ObtenerDatosPersonales();
 
 
     }
@@ -388,58 +297,7 @@ $(document).ready(function () {
 
         event.preventDefault();
 
-
-        $.ajax({
-            type: "Post",//tipo de solicitud
-            url: "/Oferente/GuardarCambiosDatosPersonalesEx",
-            data: {//se envia el parametro
-                identificacion: $("#identification").val(),
-                nacimiento: $("#nacimiento").val(),
-                genero: $("#genero").val(),
-                provincia: $("#provincias").val(),
-                canton: $("#cantones").val(),
-                distrito: $("#distritos").val(),
-                direccion: $("#direccion").val(),
-                grupoP: $("#grupoProfesional").val()
-
-            },
-            success: function (data) {//en caso de que sale bien
-
-                if (data.error) { //si data.error contiene algo
-
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                    }
-                    else {
-                        $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                    }
-
-
-
-                }
-                else {
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + data.mensaje + "</p>");
-                    }
-                    else {
-                        $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + data.mensaje + "</p>");
-
-                    }
-
-                }
-            },
-
-            error: function (xhr, status, error) { //error en la solicitud de ajax
-                console.error(error);
-            }
-        });
+        ActualizarDatosPersonales();
 
     });
 
@@ -448,103 +306,13 @@ $(document).ready(function () {
 
     /*   seccion titulos*/
 
-    $('#nivelEducacion').on('change', function () {
-        $("#divInstituto").hide();
-        $("#divCarrera").hide();
-        $("#divTitulo").hide();
-        $("#divInstituto2").hide();
-        //1.secundaria
-        //2.diplomado
-        //3.profesorado
-        //4.bachillerato
-        //5.licenciatura
-        //6.maestria
-        //7.doctorado
-
-        var seleccion = parseInt($(this).val(), 10);
-        switch (seleccion) {
-            case 2:
-                tipoCarrera = 1;
-
-                $.ajax({
-                    type: "GET",
-                    url: "/Oferente/MostrarInstitutosDiplomados",
-                    success: function (data) {
-
-
-                        // Obtener el elemento select
-                        var selectInstitutos = $('#instituto');
-
-                        // Limpiar opciones existentes
-                        selectInstitutos.empty();
-                        selectInstitutos.append('<option value="0">' + "Seleccione un opción" + '</option>');
-
-
-                        // Iterar sobre la lista de instituciones y agregar opciones al select
-                        $.each(data, function (index, institucion) {
-
-                            selectInstitutos.append('<option value="' + institucion + '">' + institucion + '</option>');
-                        });
-
-                        $("#divInstituto").show();
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-
-                break;
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-
-                tipoCarrera = 2;
-
-                $.ajax({
-                    type: "GET",
-                    url: "/Oferente/MostrarUniversidades",
-                    success: function (data) {
-
-
-                        // Obtener el elemento select
-                        var selectInstitutos = $('#instituto');
-
-                        // Limpiar opciones existentes
-                        selectInstitutos.empty();
-                        selectInstitutos.append('<option value="0">' + "Seleccione un opción" + '</option>');
-
-
-                        // Iterar sobre la lista de instituciones y agregar opciones al select
-                        $.each(data, function (index, institucion) {
-                            selectInstitutos.append('<option value="' + institucion + '">' + institucion + '</option>');
-                        });
-
-                        $("#divInstituto").show();
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-                break;
-
-            default:
-                $("#divTitulo").show();
-                $("#divInstituto2").show();
-        }
-
-
-    });
-
-
 
     $('#institutoUniversitario').on('change', function () {
         if ($(this).val() != null && $(this).val() != "") {
             CargarCarrerasUniversitarias();
         }
- 
-        
+
+
     });
 
 
@@ -560,7 +328,8 @@ $(document).ready(function () {
 
     if ($("#vistaActual").val() == "TitulosOferente") {
 
-
+        //poner activo al enlace de los encabezados de titulos
+        $("#enlaceExpedienteAcademico").addClass("active");
 
         CargarProvincia();
 
@@ -575,7 +344,7 @@ $(document).ready(function () {
 
 
         ////cargar otros titulos
-        //CargarTitulos(3);
+        CargarTitulos(3);
 
     }
 
@@ -595,7 +364,7 @@ $(document).ready(function () {
     //evento al elegir imagen de titulo
 
     $('.fotoTitulo').change(function () {
-        console.log("echo");
+
         var input = this;
 
         if (input.files && input.files[0]) {
@@ -663,7 +432,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         //retorna true si estan completados todos los campos
-        if (verificarCamposModalTitulos("#formAgregarTituloSecundaria")) {
+        if (verificarCamposModalTitulos($("#formAgregarTituloSecundaria"))) {
             AgregarTituloSecundaria();
             limpiarCamposModalSecundaria();
 
@@ -694,7 +463,7 @@ $(document).ready(function () {
 
         //retorna true si estan completados todos los campos
         if (verificarCamposModalTitulos($("#formAgregarTituloUniversitario"))) {
-            console.log("entra");
+
             AgregarTituloUniversidad();
             limpiarCamposModalUniversitario();
 
@@ -750,7 +519,44 @@ $(document).ready(function () {
     });
 
 
+    $("#listaTitulosSecundaria").on("click", ".btnVerTitulo", function () {
 
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+
+        MostrarTitulo(identificacion, idTitulo);
+
+    });
+
+    $("#listaTitulosUniversitarios").on("click", ".btnVerTitulo", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+
+        MostrarTitulo(identificacion, idTitulo);
+
+    });
+
+    $("#listaTitulosVarios").on("click", ".btnVerTitulo", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idTitulo = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+
+        MostrarTitulo(identificacion, idTitulo);
+
+    });
 
 
     //evento para eliminar titulo
@@ -1014,7 +820,7 @@ $(document).ready(function () {
                         event.preventDefault();
 
                         //retorna true si estan completados todos los campos
-                        if (verificarCamposModalTitulos("#formAgregarTituloSecundaria")) {
+                        if (verificarCamposModalTitulos($("#formAgregarTituloSecundaria"))) {
                             ActualizarTituloSecundria(idTitulo);
 
                         } else {
@@ -1086,11 +892,11 @@ $(document).ready(function () {
                         event.preventDefault();
 
                         //retorna true si estan completados todos los campos
-                        if (verificarCamposModalTitulos("#formAgregarTituloUniversitario")) {
+                        if (verificarCamposModalTitulos($("#formAgregarTituloUniversitario"))) {
                             ActualizarTituloUniversitario(idTitulo);
 
                         } else {
-                            console.log("holis");
+
                             if ($("#mensaje").length) {
 
                                 $("#mensaje").remove();
@@ -1139,10 +945,10 @@ $(document).ready(function () {
 
                         $("#mensaje").remove();
 
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosUniversitarios").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
                     }
                     else {
-                        $("#listaTitulos").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                        $("#listaTitulosUniversitarios").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
 
                     }
 
@@ -1150,26 +956,35 @@ $(document).ready(function () {
                 else {
                     //en caso de todo salir bien se asigna los resultados del data a los inputs del modal
 
-
-                    var partesFecha = data.fechA_OBTENCION.split('T');
-                    var fechaTitulo = partesFecha[0];
-
-                    $("#nivelEducacion").val(data.tipO_TITULO);
-                    $("#titulo").val(data.especialidad);
-                    $("#institucion").val(data.nombrE_INSTITUCION);
-                    $("#fechaObtenido").val(fechaTitulo);
-                    $("#folio").val(data.folio);
-                    $("#asiento").val(data.asiento);
+                    CargarDatosTituloDiploma(data[0]);
+                    $('#agregarTituloDiplomaModal').modal('show');
 
 
-                    //mostrar el modal 
-                    $("#agregarTituloModal").modal("show");
-                    eliminarMsjModal();
+                    //evento al precionar guardar cambios en el titulo de secundaria
+                    $("#actualizarTituloDiploma").click(function (event) {
 
-                    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
-                    $("#agregarTitulo").hide();
-                    $("#actualizarTitulo").show();
+                        event.preventDefault();
 
+                        //retorna true si estan completados todos los campos
+                        if (verificarCamposModalTitulos($("#formAgregarTituloDiploma"))) {
+                            ActualizarTituloDiploma(idTitulo);
+
+                        } else {
+
+                            if ($("#mensaje").length) {
+
+                                $("#mensaje").remove();
+
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+                            }
+                            else {
+                                $(".agregarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Debes de llenar todos los campos" + "</p>");
+
+                            }
+
+                        }
+
+                    });
                 }
             },
             error: function (error) {
@@ -1183,19 +998,7 @@ $(document).ready(function () {
 
 
 
-    //al dar click en el boton de agregar titulo se esconde el boton de actualizar que esta dentro del modal
-    $("#abrirModalAgregarTituloSecundaria").click(function (event) {
-        $("#actualizarTituloSecundaria").hide();
-        $("#agregarTituloSecundaria").show();
 
-
-        //se muestran nuevamente los divs que se ocultan a la hora de actualizar
-        $(".divUbicacionSecundaria").show();
-
-        $("#divInstitutoSecundaria").show();
-
-
-    });
 
 
     $("#abrirModalAgregarTituloUniversitario").click(function (event) {
@@ -1208,8 +1011,15 @@ $(document).ready(function () {
 
     });
 
-   
+    $("#abrirModalAgregarTituloDiploma").click(function (event) {
+        $("#actualizarTituloDiploma").hide();
+        $("#agregarTituloDiploma").show();
 
+
+        //se muestran nuevamente los divs que se ocultan a la hora de actualizar
+        $("#divInstitutoDiploma, #divCarreraDiploma").show();
+
+    });
 
 
 
@@ -1218,147 +1028,20 @@ $(document).ready(function () {
 
         event.preventDefault();
 
-        $.ajax({
-            type: "POST",
-            url: "/Oferente/AñadirIdiomaExpediente",
-            data: {
-                identificacion: $("#identification").val(),
-                idIdioma: $("#nombreIdioma").val()
-            },
-            success: function (data) {
-                //recargar titulos
-
-                if (data.error) {
-
-                    if ($("#mensaje").length) {
-
-                        $("#mensaje").remove();
-
-                        $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                    }
-                    else {
-                        $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                    }
-                }
-                else {
-
-                    $.ajax({
-                        type: "Get",
-                        url: "/Oferente/MostrarIdiomaLista",
-                        data: {
-                            identificacion: $("#identification").val(),
-                            clave: $("#clave").val()
-                        },
-                        success: function (data) {
-                            //recargar titulos
-
-                            procesarRespuestaIdiomas(data);
-                        },
-                        error: function (error) {
-                            console.log("Error al cargar idiomas: " + error);
-                        }
-                    });
-                }
-
-
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-
-
+        AñadirIdioma();
 
     });
 
 
-
-
-
-
-
-    //evento para eliminar Idioma de expediente
-    $("#listaIdiomas").on("click", ".btnEliminarIdioma", function (event) {
+    $("#btnAgregarGrupoProfesional").click(function (event) {
 
         event.preventDefault();
-        // Obtén el data-id del li padre
-        var idIdioma = $(this).closest("li").data("id");
 
-        // Muestra el modal de confirmación
-        $("#confirmacionEliminarModalIdioma").modal("show");
-
-        $("#confirmarEliminar").click(function (event) {
-
-            $.ajax({
-                type: "POST",
-                url: "/Oferente/EliminarIdioma",
-                data: {
-                    idIdioma: idIdioma,
-                    identificacion: $("#identification").val()
-                },
-                success: function (data) {
-
-                    if (data.error) {
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-                    }
-                    else {
-                        $("#confirmacionEliminarModalIdioma").modal("hide");
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
-                        }
-                        else {
-                            $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
-
-                        }
-
-
-                        ///recargar la lista de titulos
-
-                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de idiomas
-
-                        $.ajax({
-                            type: "Get",
-                            url: "/Oferente/MostrarIdiomaLista",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
-                            },
-                            success: function (data) {
-                                //recargar titulos
-
-                                procesarRespuestaIdiomas(data);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar idiomas: " + error);
-                            }
-                        });
-
-                    }
-                },
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
-
-        });
-
-
+        AñadirGrupoProfesional();
 
     });
+
+
 
 
 
@@ -1373,70 +1056,57 @@ $(document).ready(function () {
     });
 
 
+    $('#agregarTituloDiplomaModal').on('hidden.bs.modal', function () {
+        limpiarCamposDiploma();
+    });
+
 
     //////////////////////////////////////////////  seccion de referencias //////////////////////////////////////////////////////////////
     if ($("#vistaActual").val() == "ReferenciasOferente") {
+        //poner activo al enlace de los encabezados de referencias
+        $("#enlaceReferencias").addClass("active");
 
         //al cargar la pagina por defecto va estar seleccionado referencia personal y no profesional
         //por lo que vamos a esconder los campos que solo se necesitan llenar cuando es refrencia profesional
         $('#empresaDiv').hide();
 
 
-        //evento que detecta el cambio de seleccion en el tipo de referencia
-        $('#tipoReferencia').on('change', function () {
 
-            //esta funcion muestra y oculta elementos al agregar una referencia dependiendo si es personal o profesional
-            CambioTipoReferencia();
 
-        });
 
 
         //aplicar mascara al input de numero telefonico 
         // Aplica la máscara de número telefónico específica para Costa Rica
         Inputmask({ mask: '9999-9999' }).mask($('#contacto'));
 
-        //cargar referencias personales de la persona
-        $.ajax({
-            type: "GET",
-            url: "/Oferente/CargarReferencias",
-            data: {
-                identificacion: $("#identification").val(),
-                clave: $("#clave").val(),
-                tipoReferencia: '1'
-            },
-            success: function (data) {
 
-                //recargar refrencias
-                procesarRespuestaReferencia(data, 1);
-            },
-            error: function (error) {
-                console.log("Error al cargar referencias: " + error);
-            }
-        });
+        //cargar referencias personales de la persona
+        CargarReferencias(1);
 
 
         //cargar referencias profesionales de la persona
-        $.ajax({
-            type: "GET",
-            url: "/Oferente/CargarReferencias",
-            data: {
-                identificacion: $("#identification").val(),
-                clave: $("#clave").val(),
-                tipoReferencia: '2'
-            },
-            success: function (data) {
+        CargarReferencias(2);
 
-                //recargar refrencias
-                procesarRespuestaReferencia(data, 2);
-            },
-            error: function (error) {
-                console.log("Error al cargar referencias: " + error);
-            }
-        });
 
     }
 
+    //al tocar boton de agregar referencia personal se esconde los campos que se usan para agregar referencia profesional 
+    //y se asigna en 1 el tipo de referencia que este seria la personal
+    $("#abrirModalAgregarReferenciaPersonal").click(function (event) {
+        $("#empresaDiv").hide();
+        $("#personaReferenciaDiv").show();
 
+        $("#tipoReferencia").val(1);
+    });
+
+    //al tocar boton de agregar referencia profesional se esconde los campos que se usan para agregar referencia personal
+    //y se asigna en 2 el tipo de referencia que este seria la profesional
+    $("#abrirModalAgregarReferenciaProfesional").click(function (event) {
+        $("#personaReferenciaDiv").hide();
+        $("#empresaDiv").show();
+
+        $("#tipoReferencia").val(2);
+    });
 
     $("#agregarReferencia").click(function (event) {
 
@@ -1445,95 +1115,9 @@ $(document).ready(function () {
         //retorna true si estan completados todos los campos
         if (VerificarCamposModalAgregarReferencia()) {
 
-            // Obtener el formulario y los datos del formulario
-            var form = $("#formAgregarReferencia")[0];
-            var formData = new FormData(form);
-
-            // Agregar identificacion y clave al formData
-            formData.append("identificacion", $("#identification").val());
-            formData.append("clave", $("#clave").val());
-
-
-            $.ajax({
-                method: "POST",//tipo de solicitud
-                url: "/Oferente/AgregarReferecia",
-                data: formData,
-                processData: false,  // Necesario para enviar FormData correctamente
-                contentType: false,  // Necesario para enviar FormData correctamente
-                success: function (data) {//en caso de que sale bien
-
-                    if (data.error) { //si data.error contiene algo
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-
-
-
-                    }
-                    else {
-                        console.log("exito");
-                        ///recargar la lista de referencias
-
-                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
-
-                        //tipo referencia guarda 1 si es personal, 2 si es profesional
-                        if ($("#tipoReferencia").val() == 1) {
-
-                            $.ajax({
-                                type: "GET",
-                                url: "/Oferente/CargarReferencias",
-                                data: {
-                                    identificacion: $("#identification").val(),
-                                    clave: $("#clave").val()
-                                },
-                                success: function (data) {
-
-                                    //recargar titulos
-                                    procesarRespuestaReferencia(data, 1);
-                                },
-                                error: function (error) {
-                                    console.log("Error al cargar títulos: " + error);
-                                }
-                            });
-
-
-                        } else {
-                            //cargar referencias profesionales de la persona
-                            $.ajax({
-                                type: "GET",
-                                url: "/Oferente/CargarReferencias",
-                                data: {
-                                    identificacion: $("#identification").val(),
-                                    clave: $("#clave").val(),
-                                    tipoReferencia: '2'
-                                },
-                                success: function (data) {
-
-                                    //recargar refrencias
-                                    procesarRespuestaReferencia(data, 2);
-                                },
-                                error: function (error) {
-                                    console.log("Error al cargar referencias: " + error);
-                                }
-                            });
-                        }
-
-
-                    }
-                },
-
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
+            AgregarReferencia();
+           
+            
         } else {
             if ($("#mensaje").length) {
 
@@ -1565,78 +1149,34 @@ $(document).ready(function () {
         $("#confirmacionEliminarModal").modal("show");
 
         $("#confirmarEliminar").click(function (event) {
-
-            $.ajax({
-                type: "POST",
-                url: "/Oferente/EliminarReferencia",
-                data: {
-                    idReferencia: idReferencia,
-                    identificacion: $("#identification").val()
-                },
-                success: function (data) {
-
-                    if (data.error) {
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-                    }
-                    else {
-                        $("#confirmacionEliminarModal").modal("hide");
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
-                        }
-                        else {
-                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
-
-                        }
-
-
-                        ///recargar la lista de referencias
-
-                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
-
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarReferencias",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val(),
-                                tipoReferencia: '1'
-                            },
-                            success: function (data) {
-
-                                //recargar titulos
-                                procesarRespuestaReferencia(data, 1);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar las referencias: " + error);
-                            }
-                        });
-
-                    }
-                },
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
-
+            EliminarReferencia(idReferencia);
+            
         });
 
 
 
     });
 
+
+
+    $("#listaReferenciasPersonales").on("click", ".btnVerReferencia", function () {
+
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idReferencia = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+
+        MostrarEvaluacion(identificacion, idReferencia);
+       
+        
+
+
+
+
+
+    });
 
     //evento eliminar una referencia profesional
     $("#listaReferenciasProfesionales").on("click", ".btnEliminarReferencia", function () {
@@ -1651,70 +1191,7 @@ $(document).ready(function () {
 
         $("#confirmarEliminar").click(function (event) {
 
-            $.ajax({
-                type: "POST",
-                url: "/Oferente/EliminarReferencia",
-                data: {
-                    idReferencia: idReferencia,
-                    identificacion: $("#identification").val()
-                },
-                success: function (data) {
-
-                    if (data.error) {
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-                    }
-                    else {
-                        $("#confirmacionEliminarModal").modal("hide");
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
-                        }
-                        else {
-                            $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
-
-                        }
-
-
-                        ///recargar la lista de referencias
-
-                        // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
-
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarReferencias",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val(),
-                                tipoReferencia: '2'
-                            },
-                            success: function (data) {
-
-                                //recargar titulos
-                                procesarRespuestaReferencia(data, 2);
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar las referencias: " + error);
-                            }
-                        });
-
-                    }
-                },
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
+            EliminarReferencia(idReferencia);
 
         });
 
@@ -1739,7 +1216,8 @@ $(document).ready(function () {
         $('#contacto').inputmask('9999-9999');
         $('#fin').inputmask('9999', { placeholder: 'YYYY' });
 
-
+        //poner activo al enlace de los encabezados de experiencia
+        $("#enlaceExpLaboral").addClass("active");
 
         //cargar experiencias en la tabla
         $.ajax({
@@ -1903,96 +1381,27 @@ $(document).ready(function () {
 
         $("#confirmarEliminar").click(function (event) {
 
-            $.ajax({
-                type: "POST",
-                url: "/Oferente/EliminarExperiencia",
-                data: {
-                    idExperiencia: idExperiencia,
-                    identificacion: $("#identification").val()
-                },
-                success: function (data) {
-
-                    if (data.error) {
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                        }
-                        else {
-                            $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                        }
-                    }
-                    else {
-                        $("#confirmacionEliminarModal").modal("hide");
-
-                        if ($("#mensaje").length) {
-
-                            $("#mensaje").remove();
-
-                            $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
-                        }
-                        else {
-                            $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
-
-                        }
-
-
-                        ///recargar la lista de experiencias
-
-                        $.ajax({
-                            type: "GET",
-                            url: "/Oferente/CargarExperiencias",
-                            data: {
-                                identificacion: $("#identification").val(),
-                                clave: $("#clave").val()
-                            },
-                            success: function (data) {
-
-                                if (data.error) {
-
-                                    if ($("#mensaje").length) {
-
-                                        $("#mensaje").remove();
-
-                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-                                    }
-
-                                    else {
-                                        $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
-
-                                    }
-
-
-                                } else {
-
-                                    //cargar experiencias
-                                    procesarRespuestaExperiencia(data);
-                                }
-
-                            },
-                            error: function (error) {
-                                console.log("Error al cargar títulos: " + error);
-                            }
-                        });
-
-                    }
-                },
-                error: function (xhr, status, error) { //error en la solicitud de ajax
-                    console.error(error);
-                }
-            });
+            EliminarExperiencia(idExperiencia);
+            
+            
 
         });
-
-
 
     });
 
 
 
+    $("#listaExperiencias").on("click", ".btnVerExperiencia", function () {
 
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
+
+        var idExperiencia = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+        MostrarExperiencia(identificacion, idExperiencia);
+
+    });
 
 
 
@@ -2017,6 +1426,7 @@ $(document).ready(function () {
 function verificarCamposModalTitulos(formulario) {
     var camposValidos = true;
 
+
     // Recorrer todos los campos visibles dentro del formulario
     formulario.find(':visible').each(function () {
         var elemento = $(this);
@@ -2024,7 +1434,7 @@ function verificarCamposModalTitulos(formulario) {
         // Verificar si el campo es de tipo file
         if (elemento.attr('type') === 'file') {
             if (formulario.find('.agregarTitulo:visible').length > 0) {
-                console.log("entra");
+
                 if (elemento[0].files.length < 1) {
                     // si no hay archivos seleccionados
                     camposValidos = false;
@@ -2035,47 +1445,25 @@ function verificarCamposModalTitulos(formulario) {
 
         if (elemento.attr('type') !== 'file' && elemento.prop('required') && elemento.val() === '') {
             // Manejar caso de campo requerido vacío
-            console.log(elemento);
+
             camposValidos = false;
             return false; // Sale del bucle each
         }
+
+
+        // Verificar campos de fecha con al menos 8 dígitos
+        if (
+            (elemento.attr('name') === 'fechaFin' || elemento.attr('name') === 'fechaInicio') &&
+            elemento.val().replace(/\D/g, '').length < 8
+        ) {
+            camposValidos = false;
+            return false; // Sale del bucle each
+        }
+
     });
 
     return camposValidos;
 }
-
-//function verificarCamposModalTitulos() {
-
-//    var camposValidos = true;
-
-//    // Itera sobre los elementos con clase "form-group" que están visibles
-//    $(".form-group:visible").each(function () {
-//        // Comprueba el tipo de elemento y realiza validaciones según sea necesario
-
-//        // Verificar la visibilidad del botón
-//        var isVisible = $("#agregarTituloSecundaria").is(":visible");
-//        if (isVisible) {
-//            // Obtener el único input de tipo file visible dentro de la clase .form-group
-//            var inputFotoTitulo = $(".form-group:visible input[type=file]");
-//            if (inputFotoTitulo[0].files.length < 1) {
-//                return false;
-//            } 
-//        }
-//        var elemento = $(this).find(":input");
-
-//        if (elemento.prop("required") && elemento.val() === "" && elemento.attr("type") !== "file") {
-//            // Manejar caso de campo requerido vacío, excluyendo los elementos de tipo file
-//            camposValidos = false;
-      
-//        }
-
-//        // Agregar más validaciones según sea necesario
-
-//    });
-
-//    return camposValidos;
-//}
-
 
 
 function agregarTituloALaTabla(titulo, num) {
@@ -2097,7 +1485,7 @@ function agregarTituloALaTabla(titulo, num) {
         let partesFechaInicio = fechaInicio[0].split('-');
 
 
-        
+
         var cellInicio = row.insertCell(2);
         cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
         cellInicio.style.textAlign = "center";
@@ -2126,8 +1514,12 @@ function agregarTituloALaTabla(titulo, num) {
         var cellAcciones = row.insertCell(5);
         cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
+        var btnVer = document.createElement("button");
+        btnVer.className = "btnVerTitulo btn btn-info btn-sm w-100";
+        btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
         var btnEditar = document.createElement("button");
-        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100";
+        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100 mt-1";
         btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
 
         var btnEliminar = document.createElement("button");
@@ -2136,6 +1528,7 @@ function agregarTituloALaTabla(titulo, num) {
 
 
         // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnVer);
         cellAcciones.appendChild(btnEditar);
         cellAcciones.appendChild(btnEliminar);
 
@@ -2149,7 +1542,7 @@ function agregarTituloALaTabla(titulo, num) {
     } else if (num == 2) {
         var tbody = document.getElementById("listaTitulosUniversitarios");
 
-        
+
     } else {
         var tbody = document.getElementById("listaTitulosVarios");
     }
@@ -2203,8 +1596,12 @@ function agregarTituloALaTabla(titulo, num) {
         var cellAcciones = row.insertCell(6);
         cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
+        var btnVer = document.createElement("button");
+        btnVer.className = "btnVerTitulo btn btn-info btn-sm w-100";
+        btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
         var btnEditar = document.createElement("button");
-        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100";
+        btnEditar.className = "btnEditarTitulo btn btn-primary mt-1 btn-sm w-100";
         btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
 
         var btnEliminar = document.createElement("button");
@@ -2213,10 +1610,11 @@ function agregarTituloALaTabla(titulo, num) {
 
 
         // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnVer);
         cellAcciones.appendChild(btnEditar);
         cellAcciones.appendChild(btnEliminar);
     }
-   
+
 
 
 }
@@ -2228,7 +1626,6 @@ function procesarRespuestaTitulos(data, num) {
 
         var tbody = document.getElementById("listaTitulosSecundaria");
     } else if (num == 2) {
-
 
         var tbody = document.getElementById("listaTitulosUniversitarios");
     } else {
@@ -2246,7 +1643,30 @@ function procesarRespuestaTitulos(data, num) {
         //no hay titulos para mostrar
         var mensajeTr = document.createElement("tr");
         var mensajeTd = document.createElement("td");
-        mensajeTd.colSpan = 4;
+        if (num != 1) {
+            mensajeTd.colSpan = 7;
+        }
+        else {
+            //si titulos secundaria esta vacio se muestra el boton de agregar titulo
+            mensajeTd.colSpan = 6;
+            var formGroupDiv = document.createElement('div');
+            formGroupDiv.classList.add('form-group', 'col-sm-12');
+
+            // Crear el elemento button
+            var addButton = document.createElement('button');
+            addButton.id = 'abrirModalAgregarTituloSecundaria';
+            addButton.type = 'button';
+            addButton.classList.add('btn', 'btn-primary', 'w-100', 'btn-sm');
+            addButton.setAttribute('data-toggle', 'modal');
+            addButton.setAttribute('data-target', '#agregarTituloSecundariaModal');
+            addButton.textContent = 'Añadir';
+            addButton.onclick = abrirModalAñadirTituloSecundaria;
+
+            formGroupDiv.appendChild(addButton);
+            var tablaSecundaria = document.getElementById("tablaTitulosSecundaria");
+            tablaSecundaria.parentNode.insertBefore(formGroupDiv, tablaSecundaria.nextSibling);
+        }
+
         mensajeTd.className = "text-center";
         mensajeTd.textContent = "No hay titulos";
 
@@ -2259,6 +1679,7 @@ function procesarRespuestaTitulos(data, num) {
         data.forEach(function (titulo) {
             agregarTituloALaTabla(titulo, num);
         });
+
     }
 
 }
@@ -2306,14 +1727,58 @@ function procesarRespuestaIdiomas(data) {
         agregarIdiomaALaLista(idioma);
     });
 
-    //agregar boton de agregar idioma
-    var divBoton = document.createElement("div");
-    divBoton.className = "form-group col-sm-12";
-    divBoton.innerHTML = '<button id="" type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarIdiomaModal">Añadir Idioma</button>';
-    listaIdiomas.appendChild(divBoton);
-
 
     $('#agregarIdiomaModal').modal('hide');
+
+    if ($("#mensaje").length) {
+
+        $("#mensaje").remove();
+    }
+
+}
+
+
+
+function agregarGrupoProfALaLista(grupo) {
+
+    var listaGrupos = document.getElementById("listaGrupoProfesional");
+
+    var li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.setAttribute("data-id", grupo.idGrupoProfesional);
+
+    var span = document.createElement("span");
+    span.textContent = grupo.grupoProfesional;
+
+    var div = document.createElement("div");
+
+
+
+    var btnEliminar = document.createElement("button");
+    btnEliminar.className = "btnEliminarGrupo btn btn-danger btn-sm";
+    btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+
+    div.appendChild(btnEliminar);
+
+    li.appendChild(span);
+    li.appendChild(div);
+
+    listaGrupos.appendChild(li);
+}
+
+function procesarRespuestaGruposProfesionales(data) {
+
+
+    var listaIdiomas = document.getElementById("listaGrupoProfesional");
+    listaIdiomas.innerHTML = "";
+
+    data.forEach(function (grupo) {
+        agregarGrupoProfALaLista(grupo);
+    });
+
+
+    $('#agregarGrupoProfesionalModal').modal('hide');
 
     if ($("#mensaje").length) {
 
@@ -2417,23 +1882,6 @@ function CargarDatosUbicaciones(provincia, canton, distrito) {
 
 
 
-function CambioTipoReferencia() {
-    if ($('#tipoReferencia').val() == 2) {
-        //si se selecciona referencia profesional
-        $('#empresaDiv').show();
-
-        //se esconde campo requerido en referencia personal
-        $('#personaReferenciaDiv').hide();
-    }
-    else {
-        //si se selecciona referencia personal
-        $('#personaReferenciaDiv').show();
-
-        //se esconde campo requerido en referencia profesional
-        $('#empresaDiv').hide();
-    }
-}
-
 
 
 function VerificarCamposModalAgregarReferencia() {
@@ -2456,6 +1904,13 @@ function VerificarCamposModalAgregarReferencia() {
     if (!(/^\d{8}$/).test($("#contacto").val().replace(/\D/g, ''))) {
         return false;
     }
+
+    // Verificar que se haya seleccionado una imagen
+    var fotoReferencia = document.getElementById('fotoReferencia');
+    if (fotoReferencia.files.length === 0) {
+        return false;
+    }
+
 
     return true;
 }
@@ -2490,17 +1945,21 @@ function agregarReferenciaALaTabla(referencia, num) {
     cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
 
-
+    var btnVer = document.createElement("button");
+    btnVer.className = "btnVerReferencia btn btn-info btn-sm w-100";
+    btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
 
     var btnEliminar = document.createElement("button");
-    btnEliminar.className = "btnEliminarReferencia btn btn-danger btn-sm  w-100";
+    btnEliminar.className = "btnEliminarReferencia btn btn-danger mt-1 btn-sm w-100";
     btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
 
 
 
 
     // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVer);
     cellAcciones.appendChild(btnEliminar);
+
 
 
 }
@@ -2560,9 +2019,8 @@ function ValidarCamposAgregarExperiencia() {
     var inicio = $("#inicio").val();
     var fin = $("#fin").val();
     var labores = $("#labores").val();
+    var fotoEvaluacion = $("#fotoEvaluacion")[0].files;
 
-    // Obtén solo los dígitos del campo de inicio
-    var inicioDigits = inicio.replace(/\D/g, '');
 
     // Realiza la validación
     if (
@@ -2570,7 +2028,8 @@ function ValidarCamposAgregarExperiencia() {
         contacto === "" ||
         inicio.replace(/\D/g, '').length !== 4 ||  // Validar que haya exactamente 4 números
         fin.replace(/\D/g, '').length !== 4 ||
-        labores === ""
+        labores === "" ||
+        !fotoEvaluacion || fotoEvaluacion.length === 0
     ) {
 
 
@@ -2594,29 +2053,39 @@ function agregarExperienciaALaTabla(experiencia) {
     row.id = experiencia.iD_DETALLE_EXPERIENCIA;
 
     var cellEmpresa = row.insertCell(0);
-    cellEmpresa.textContent = experiencia.nombrE_EMPRESA + " ( " + experiencia.telefono.replace(/(\d{4})(\d{4})/, '$1-$2') + " )";
+    cellEmpresa.textContent = experiencia.nombrE_EMPRESA;
     cellEmpresa.style.textAlign = "center";
 
-    var cellPuesto = row.insertCell(1);
+    var cellTelefono = row.insertCell(1);
+    cellTelefono.textContent = experiencia.telefono.replace(/(\d{4})(\d{4})/, '$1-$2');
+    cellTelefono.style.textAlign = "center";
+
+    var cellPuesto = row.insertCell(2);
     cellPuesto.textContent = experiencia.descripcioN_LABORES;
     cellPuesto.style.textAlign = "center";
 
-    var cellYears = row.insertCell(2);
+    var cellYears = row.insertCell(3);
     cellYears.textContent = experiencia.inicio + " / " + experiencia.fin;
     cellYears.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
 
-    var cellAcciones = row.insertCell(3);
+    var cellAcciones = row.insertCell(4);
     cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
 
+    var btnVer = document.createElement("button");
+    btnVer.className = "btnVerExperiencia btn btn-info btn-sm w-100";
+    btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
     var btnEliminar = document.createElement("button");
-    btnEliminar.className = "btnEliminarExperiencia btn btn-danger btn-sm  w-100";
+    btnEliminar.className = "btnEliminarExperiencia btn btn-danger btn-sm mt-1 w-100";
     btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
 
 
 
     // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVer);
     cellAcciones.appendChild(btnEliminar);
+
 
 
 }
@@ -3009,9 +2478,42 @@ function CargarDatosTituloUniversitario(data) {
     $("#agregarTituloUniversitaria").hide();
 }
 
+
+
+function CargarDatosTituloDiploma(data) {
+
+
+
+
+    //se muestran nuevamente los divs que se ocultan a la hora de actualizar
+    $("#divInstitutoDiploma, #divCarreraDiploma").hide();
+
+    var fechaInicio = data.fechaInicio.split('T');
+    let partesFechaInicio = fechaInicio[0].split('-');
+
+
+    var fechaFin = data.fechaFin.split('T');
+    let partesFechaFin = fechaFin[0].split('-');
+
+
+
+
+    $("#fechaInicioDiploma").val(partesFechaInicio[2] + partesFechaInicio[1] + partesFechaInicio[0]);
+    $("#fechaFinDiploma").val(partesFechaFin[2] + partesFechaFin[1] + partesFechaFin[0]);
+    $("#tomoDiploma").val(data.tomo);
+    $("#folioDiploma").val(data.folio);
+    $("#asientoDiploma").val(data.asiento);
+
+
+    //esconder boton de agregar titulo en el modal y mostrar el de guardar cambios
+    $("#actualizarTituloDiploma").show();
+    $("#agregarTituloDiploma").hide();
+}
+
+
 function AgregarMascarasPaginaTitulos() {
     // Aplicar la máscara al campo de fecha de inicio
-    $('#fechaInicioSecundaria, #fechaFinSecundaria, #fechaInicioUniversitarias, #fechaFinUniversitarias').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
+    $('#fechaInicioSecundaria, #fechaFinSecundaria, #fechaInicioUniversitarias, #fechaFinUniversitarias, #fechaInicioDiploma, #fechaFinDiploma').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
 
     // Escuchar al evento de foco en el campo
     $('#fechaInicioSecundaria').on('focus', function () {
@@ -3034,7 +2536,17 @@ function AgregarMascarasPaginaTitulos() {
         $(this).val('');
     });
 
-    $('#tomoUniversitario, #folioUniversitario, #asientoUniversitario').inputmask('numeric', {
+    $('#fechaInicioDiploma').on('focus', function () {
+        // Limpiar el valor para permitir cambios
+        $(this).val('');
+    });
+
+    $('#fechaFinDiploma').on('focus', function () {
+        // Limpiar el valor para permitir cambios
+        $(this).val('');
+    });
+
+    $('#tomoUniversitario, #folioUniversitario, #asientoUniversitario, #tomoDiploma, #folioDiploma, #asientoDiploma').inputmask('numeric', {
         'alias': 'numeric',
         'autoGroup': false,
         'digits': 0,
@@ -3123,6 +2635,8 @@ function limpiarCamposModalUniversitario() {
 }
 
 
+
+
 //funcion para mostrar vista previa de la imagen elegida
 function previewImage(input, cropper) {
     var preview = $('#previewImage');
@@ -3178,32 +2692,32 @@ function ObtenerMes(numeroMes) {
 
 
 function CargarGradosUniversitarios() {
-   
-        $.ajax({
-            type: "GET",
-            url: "/Oferente/CargarGrados",
-            success: function (data) {
+
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarGrados",
+        success: function (data) {
 
 
-                // Obtener el elemento select
-                var selectGrados = $('#nivelEducacionUniversitaria');
+            // Obtener el elemento select
+            var selectGrados = $('#nivelEducacionUniversitaria');
 
-                // Limpiar opciones existentes
-                selectGrados.empty();
+            // Limpiar opciones existentes
+            selectGrados.empty();
 
-                // Iterar sobre la lista de instituciones y agregar opciones al select
-                $.each(data, function (index, grado) {
-                    if (grado.id != 1 && grado.id != 2) {
-                        selectGrados.append('<option value="' + grado.id + '">' + grado.gradoAcademico + '</option>');
-                    }
-                    
-                });
+            // Iterar sobre la lista de instituciones y agregar opciones al select
+            $.each(data, function (index, grado) {
+                if (grado.id != 1 && grado.id != 2) {
+                    selectGrados.append('<option value="' + grado.id + '">' + grado.gradoAcademico + '</option>');
+                }
 
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+            });
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
 
 }
 
@@ -3227,7 +2741,7 @@ function CargarUniversidades() {
                 selectInstitutos.append('<option value="' + institucion.id_universidad + '">' + institucion.siglas_universidad + '</option>');
             });
 
-         
+
         },
         error: function (error) {
             console.log(error);
@@ -3248,7 +2762,7 @@ function CargarCarrerasUniversitarias() {
             grado: $("#nivelEducacionUniversitaria").find(":selected").text()
         },
         success: function (data) {
-          
+
 
             // Obtener el elemento select
             var selectCarreras = $('#carrerasUniversitarias');
@@ -3316,7 +2830,7 @@ function ActualizarTituloSecundria(idTitulo) {
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/AgregarTituloSecundaria",
+        url: "/Oferente/ActualizarTituloSecundaria",
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -3408,6 +2922,957 @@ function ActualizarTituloUniversitario(idTitulo) {
 
         error: function (xhr, status, error) { //error en la solicitud de ajax
             console.error(error);
+        }
+    });
+}
+
+
+
+
+function ActualizarTituloDiploma(idTitulo) {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarTituloDiploma")[0];
+    var formData = new FormData(form);
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+    formData.append("idTitulo", idTitulo);
+    formData.append("nivelEducacion", "2");
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/ActualizarTituloUniversitario",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $(".actualizarTitulo").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de titulos
+
+                // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+
+                CargarTitulos(3);
+                $('#agregarTituloDiplomaModal').modal('hide');
+                alert("Titulo actualizado exitosamente");
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+function MostrarTitulo(identificacion, idTitulo) {
+    console.log("hola");
+    $.ajax({
+        url: '/Oferente/ObtenerUrlTitulo',  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            identificacion: identificacion,
+            idTitulo: idTitulo
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+                // Configuración de OpenSeaDragon
+
+
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                //abrir modal
+                $('#imagenModal').modal('show');
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+}
+
+
+
+
+
+////////////////        FUNCIONES PAGINA DATOS PERSONALES ////////////////////
+
+function AgregarMascarasPaginaDatosPersonales() {
+    // Aplicar la máscara al campo de fecha de inicio
+    $('#nacimiento').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
+
+    // Escuchar al evento de foco en el campo
+    $('#nacimiento').on('focus', function () {
+        // Limpiar el valor para permitir cambios
+        $(this).val('');
+    });
+
+    Inputmask({ mask: '9999-9999' }).mask($('#telefonoOpcional'));
+
+
+}
+
+
+
+function ObtenerDatosPersonales() {
+    $.ajax({
+        type: "Get",//tipo de solicitud
+        url: "/Oferente/ObtenerDatosPersonalesEx",
+        data: {//se envia el parametro
+            identificacion: $("#identification").val(),
+
+        },
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#direccion").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+                //recibo la fecha en un formato yyyy-mm-ddT00:00:00 entonces solo nos interesa la parte que esta antes de la T
+                if (data.nacimiento != "" && data.nacimiento != null) {
+                    var partesFecha = data.nacimiento.split('T');
+                    var nacimiento = partesFecha[0].split('-');
+                    $("#nacimiento").val((nacimiento != null) ? nacimiento[2] + "/" + nacimiento[1] + "/" + nacimiento[0] : "");
+
+                }
+
+
+
+                var provincia = data.idProvincia;
+                var canton = data.idCanton;
+                var distrito = data.idDistrito;
+                var direccion = data.direccion;
+                var genero = data.genero;
+                var correoOpcional = data.correoOpcional;
+                var telefonoOpcional = data.telefonoOpcional;
+
+
+
+
+
+                //asignar los valores a los inputs
+
+                $("#direccion").val((direccion != null) ? direccion : "");
+                $("#genero").val((genero != 0) ? genero : 0);
+                $("#correoOpcional").val((correoOpcional != null) ? correoOpcional : "");
+                $("#telefonoOpcional").val((telefonoOpcional != null) ? telefonoOpcional : "");
+
+
+
+
+                CargarDatosUbicaciones(provincia, canton, distrito);
+
+
+
+
+
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+function CargarIdiomasOferente() {
+    $.ajax({
+        type: "Get",
+        url: "/Oferente/MostrarIdiomaLista",
+        data: {
+            identificacion: $("#identification").val(),
+            clave: $("#clave").val()
+        },
+        success: function (data) {
+            //recargar titulos
+
+            procesarRespuestaIdiomas(data);
+        },
+        error: function (error) {
+            console.log("Error al cargar idiomas: " + error);
+        }
+    });
+}
+
+function ActualizarDatosPersonales() {
+
+    var formData = new FormData($("#expedienteForm")[0]);
+    $.ajax({
+        type: "Post",//tipo de solicitud
+        url: "/Oferente/GuardarCambiosDatosPersonalesEx",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + data.mensaje + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + data.mensaje + "</p>");
+
+                }
+
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+function MostrarIdiomasOferente() {
+    $.ajax({
+        type: "Get",
+        url: "/Oferente/MostrarIdiomaLista",
+        data: {
+            identificacion: $("#identification").val(),
+            clave: $("#clave").val()
+        },
+        success: function (data) {
+            //recargar titulos
+
+            procesarRespuestaIdiomas(data);
+        },
+        error: function (error) {
+            console.log("Error al cargar idiomas: " + error);
+        }
+    });
+}
+
+function MostrarGruposProfesionalesOferente() {
+    $.ajax({
+        type: "Get",
+        url: "/Oferente/CargarGrupoProfesionalOferente",
+        data: {
+            identificacion: $("#identification").val(),
+            clave: $("#clave").val()
+        },
+        success: function (data) {
+            //recargar titulos
+
+            procesarRespuestaGruposProfesionales(data);
+        },
+        error: function (error) {
+            console.log("Error al cargar los grupos: " + error);
+        }
+    });
+}
+
+function AñadirGrupoProfesional() {
+
+    $.ajax({
+        type: "POST",
+        url: "/Oferente/AñadirGrupoProfesionalExpediente",
+        data: {
+            identificacion: $("#identification").val(),
+            idGrupoProf: $("#grupoProfesional").val()
+        },
+        success: function (data) {
+            //recargar titulos
+
+            if (data.error) {
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+            }
+            else {
+                MostrarGruposProfesionalesOferente();
+            }
+
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function AñadirIdioma() {
+
+    $.ajax({
+        type: "POST",
+        url: "/Oferente/AñadirIdiomaExpediente",
+        data: {
+            identificacion: $("#identification").val(),
+            idIdioma: $("#nombreIdioma").val()
+        },
+        success: function (data) {
+            //recargar titulos
+
+            if (data.error) {
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#btnAgregarIdiomaModal").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+            }
+            else {
+                MostrarIdiomasOferente();
+            }
+
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function EliminarIdiomaOferente(idIdioma) {
+
+
+    // Muestra el modal de confirmación
+    $("#confirmacionEliminarModalIdioma").modal("show");
+
+    $("#confirmarEliminar").click(function (event) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Oferente/EliminarIdioma",
+            data: {
+                idIdioma: idIdioma,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+                }
+                else {
+                    $("#confirmacionEliminarModalIdioma").modal("hide");
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                    }
+                    else {
+                        $("#listaIdiomas").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+
+                    }
+
+
+                    ///recargar la lista de titulos
+
+                    // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de idiomas
+
+                    MostrarIdiomasOferente();
+
+                }
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+
+    });
+}
+
+
+
+function EliminarGrupoProfesionalOferente(idGrupo) {
+
+
+    // Muestra el modal de confirmación
+    $("#confirmacionEliminarModalGrupo").modal("show");
+
+    $("#confirmarEliminarGrupo").click(function (event) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Oferente/EliminarGrupoProfesionalOferente",
+            data: {
+                idGrupoProf: idGrupo,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaGrupoProfesional").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#listaGrupoProfesional").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+                }
+                else {
+                    $("#confirmacionEliminarModalGrupo").modal("hide");
+
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaGrupoProfesional").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+                    }
+                    else {
+                        $("#listaGrupoProfesional").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Titulo eliminado exitosamente" + "</p>");
+
+                    }
+
+
+                    ///recargar la lista de titulos
+
+                    // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de idiomas
+
+                    MostrarGruposProfesionalesOferente();
+
+                }
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+
+    });
+}
+
+
+function SubirDimex() {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#expedienteForm")[0];
+    var formData = new FormData(form);
+
+    $.ajax({
+        url: '/Oferente/SubirImagenDimex',  // Reemplaza con la URL correcta de tu controlador
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+
+            if (data.exito == true) {
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+
+                }
+            }
+            else {
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+
+                }
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+
+
+}
+
+
+function SubirFotoPerfil() {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#fotoPerfilExpediente")[0];
+    var formData = new FormData(form);
+
+    $.ajax({
+        url: '/Oferente/SubirFotoPerfil',  // Reemplaza con la URL correcta de tu controlador
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+
+            if (data.exito == true) {
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-success mt-2' id='mensaje'>" + "Imagen subida exitosamente" + "</p>");
+
+                }
+            }
+            else {
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+                }
+                else {
+                    $("#btnGuardarCambios").before("<p class='alert alert-danger mt-2' id='mensaje'>" + "Hubo un error al guardar la imagen" + "</p>");
+
+                }
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+
+
+}
+
+function mostrarFoto() {
+    var inputFoto = $('#inputFotoPerfil')[0];
+    var previewFoto = $('.previewFoto');
+    var modal = $('#seleccionarFotoModal');
+
+    if (inputFoto.files && inputFoto.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewFoto.attr('src', e.target.result);
+            previewFoto.css('display', 'block');
+
+            // Ajusta el tamaño del modal
+            modal.find('.modal-dialog').css('max-width', '65%');
+        }
+
+
+        reader.readAsDataURL(inputFoto.files[0]);
+    }
+}
+
+
+function cargarImagenPerfil() {
+
+    var identificacion = $("#identification").val();
+    $.ajax({
+        url: '/Oferente/ObtenerUrlImagen',  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: { identificacion: identificacion },
+        success: function (data) {
+
+            if (data.urlImagen) {
+
+                //si se obtiene la url se carga la imagen
+                var imagen = document.getElementById('fotoPerfil');
+                imagen.src = data.urlImagen;
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+
+
+}
+
+//al dar click en el boton de agregar titulo se esconde el boton de actualizar que esta dentro del modal
+function abrirModalAñadirTituloSecundaria() {
+    $("#actualizarTituloSecundaria").hide();
+    $("#agregarTituloSecundaria").show();
+
+
+    //se muestran nuevamente los divs que se ocultan a la hora de actualizar
+    $(".divUbicacionSecundaria").show();
+
+    $("#divInstitutoSecundaria").show();
+}
+
+
+
+
+///////////////////////////   funciones seccion referencias //////////////////////
+
+
+//recibe 1 para cargar referencia personal, 2 para profesional
+function CargarReferencias(tipo) {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarReferencias",
+        data: {
+            identificacion: $("#identification").val(),
+            clave: $("#clave").val(),
+            tipoReferencia: tipo
+        },
+        success: function (data) {
+
+            //recargar refrencias
+            procesarRespuestaReferencia(data, tipo);
+        },
+        error: function (error) {
+            console.log("Error al cargar referencias: " + error);
+        }
+    });
+}
+
+
+function MostrarEvaluacion(identificacion, idReferencia) {
+    $.ajax({
+        url: '/Oferente/ObtenerUrlEvaluacion',  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            identificacion: identificacion,
+            idReferencia: idReferencia
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+                // Configuración de OpenSeaDragon
+
+
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                //abrir modal
+                $('#imagenModal').modal('show');
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+}
+
+function AgregarReferencia() {
+    // Obtener el formulario y los datos del formulario
+    var form = $("#formAgregarReferencia")[0];
+    var formData = new FormData(form);
+
+    // Agregar identificacion y clave al formData
+    formData.append("identificacion", $("#identification").val());
+    formData.append("clave", $("#clave").val());
+
+
+    $.ajax({
+        method: "POST",//tipo de solicitud
+        url: "/Oferente/AgregarReferecia",
+        data: formData,
+        processData: false,  // Necesario para enviar FormData correctamente
+        contentType: false,  // Necesario para enviar FormData correctamente
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#agregarReferencia").before("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+
+            }
+            else {
+
+                ///recargar la lista de referencias
+
+                // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
+
+                //tipo referencia guarda 1 si es personal, 2 si es profesional
+                if ($("#tipoReferencia").val() == "1") {
+
+                    CargarReferencias(1);
+
+
+
+                } else {
+                    //cargar referencias profesionales de la persona
+                    CargarReferencias(2);
+
+                }
+
+
+            }
+        },
+
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+function EliminarReferencia(idReferencia) {
+    $.ajax({
+        type: "POST",
+        url: "/Oferente/EliminarReferencia",
+        data: {
+            idReferencia: idReferencia,
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#tablaReferencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+            }
+            else {
+                $("#confirmacionEliminarModal").modal("hide");
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+                }
+                else {
+                    $("#tablaReferencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Referencia eliminada exitosamente" + "</p>");
+
+                }
+
+
+                ///recargar la lista de referencias
+
+                // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de referencias
+
+                CargarReferencias(1);
+
+
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+
+//////  funciones seccion experiencias  /////////////////////
+
+function CargarExperiencias() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarExperiencias",
+        data: {
+            identificacion: $("#identification").val(),
+            clave: $("#clave").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+
+                else {
+                    $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+
+
+            } else {
+
+                //cargar experiencias
+                procesarRespuestaExperiencia(data);
+            }
+
+        },
+        error: function (error) {
+            console.log("Error al cargar títulos: " + error);
+        }
+    });
+}
+
+function EliminarExperiencia(idExperiencia) {
+    $.ajax({
+        type: "POST",
+        url: "/Oferente/EliminarExperiencia",
+        data: {
+            idExperiencia: idExperiencia,
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                }
+                else {
+                    $("#tablaExperiencias").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                }
+            }
+            else {
+                $("#confirmacionEliminarModal").modal("hide");
+
+                if ($("#mensaje").length) {
+
+                    $("#mensaje").remove();
+
+                    $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
+                }
+                else {
+                    $("#tablaExperiencias").after("<p class='alert alert-success mt-2' id='mensaje'>" + "Experiencia eliminada exitosamente" + "</p>");
+
+                }
+
+
+                ///recargar la lista de experiencias
+                CargarExperiencias();
+
+
+
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+
+function MostrarExperiencia(identificacion, idExperiencia) {
+    $.ajax({
+        url: '/Oferente/ObtenerUrlExperiencia',  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            identificacion: identificacion,
+            idExperiencia: idExperiencia
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+                // Configuración de OpenSeaDragon
+
+
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                //abrir modal
+                $('#imagenModal').modal('show');
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
         }
     });
 }

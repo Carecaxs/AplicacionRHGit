@@ -40,6 +40,8 @@ namespace AplicacionRHGit.Data
         public DbSet<Canton> Canton { get; set; }
         public DbSet<CentrosEducativos> CentrosEducativos { get; set; }
         public DbSet<u_universidades> u_universidades { get; set; }
+        public DbSet<GrupoProfesionalOferente> GrupoProfesionalOferente { get; set; }
+
 
 
 

@@ -10,37 +10,51 @@
     <div class="container mt-5">
         <div class="contenedorExpediente">
 
+            <div class="row">
+                <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                    <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
+                    <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+                </form>
+
+                <div class="col-sm-6">
+                    <img id="fotoPerfil" class="img-fluid img-perfil" data-toggle="modal" data-target="#imagenModal" />
+                </div>
+
+            </div>
             <form class="formEnlaces" method="post">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceDatosPersonales" class="nav-link">Expediente Personal</button>
+                        <button id="enlaceDatosPersonales" class="btn-primary">Expediente Personal</button>
 
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpedienteAcademico" class="nav-link">Expediente Academico</button>
+                        <button id="enlaceExpedienteAcademico" class="btn-primary">Expediente Academico</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceReferencias" class="nav-link">Perfil Laboral</button>
+                        <button id="enlaceReferencias" class="btn-primary">Perfil Laboral</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpLaboral" class="nav-link">Experiencia Laboral</button>
+                        <button id="enlaceExpLaboral" class="btn-primary">Experiencia Laboral</button>
 
                     </li>
 
                 </ul>
+
             </form>
 
-            <h1 class="text-center mt-2">Experiencias Laborales</h1>
 
-            <table id="tablaExperiencias" class="table table-bordered">
+            <table id="tablaExperiencias" class="table table-bordered mt-2">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Empresa</th>
-                        <th>Contacto</th>
+                        <th>Institución</th>
+                        <th>Teléfono</th>
+                        <th>Puesto</th>
                         <th>Años</th>
                         <th></th>
                     </tr>
@@ -54,17 +68,11 @@
 
             <!-- Botón para Añadir Experiencia -->
             <div class="form-group col-sm-12">
-                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarExperienciaModal" tabindex="1">
+                <button type="button" class="btn btn-primary w-100 btn-sm" data-toggle="modal" data-target="#agregarExperienciaModal" tabindex="1">
                     Agregar Experiencia
                 </button>
             </div>
-            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
-                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-                <div class="form-group col-sm-12">
-                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100" tabindex="1">Regresar</button>
-                </div>
-            </form>
+
 
 
         </div>
@@ -90,7 +98,7 @@
                     <form id="formAgregarExperiencia" method="post">
 
                         <div class="form-group mt-1  col-md-5" id="nombreEmpresaDiv">
-                            <label for="nombreEmpresa">Empresa:</label>
+                            <label for="nombreEmpresa">Institución:</label>
                             <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required tabindex="1" />
                         </div>
 
@@ -112,6 +120,17 @@
                         <div class="form-group mt-1 col-md-5">
                             <label for="labores">Puesto:</label>
                             <textarea id="labores" name="labores" class="form-control" tabindex="5"></textarea>
+                        </div>
+
+                        <!-- Campo para subir foto -->
+                        <div class="form-group">
+                            <label for="fotoEvaluacion">Subir Foto de Evaluación:</label>
+                            <div>
+                                <input id="fotoEvaluacion" type="file" class="form-control-file fotoTitulo" name="fotoEvaluacion" accept="image/*" required tabindex="6" />
+
+                            </div>
+                            <img class="previewImage" src="#" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
+
                         </div>
 
       
@@ -149,9 +168,22 @@
 
 
 
+    <!-- Modal para la imagen ampliada -->
+    <div class="modal fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
 
-
-
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="imagenAmpliada" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

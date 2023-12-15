@@ -37,6 +37,7 @@ C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Mi
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Microsoft.SqlServer.Server.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Mono.TextTemplating.dll
+C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\System.CodeDom.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\System.Drawing.Common.dll
@@ -85,4 +86,3 @@ C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\re
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\AplicacionRHGit.pdb
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\AplicacionRHGit.genruntimeconfig.cache
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\ref\AplicacionRHGit.dll
-C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Newtonsoft.Json.dll

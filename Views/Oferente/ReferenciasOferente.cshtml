@@ -9,54 +9,72 @@
 
     <div class="container mt-5">
         <div class="contenedorExpediente">
+            <div class="row">
+                <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                    <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
+                    <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
 
+                </form>
+
+                <div class="col-sm-6">
+                    <img id="fotoPerfil" class="img-fluid img-perfil" data-toggle="modal" data-target="#imagenModal" />
+                </div>
+
+            </div>
             <form class="formEnlaces" method="post">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceDatosPersonales" class="nav-link">Expediente Personal</button>
+                        <button id="enlaceDatosPersonales" class="btn-primary">Expediente Personal</button>
 
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpedienteAcademico" class="nav-link">Expediente Academico</button>
+                        <button id="enlaceExpedienteAcademico" class="btn-primary">Expediente Academico</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceReferencias" class="nav-link">Perfil Laboral</button>
+                        <button id="enlaceReferencias" class="btn-primary">Perfil Laboral</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpLaboral" class="nav-link">Experiencia Laboral</button>
+                        <button id="enlaceExpLaboral" class="btn-primary">Experiencia Laboral</button>
 
                     </li>
 
                 </ul>
+
             </form>
 
-            <h2 class="text-center mt-2">Referencias Personales</h2>
+            <h4 class="text-center mt-2">Referencias Personales</h4>
 
             <table id="tablaReferenciasPersonales" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Referente</th>
-                        <th>Contacto</th>
-                        <th>Estado</th>
+                        <th>Persona que Refiere</th>
+                        <th>Teléfono</th>
+                        <th>Estado Referencia</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="listaReferenciasPersonales">
                 </tbody>
             </table>
+            <div class="form-group col-sm-12">
+                <button id="abrirModalAgregarReferenciaPersonal" type="button" class="btn btn-primary w-100 btn-sm" data-toggle="modal" data-target="#agregarReferenciaModal">
+                    Agregar
+                </button>
+            </div>
 
 
-            <h2 class="text-center mt-5">Referencias Profesionales</h2>
+            <h4 class="text-center mt-5">Referencias Profesionales</h4>
             <table id="tablaReferenciasProfesionales" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Empresa</th>
-                        <th>Contacto</th>
-                        <th>Estado</th>
+                        <th>Nombre Empresa</th>
+                        <th>Teléfono</th>
+                        <th>Estado Referencia</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -69,17 +87,11 @@
 
             <!-- Botón para Añadir Referencia -->
             <div class="form-group col-sm-12">
-                <button type="button" class="btn btn-primary mt-3 w-100" data-toggle="modal" data-target="#agregarReferenciaModal">
-                    Agregar Referencia
+                <button id="abrirModalAgregarReferenciaProfesional" type="button" class="btn btn-primary w-100 btn-sm" data-toggle="modal" data-target="#agregarReferenciaModal">
+                    Agregar
                 </button>
             </div>
-            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
-                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-                <div class="form-group col-sm-12">
-                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
-                </div>
-            </form>
+
 
 
         </div>
@@ -104,16 +116,10 @@
                     <!-- Formulario para Añadir Referencia -->
                     <form id="formAgregarReferencia" method="post">
 
-                        <div class="form-group col-md-5">
-                            <label for="tipoReferencia">Tipo:</label>
-                            <select class="form-control form-select-sm" id="tipoReferencia" name="tipoReferencia" required tabindex="1">
-                                <option value="1">Personal</option>
-                                <option value="2">Profesional</option>
-                            </select>
-                        </div>
+                        <input type="text" class="form-control form-control-sm" id="tipoReferencia" name="tipoReferencia" hidden tabindex="1" />
 
                         <div class="form-group mt-1 col-md-5" id="empresaDiv">
-                            <label for="nombreEmpresa">Empresa:</label>
+                            <label for="nombreEmpresa">Nombre de Empresa:</label>
                             <input type="text" class="form-control form-control-sm" id="nombreEmpresa" name="nombreEmpresa" required tabindex="2" />
                         </div>
 
@@ -123,7 +129,7 @@
                         </div>
 
                         <div class="form-group mt-1 col-md-5">
-                            <label for="contacto">Contacto:</label>
+                            <label for="contacto">Teléfono:</label>
                             <input type="text" class="form-control" id="contacto" name="contacto" required tabindex="4" />
                         </div>
 
@@ -168,7 +174,23 @@
     </div>
 
 
-   
+
+    <!-- Modal para la imagen ampliada -->
+    <div class="modal fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+ 
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="imagenAmpliada" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

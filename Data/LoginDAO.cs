@@ -132,7 +132,8 @@ namespace AplicacionRHGit.Data
                                 IdDistrito = null,
                                 direccion = null,
                                 genero= 0,
-                                grupoProfesional = 0
+                                correoOpcional="0",
+                                telefonoOpcional="0"
                             };
 
                             //crear el expediente para el oferente
