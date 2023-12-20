@@ -957,8 +957,8 @@ namespace AplicacionRHGit.Data
 
         ///////////////////////////////////////////////////// seccion de crear oferta ////////////////////////////////////////////////////////////////
 
-        public int CrearOferta(string identificacion, string descripcion, List<int> listaMaterias, List<int> listaUbicaciones, 
-            List<int> listaGrupos)
+        public int CrearOferta(string identificacion, string descripcion, List<int> listaUbicaciones, 
+            List<int> listaGrupos, int idMateria)
         {
 
             try
@@ -976,7 +976,8 @@ namespace AplicacionRHGit.Data
                     idOferente = idOferente,
                     estado = false,
                     descripcion = descripcion,
-                    fecha_publicacion = DateTime.Now
+                    fecha_publicacion = DateTime.Now,
+                    id_Materia= idMateria
                 };
 
                 // Agregar la oferta principal a la base de datos
@@ -985,19 +986,6 @@ namespace AplicacionRHGit.Data
 
                 // Obtener el id de la oferta creada
                 idOfertaCreada = ofertaCreada.id;
-
-                // Insertar las materias asociadas a la oferta creada
-                foreach (int idMateria in listaMaterias)
-                {
-                    Materia_Oferta_Creada_Oferente materiaOferta = new Materia_Oferta_Creada_Oferente()
-                    {
-                        ID_Materia = idMateria,
-                        id_Ofertas_Creadas_Oferentes = idOfertaCreada
-                    };
-
-                    // Agregar la relación materia-oferta a la base de datos
-                    _context.Materia_Oferta_Creada_Oferente.Add(materiaOferta);
-                }
 
 
                 // Insertar las cantones asociadas a la oferta creada

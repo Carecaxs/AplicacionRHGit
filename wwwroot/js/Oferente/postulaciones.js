@@ -141,18 +141,20 @@
         CargarProvincia();
         CargarMaterias();
         CargarGruposProfesionales();
-
+        CargarProvinciasCheckBox();
     }
 
-    $("#btnAgregarMateria").click(function (event) {
+    //al deseleccionar un check de provincia se quitan los cantones realcionados a esa provincia
 
-        //enviamos el value y el texto de la materia elegida dentro del select
-        agregarMateriaALaLista($("#materias").val(), $("#materias option:selected").text());
-
-
-        // Cerrar el modal
-        $("#agregarMateriaModal").modal("hide");
-
+    $("[name='provincias']").on("change", function () {
+        console.log("entra");
+        if (!this.checked) {
+            EliminarCantonesDiv(this.value);
+        }
+        else {
+            // Asigna un evento de clic para cargar los cantones al hacer clic en una provincia
+            CargarCantonesCheckBox(this.value);
+        }
     });
 
 
@@ -160,7 +162,7 @@
         event.preventDefault();
 
         let canton = $("#cantones").val();
-   
+
 
         if (canton !== "null") {
             agregarUbicacionALaLista();
@@ -168,7 +170,7 @@
             $("#provincias").val("null");
 
         }
-    
+
 
     });
 
@@ -182,7 +184,7 @@
 
         // Cerrar el modal
         $("#agregarGrupoProfesionalModal").modal("hide");
-        
+
 
     });
 
@@ -231,39 +233,20 @@
 
     });
 
-
-    $("#listaMaterias").on("click", ".btnEliminarMateria", function (event) {
-
-        event.preventDefault();
-        // Obtén el data-id del li padre
-        var idMateria = $(this).closest("li").data("id");
-
-        // Muestra el modal de confirmación
-        $("#confirmacionEliminarModalMateria").modal("show");
-
-        $("#confirmarEliminar").click(function (event) {
-
-            // Eliminar el li con el data-id específico
-            $("#listaMaterias li[data-id='" + idMateria + "']").remove();
-
-            $("#confirmacionEliminarModalMateria").modal("hide");
-
-        });
-
-
-
+    $("#btnCerrarModalubicaciones").click(function (event) {
+        $("#modalSeleccionUbicaciones").modal("hide");
     });
 
+    $("#btnCloseModalUbicaciones").click(function (event) {
+       
+        LimpiarCheckBoxUbicaciones();
+    });
 
     $("#btnAgregarOferta").click(function (event) {
 
         event.preventDefault();
         let validacion = ValidarFormularioAgregarOferta();
-        if (validacion == -2) {
-            //no se seleccionaron materias
-            alert("Debes de seleccionar una materia como minímo");
-        }
-        else if (validacion == -1) {
+        if (validacion == -1) {
             //no se seleccionaron ubicaciones
             alert("Debes de seleccionar una Ubicación como minímo");
 
@@ -271,7 +254,7 @@
         else if (validacion == -3) {
             //no se seleccionaron grupos profesionales
             alert("Debes de seleccionar un Grupo Profesional como minímo");
-       
+
         }
         else if (validacion == -4) {
             //no se seleccionaron grupos profesionales
@@ -725,14 +708,11 @@ function agregarUbicacionALaLista() {
 
 
 function CrearOferta() {
-    var listaMaterias = $("#listaMaterias li").map(function () {
-        console.log($(this).data("id"));
 
-        return $(this).data("id");
-    }).get();
-
-    var listaUbicaciones = $("#listaUbicaciones li").map(function () {
-        return $(this).data("id");
+    var listaUbicaciones = $(".cantonesCheckBox input[name='cantones']:checked").map(function () {
+        if ($(this).val() !== 'selectAll') {
+            return $(this).val();
+        }
     }).get();
 
 
@@ -745,10 +725,6 @@ function CrearOferta() {
     // Obtener el formulario y los datos del formulario
     var form = $("#formAgregarOferta")[0];
     var formData = new FormData(form);
-
-    // Agregar lista de materias al formData
-    formData.append("listaMaterias", JSON.stringify(listaMaterias));
-    formData.append("identificacion", $("#identification").val());
 
     // Agregar lista de ubicaciones al formData
     formData.append("listaUbicaciones", JSON.stringify(listaUbicaciones));
@@ -825,11 +801,15 @@ function ValidarFormularioAgregarOferta() {
     }
 
     // Validar la lista de grupos profesionales
-    var listaUbicaciones = document.getElementById("listaUbicaciones");
+    var listaCantones = $(".cantonesCheckBox input[name='cantones']:checked").map(function () {
+        if ($(this).val() !== 'selectAll') {
+            return $(this).val();
+        }
+    }).get();
 
-    if (listaUbicaciones.getElementsByTagName("li").length === 0) {
-
+    if (listaCantones.length < 1) {
         return -1;
+
     }
 
     // Validar la lista de grupos profesionales
@@ -840,13 +820,6 @@ function ValidarFormularioAgregarOferta() {
         return -3;
     }
 
-    // Validar la lista de materias
-    var listaMaterias = document.getElementById("listaMaterias");
-
-    if (listaMaterias.getElementsByTagName("li").length === 0) {
-  
-        return -2;
-    }
 
     // Si todos los campos están completos y hay al menos una materia, retornar true
     return 1;
@@ -854,29 +827,10 @@ function ValidarFormularioAgregarOferta() {
 
 function limpiarFormularioAgregarOferta() {
     // Limpiar campos principales
-    $("#provincias").val("null");
-    $("#cantones").val("null");
     $("#descripcion").val("");
-    $("#grupoProfesional").val("null");
- 
 
 
 
-
-
-
-    // Limpiar lista de materias
-    var listaMaterias = document.getElementById("listaMaterias");
-    while (listaMaterias.firstChild) {
-        listaMaterias.removeChild(listaMaterias.firstChild);
-    }
-
-
-    // Limpiar lista de ubicaciones
-    var listaUbicaciones = document.getElementById("listaUbicaciones");
-    while (listaUbicaciones.firstChild) {
-        listaUbicaciones.removeChild(listaUbicaciones.firstChild);
-    }
 
 
     // Limpiar lista de grupos profesionales
@@ -884,6 +838,10 @@ function limpiarFormularioAgregarOferta() {
     while (listaGrupoProfesional.firstChild) {
         listaGrupoProfesional.removeChild(listaGrupoProfesional.firstChild);
     }
+    LimpiarCheckBoxUbicaciones();
+
+
+
 }
 
 
@@ -972,7 +930,7 @@ function procesarRespuestaOfertasCreadasOferente(data) {
 
 
 function CargarOfertasCreadasOferente() {
-    
+
     $.ajax({
         type: "GET",
         url: "/Oferente/CargarMisOfertas",
@@ -1030,4 +988,172 @@ function cargarImagenPerfil() {
 
 
 
+}
+
+
+
+
+//function CargarUbicacionesCheckBox() {
+//    var apiProvincia = "https://apisproyectorg.somee.com/api/Ubicaciones/Provincias/";
+
+
+//    /*         Realiza una solicitud GET a la API*/
+//    fetch(apiProvincia)
+//        .then(response => {
+//            if (!response.ok) {
+//                throw new Error('No se pudo obtener las provincias.');
+//            }
+//            return response.json();
+//        })
+//        .then(data => {
+
+
+//            // Llena el ComboBox con las provincias recibidas de la API
+//            data.forEach(provincia => {
+
+//            });
+
+
+
+//        })
+//        .catch(error => {
+//            console.error(error);
+//        });
+//}
+
+
+function CargarProvinciasCheckBox() {
+    var apiProvincia = "https://apisproyectorg.somee.com/api/Ubicaciones/Provincias/";
+
+
+    // Elemento div donde se cargarán los checkboxes
+    var ubicacionesCheckDiv = document.getElementById('provinciasCheck');
+
+    /* Realiza una solicitud GET a la API para obtener las provincias */
+    fetch(apiProvincia)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener las provincias.');
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            // Llena el div con checkboxes de las provincias recibidas de la API
+            data.forEach(provincia => {
+
+                var provinciaCheckbox = document.createElement('input');
+                provinciaCheckbox.type = 'checkbox';
+                provinciaCheckbox.value = provincia.idProvincia; // Asigna el ID de la provincia como valor
+                provinciaCheckbox.name = 'provincias';
+                provinciaCheckbox.id = 'provincia_' + provincia.idProvincia; // Asigna un ID único para cada checkbox de provincia
+
+                var provinciaLabel = document.createElement('label');
+                provinciaLabel.classList.add("labelCheck");
+                provinciaLabel.htmlFor = provinciaCheckbox.id;
+                provinciaLabel.appendChild(document.createTextNode(provincia.nombreProvincia));
+
+
+                provinciaCheckbox.addEventListener('change', function () {
+
+                    if (!this.checked) {
+
+                        EliminarCantonesDiv(this.value);
+                    } else {
+
+                        CargarCantonesCheckBox(this.value);
+                    }
+                });
+
+
+                ubicacionesCheckDiv.appendChild(provinciaCheckbox);
+                ubicacionesCheckDiv.appendChild(provinciaLabel);
+                ubicacionesCheckDiv.appendChild(document.createElement('br'));
+
+                var cantonesCheckBox = document.createElement('div');
+                cantonesCheckBox.classList.add('cantonesCheckBox');
+                cantonesCheckBox.id = 'cantones' + provincia.idProvincia;
+                ubicacionesCheckDiv.appendChild(cantonesCheckBox);
+
+
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+}
+
+// Función para cargar dinámicamente los checkboxes de los cantones
+function CargarCantonesCheckBox(idProvincia) {
+    var apiCanton = 'https://apisproyectorg.somee.com/api/Ubicaciones/Cantones/';
+    var cantonesDiv = $("#cantones" + idProvincia);
+
+    // Agrega el checkbox "Seleccionar Todos"
+    var selectAllCheckbox = document.createElement('input');
+    selectAllCheckbox.type = 'checkbox';
+    selectAllCheckbox.value = 'selectAll';
+    selectAllCheckbox.name = 'cantones';
+    selectAllCheckbox.id = 'selectAll_' + idProvincia;
+    var selectAllLabel = document.createElement('label');
+    selectAllLabel.classList.add("labelCheck");
+    selectAllLabel.htmlFor = selectAllCheckbox.id;
+    selectAllLabel.appendChild(document.createTextNode('Seleccionar Todos'));
+    cantonesDiv.append(selectAllCheckbox, selectAllLabel, document.createElement('br'));
+
+    // Realiza una solicitud GET a la API para obtener los cantones de la provincia seleccionada
+    fetch(apiCanton + idProvincia)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener los cantones.');
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            // Llena el div con checkboxes de los cantones recibidos de la API
+            data.forEach(canton => {
+                var cantonCheckbox = document.createElement('input');
+                cantonCheckbox.type = 'checkbox';
+                cantonCheckbox.value = canton.idCanton; // Asigna el ID del cantón como valor
+                cantonCheckbox.name = 'cantones';
+                cantonCheckbox.id = 'canton_' + canton.idCanton; // Asigna un ID único para cada checkbox de cantón
+                cantonCheckbox.classList.add(idProvincia);
+
+                var cantonLabel = document.createElement('label');
+                cantonLabel.htmlFor = cantonCheckbox.id;
+                cantonLabel.classList.add("labelCheck");
+                cantonLabel.appendChild(document.createTextNode(canton.nombreCanton));
+
+                // Utiliza la función append de jQuery para agregar elementos al div
+                cantonesDiv.append(cantonCheckbox, cantonLabel, document.createElement('br'));
+            });
+
+            // Asigna un evento al checkbox "Seleccionar Todos"
+            $('#' + selectAllCheckbox.id).on('change', function () {
+                // Selecciona o deselecciona todos los checkboxes según el estado del "Seleccionar Todos"
+                $('.' + idProvincia).prop('checked', $(this).prop('checked'));
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+
+
+
+function EliminarCantonesDiv(idProvincia) {
+
+    // Limpia los checkboxes de cantones donde este ligalo a la provincia que se deselecciona
+    var cantonesDiv = $("#cantones" + idProvincia);
+    cantonesDiv.empty();
+}
+
+
+function LimpiarCheckBoxUbicaciones() {
+    for (let i=1; i<=7; i++) {
+        EliminarCantonesDiv(i);
+        $("#provincia_" + i).prop("checked", false);
+    }
 }

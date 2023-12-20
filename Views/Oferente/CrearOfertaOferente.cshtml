@@ -51,54 +51,9 @@
 
             <form id="formAgregarOferta" method="post">
                 <input name="identificacion" type="hidden" value="@ViewBag.identificacion" />
+
+
                 <fieldset class="border p-3 mt-1">
-                    <legend class="w-auto">Ubicaciones</legend>
-                    <hr />
-                    <div class="form-group">
-
-                        <div class="col-md-12">
-
-                            <ul id="listaUbicaciones" class="list-group mt-1">
-                                <!-- Agrega aquí los elementos de la lista de ubicaciones -->
-
-
-                            </ul>
-
-                        </div>
-
-                        <div class="row mt-2">
-                            <div class="col-md-4">
-                                <label for="provincias">Provincia:</label>
-                                <select id="provincias" name="provincias" class="form-control" tabindex="1">
-                                    <!-- Opciones de provincias -->
-                                    <option value="null">Seleccione una opción</option>
-
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cantones">Cantón:</label>
-                                <select id="cantones" name="cantones" class="form-control" tabindex="2">
-                                    <!-- Opciones de cantones -->
-                                    <option value="null">Seleccione una opción</option>
-
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <button id="btnAgregarUbicacion" class="btn-primary btn-sm mt-4">
-                                    Añadir Ubicación
-                                </button>
-                            </div>
-
-                        </div>
-
-
-
-                    </div>
-                </fieldset>
-
-
-
-                <fieldset class="border p-3 mt-2">
                     <legend class="w-auto">Descripción</legend>
                     <hr />
                     <div class="form-group">
@@ -109,26 +64,23 @@
    
 
                 <div class="row mt-2">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <fieldset class="border p-3">
                             <legend class="w-auto">Materias</legend>
                             <hr />
                             <div class="form-group">
 
-                                <ul id="listaMaterias" class="list-group">
-                                    <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
+                                <label for="materias">Materia:</label>
+                                <select id="materias" name="materia" class="form-control">
+                                    <!-- Opciones de materias -->
 
-
-                                </ul>
-                                <button id="" type="button" class="btn-sm btn-primary mt-1" data-toggle="modal" data-target="#agregarMateriaModal">
-                                    Añadir Materia
-                                </button>
+                                </select>
                             </div>
                         </fieldset>
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
 
                         <fieldset class="border p-3">
                             <legend class="w-auto">Grupos Profesionales</legend>
@@ -140,7 +92,7 @@
 
 
                                 </ul>
-                                <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#agregarGrupoProfesionalModal" tabindex="8">
+                                <button type="button" class="btn btn-primary btn mt-1" data-toggle="modal" data-target="#agregarGrupoProfesionalModal" tabindex="8">
                                     Añadir
                                 </button>
                             </div>
@@ -148,8 +100,26 @@
 
 
                     </div>
-                </div>
 
+
+                    <div class="col-md-4">
+
+                        <fieldset class="border p-3">
+                            <legend class="w-auto">Ubicaciones</legend>
+                            <hr />
+                            <div class="form-group">
+
+                         
+                                <button id="" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSeleccionUbicaciones">
+                                    Elegir
+                                </button>
+
+                            </div>
+                        </fieldset>
+
+
+                    </div>
+                </div>
 
 
 
@@ -184,50 +154,6 @@
                         </select>
                     </div>
                     <button id="btnAgregarMateria" class="btn btn-success mt-2">Agregar Materia</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal de Confirmación para Eliminar materia -->
-    <div class="modal fade" id="confirmacionEliminarModalMateria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Confirmar Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar esta materia?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmarEliminar" type="button" class="btn btn-danger">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal de Confirmación para Eliminar Ubicacion -->
-    <div class="modal fade" id="confirmacionEliminarModalUbicacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Confirmar Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar esta Ubicación?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmarEliminarUbicacion" type="button" class="btn btn-danger confirmarEliminar">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -307,6 +233,41 @@
         </div>
     </div>
 
+
+
+
+    <!-- Modal para la seleccion de ubicaciones -->
+    <div class="modal fade" id="modalSeleccionUbicaciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" id="btnCloseModalUbicaciones" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+                        <label>Selecciona las ubicaciones de interés:</label>
+                        <div class="mt-2" id="provinciasCheck">
+                            <!-- Checkboxes de estados y ciudades se cargarán dinámicamente desde el servidor -->
+                        </div>
+                 
+                        <button id="btnCerrarModalubicaciones" class="btn-sm btn-primary mt-1">Confirmar</button>
+         
+               
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <label></label>
+        <input />
+        <div>
+            <label></label>
+            <input />
+        </div>
+    </div>
 </main>
 
 <script src="~/js/oferente/postulaciones.js"></script>

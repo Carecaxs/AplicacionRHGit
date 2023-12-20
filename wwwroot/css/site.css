@@ -169,3 +169,38 @@ fieldset {
 tbody {
     background-color: aliceblue; /* Establece el color de fondo para el cuerpo de la tabla */
 }
+
+.cantonesCheckBox, provinciasCheck {
+    margin-left: 20px;
+}
+
+
+/* Estilo base para todos los checkboxes */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+}
+
+    /* Estilo para checkboxes seleccionados */
+    input[type="checkbox"]:checked {
+        background-color: #4CAF50;
+        border: 1px solid #4CAF50;
+        color: white;
+    }
+
+.labelCheck {
+    display: inline-block; /* Mantiene el texto en línea con el checkbox */
+    margin-bottom: 8px; /* Agrega espacio entre los elementos */
+    margin-left:5px; /* Ajusta el margen izquierdo del texto */
+}
+
+
+#provinciasCheck > label {
+    font-weight: bold;
+}

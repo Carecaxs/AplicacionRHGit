@@ -2078,15 +2078,7 @@ namespace AplicacionRHGit.Controllers
         {
             try
             {
-   
-                // Recibir la cadena JSON del campo "listaMaterias" en el formulario
-                string listaMateriasJson = form["listaMaterias"];
-
-                // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
-                List<int> listaMaterias = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaMateriasJson);
-
-
-
+ 
                 string listaUbicacionesJson = form["listaUbicaciones"];
 
                 // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
@@ -2100,13 +2092,13 @@ namespace AplicacionRHGit.Controllers
 
 
 
-
+                int idMateria= int.Parse(form["materia"].FirstOrDefault()); 
                 string descripcion = form["descripcion"].FirstOrDefault();
                 string identificacion = form["identificacion"].FirstOrDefault();
 
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
 
-                int retorno = oferentesDAO.CrearOferta(identificacion, descripcion, listaMaterias, listaUbicaciones, listaGrupos);
+                int retorno = oferentesDAO.CrearOferta(identificacion, descripcion, listaUbicaciones, listaGrupos, idMateria);
 
                 if (retorno > 0)
                 {

@@ -35,7 +35,6 @@ namespace AplicacionRHGit.Data
         public DbSet<Oferta_Laboral> Oferta_Laboral { get; set; }
         public DbSet<Postulaciones_Oferente> Postulaciones_Oferente { get; set; }
         public DbSet<Oferta_Creada_Oferente> Oferta_Creada_Oferente { get; set; }
-        public DbSet<Materia_Oferta_Creada_Oferente> Materia_Oferta_Creada_Oferente { get; set; }
         public DbSet<Provincia> Provincia { get; set; }
         public DbSet<Canton> Canton { get; set; }
         public DbSet<CentrosEducativos> CentrosEducativos { get; set; }
