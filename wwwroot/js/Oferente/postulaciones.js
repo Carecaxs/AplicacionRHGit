@@ -1,4 +1,15 @@
 ﻿$(document).ready(function () {
+    cargarImagenPerfil();
+    $("#fotoPerfil").on("click", function () {
+        // Obtener la URL de la imagen original
+        var urlImagenOriginal = $(this).attr("src");
+
+        // Asignar la URL de la imagen original al modal
+        $("#imagenAmpliada").attr("src", urlImagenOriginal);
+    });
+
+
+
 
     ///////////// seccion de enlaces
 
@@ -42,7 +53,8 @@
     /////////////////////////////////////////// seccion de ver ofertas laborales ///////////////////////////////////////////////////
 
     if ($("#vistaActual").val() == "BuscarOfertasOferente") {
-
+        //poner activo al enlace de activo a esta vista
+        $("#enlaceBuscar").addClass("active");
         CargarProvincia();
         CargarMaterias();
         //cargar ofertas 
@@ -124,10 +136,11 @@
     /////////////////////////////////////////// seccion de crear ofertas laborales ///////////////////////////////////////////////////
 
     if ($("#vistaActual").val() == "CrearOfertaOferente") {
-
+        //poner activo al enlace de activo a esta vista
+        $("#enlaceCrear").addClass("active");
         CargarProvincia();
         CargarMaterias();
-        //CargarListaMaterias();
+        CargarGruposProfesionales();
 
     }
 
@@ -139,6 +152,82 @@
 
         // Cerrar el modal
         $("#agregarMateriaModal").modal("hide");
+
+    });
+
+
+    $("#btnAgregarUbicacion").click(function (event) {
+        event.preventDefault();
+
+        let canton = $("#cantones").val();
+   
+
+        if (canton !== "null") {
+            agregarUbicacionALaLista();
+            $("#cantones").val("null");
+            $("#provincias").val("null");
+
+        }
+    
+
+    });
+
+
+    $("#btnAgregarGrupoProfesional").click(function (event) {
+        event.preventDefault();
+
+        //enviamos el value y el texto de la materia elegida dentro del select
+        agregarGrupoALaLista($("#grupoProfesional").val(), $("#grupoProfesional option:selected").text());
+
+
+        // Cerrar el modal
+        $("#agregarGrupoProfesionalModal").modal("hide");
+        
+
+    });
+
+    $("#listaGrupoProfesional").on("click", ".btnEliminarGrupo", function (event) {
+
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var id = $(this).closest("li").data("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModalGrupo").modal("show");
+
+        $("#confirmarEliminarGrupo").click(function (event) {
+
+            // Eliminar el li con el data-id específico
+            $("#listaGrupoProfesional li[data-id='" + id + "']").remove();
+
+            $("#confirmacionEliminarModalGrupo").modal("hide");
+
+        });
+
+
+
+    });
+
+
+    $("#listaUbicaciones").on("click", ".btnEliminarUbicacion", function (event) {
+
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var idCanton = $(this).closest("li").data("id");
+
+        // Muestra el modal de confirmación
+        $("#confirmacionEliminarModalUbicacion").modal("show");
+
+        $("#confirmarEliminarUbicacion").click(function (event) {
+
+            // Eliminar el li con el data-id específico
+            $("#listaUbicaciones li[data-id='" + idCanton + "']").remove();
+
+            $("#confirmacionEliminarModalUbicacion").modal("hide");
+
+        });
+
+
 
     });
 
@@ -172,30 +261,21 @@
         let validacion = ValidarFormularioAgregarOferta();
         if (validacion == -2) {
             //no se seleccionaron materias
-
-            if ($("#mensaje").length) {
-
-                $("#mensaje").remove();
-
-                $("#btnAgregarOferta").before("<p class='alert alert-danger mt-2' id='mensaje'> Debes de seleccionar una materia como minímo</p>");
-            }
-            else {
-                $("#btnAgregarOferta").before("<p class='alert alert-danger mt-2' id='mensaje'> Debes de seleccionar una materia como minímo</p>");
-            }
-
-
+            alert("Debes de seleccionar una materia como minímo");
         }
         else if (validacion == -1) {
-            //no se llenaron todos los campos
-            if ($("#mensaje").length) {
+            //no se seleccionaron ubicaciones
+            alert("Debes de seleccionar una Ubicación como minímo");
 
-                $("#mensaje").remove();
-
-                $("#btnAgregarOferta").before("<p class='alert alert-danger mt-2' id='mensaje'> Debes de completar todos los campos</p>");
-            }
-            else {
-                $("#btnAgregarOferta").before("<p class='alert alert-danger mt-2' id='mensaje'> Debes de completar todos los campos</p>");
-            }
+        }
+        else if (validacion == -3) {
+            //no se seleccionaron grupos profesionales
+            alert("Debes de seleccionar un Grupo Profesional como minímo");
+       
+        }
+        else if (validacion == -4) {
+            //no se seleccionaron grupos profesionales
+            alert("Debes de ingresar información en el campo descripción");
         }
         else {
             //todo esta bien 
@@ -219,6 +299,8 @@
 
     if ($("#vistaActual").val() == "VerOfertasOferente") {
 
+        //poner activo al enlace de activo a esta vista
+        $("#enlaceVerMisOfertas").addClass("active");
         CargarOfertasCreadasOferente();
 
     }
@@ -409,6 +491,30 @@ function CargarMaterias() {
 }
 
 
+function CargarGruposProfesionales() {
+    // Hacer la solicitud AJAX para cargar las materias
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarGruposProfesionales",
+        success: function (data) {
+
+            // Llenar las opciones del select con las materias
+            var selectGrupos = $("#grupoProfesional");
+
+
+            // Iterar sobre las materias y añadirlas al select
+            $.each(data, function (index, grupoProfesional) {
+                selectGrupos.append($("<option>").val(grupoProfesional.idGrupoProfesional).text(grupoProfesional.codigo));
+            });
+        },
+        error: function (error) {
+            console.log("Error al cargar las materias: " + error);
+        }
+    });
+
+}
+
+
 function CargarProvincia() {
     var apiProvincia = "https://apisproyectorg.somee.com/api/Ubicaciones/Provincias/";
 
@@ -511,7 +617,39 @@ function AgregarPostulacion() {
     });
 }
 
+function agregarGrupoALaLista(id, nombre) {
+    var listaGrupos = document.getElementById("listaGrupoProfesional");
 
+    // Verificar si el id ya existe en la lista
+    var existeId = Array.from(listaGrupos.children).some(function (li) {
+        return li.getAttribute("data-id") === id.toString();
+    });
+
+    if (!existeId) {
+        var li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.setAttribute("data-id", id);
+
+        var span = document.createElement("span");
+        span.textContent = nombre;
+
+        var div = document.createElement("div");
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminarGrupo btn btn-danger btn-sm";
+        btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+        div.appendChild(btnEliminar);
+
+        li.appendChild(span);
+        li.appendChild(div);
+
+        listaGrupos.appendChild(li);
+    } else {
+        // Muestra un mensaje o realiza alguna acción indicando que el id ya existe
+        alert("El grupo " + nombre + " ya lo escogiste.");
+    }
+}
 
 
 function agregarMateriaALaLista(id, nombre) {
@@ -550,11 +688,57 @@ function agregarMateriaALaLista(id, nombre) {
 
 
 
+
+function agregarUbicacionALaLista() {
+    var listaUbicaciones = document.getElementById("listaUbicaciones");
+
+    // Verificar si el id del Canton ya existe en la lista
+    var existeId = Array.from(listaUbicaciones.children).some(function (li) {
+        return li.getAttribute("data-id") === $("#cantones").val().toString();
+    });
+
+    if (!existeId) {
+        var li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.setAttribute("data-id", $("#cantones").val());
+
+        var span = document.createElement("span");
+        span.textContent = $("#cantones option:selected").text() + "-" + $("#provincias option:selected").text();
+
+        var div = document.createElement("div");
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminarUbicacion btn btn-danger btn-sm";
+        btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+        div.appendChild(btnEliminar);
+
+        li.appendChild(span);
+        li.appendChild(div);
+
+        listaUbicaciones.appendChild(li);
+    } else {
+        // Muestra un mensaje o realiza alguna acción indicando que el id ya existe
+        alert("Ya escogiste esta ubicación");
+    }
+}
+
+
 function CrearOferta() {
     var listaMaterias = $("#listaMaterias li").map(function () {
+        console.log($(this).data("id"));
+
         return $(this).data("id");
     }).get();
 
+    var listaUbicaciones = $("#listaUbicaciones li").map(function () {
+        return $(this).data("id");
+    }).get();
+
+
+    var listaGrupos = $("#listaGrupoProfesional li").map(function () {
+        return $(this).data("id");
+    }).get();
 
 
 
@@ -565,6 +749,13 @@ function CrearOferta() {
     // Agregar lista de materias al formData
     formData.append("listaMaterias", JSON.stringify(listaMaterias));
     formData.append("identificacion", $("#identification").val());
+
+    // Agregar lista de ubicaciones al formData
+    formData.append("listaUbicaciones", JSON.stringify(listaUbicaciones));
+
+    // Agregar lista de grupos profesionales al formData
+    formData.append("listaGrupos", JSON.stringify(listaGrupos));
+
 
 
     $.ajax({
@@ -617,18 +808,36 @@ function CrearOferta() {
     });
 }
 
-//retorna 1 si se completan todos los campos
-//retorna -1 si se dejan campos sin completar
+//retorna 1 si se completan los campos necesarios
+//retorna -1 si no se agrega ni una sola ubicacion
 //retorna -2 si no se agrega ni una sola materia
+//retorna -3 si no se agrega ni un solo grupo profesional
+//retorna -4 si no se se ingresa nada en el campo descripcion
+
+
 function ValidarFormularioAgregarOferta() {
     // Validar campos principales
 
-    var provincia = document.getElementById("provincias").value;
-    var canton = document.getElementById("cantones").value;
     var descripcion = $("#descripcion").val();
 
-    if (provincia === "null" || canton === "null" || descripcion === "") {
+    if (descripcion == "") {
+        return -4;
+    }
+
+    // Validar la lista de grupos profesionales
+    var listaUbicaciones = document.getElementById("listaUbicaciones");
+
+    if (listaUbicaciones.getElementsByTagName("li").length === 0) {
+
         return -1;
+    }
+
+    // Validar la lista de grupos profesionales
+    var listaGrupos = document.getElementById("listaGrupoProfesional");
+
+    if (listaGrupos.getElementsByTagName("li").length === 0) {
+
+        return -3;
     }
 
     // Validar la lista de materias
@@ -648,12 +857,32 @@ function limpiarFormularioAgregarOferta() {
     $("#provincias").val("null");
     $("#cantones").val("null");
     $("#descripcion").val("");
+    $("#grupoProfesional").val("null");
+ 
+
+
+
+
 
 
     // Limpiar lista de materias
     var listaMaterias = document.getElementById("listaMaterias");
     while (listaMaterias.firstChild) {
         listaMaterias.removeChild(listaMaterias.firstChild);
+    }
+
+
+    // Limpiar lista de ubicaciones
+    var listaUbicaciones = document.getElementById("listaUbicaciones");
+    while (listaUbicaciones.firstChild) {
+        listaUbicaciones.removeChild(listaUbicaciones.firstChild);
+    }
+
+
+    // Limpiar lista de grupos profesionales
+    var listaGrupoProfesional = document.getElementById("listaGrupoProfesional");
+    while (listaGrupoProfesional.firstChild) {
+        listaGrupoProfesional.removeChild(listaGrupoProfesional.firstChild);
     }
 }
 
@@ -770,3 +999,35 @@ function CargarOfertasCreadasOferente() {
     });
 }
 
+/// funciones genrales
+
+
+function cargarImagenPerfil() {
+
+    var identificacion = $("#identification").val();
+    $.ajax({
+        url: '/Oferente/ObtenerUrlImagen',  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: { identificacion: identificacion },
+        success: function (data) {
+
+            if (data.urlImagen) {
+
+                //si se obtiene la url se carga la imagen
+                var imagen = document.getElementById('fotoPerfil');
+                imagen.src = data.urlImagen;
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+
+
+
+
+}

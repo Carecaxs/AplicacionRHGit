@@ -7,21 +7,21 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAy7TPZOJVS0+RJ4aV/ODU9gAAAAACAAAAAAAQZgAAAAEAACAAAAB2pufTu2Httg2JFQZScTxviRVnT5wJnNLpvPH9rkSxhAAAAAAOgAAAAAIAACAAAACr0AkajIjaDtz3z5l7ztucz6TEyznPPXjIDCUG/2LHXyAAAACdWonmjCeHMwjOROC6j6j6LutQ/8wwGQnUqYHqS37asEAAAABZkovymbfUlrP90mMInDjCbeM29uwjs6YEt2wrIiNLfPaT0Jg2FjQhomn/F/rqL0H4dIzkZJNr5UC58QFHhU5a</EncryptedPassword>
     <_PublishTargetUrl>ftp://PlataformaRH.somee.com/www.PlataformaRH.somee.com</_PublishTargetUrl>
-    <History>True|2023-12-07T23:31:00.9589694Z;True|2023-12-05T21:32:38.0050776-06:00;True|2023-12-05T14:47:29.2428768-06:00;True|2023-11-27T17:39:58.1479868-06:00;True|2023-11-27T16:10:58.0454974-06:00;True|2023-11-24T20:25:21.3979471-06:00;True|2023-11-22T17:33:20.9758676-06:00;True|2023-11-21T21:11:16.8516951-06:00;True|2023-11-20T14:12:18.0345698-06:00;True|2023-11-17T17:56:23.8048249-06:00;False|2023-11-17T17:50:34.8057456-06:00;True|2023-11-15T20:01:51.2759786-06:00;True|2023-11-15T19:05:26.1911219-06:00;True|2023-11-14T17:32:50.7062863-06:00;</History>
+    <History>True|2023-12-15T18:59:34.3675705Z;True|2023-12-07T17:31:00.9589694-06:00;True|2023-12-05T21:32:38.0050776-06:00;True|2023-12-05T14:47:29.2428768-06:00;True|2023-11-27T17:39:58.1479868-06:00;True|2023-11-27T16:10:58.0454974-06:00;True|2023-11-24T20:25:21.3979471-06:00;True|2023-11-22T17:33:20.9758676-06:00;True|2023-11-21T21:11:16.8516951-06:00;True|2023-11-20T14:12:18.0345698-06:00;True|2023-11-17T17:56:23.8048249-06:00;False|2023-11-17T17:50:34.8057456-06:00;True|2023-11-15T20:01:51.2759786-06:00;True|2023-11-15T19:05:26.1911219-06:00;True|2023-11-14T17:32:50.7062863-06:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
     <File Include="AplicacionRHGit.deps.json">
-      <publishTime>12/07/2023 17:25:29</publishTime>
+      <publishTime>12/15/2023 12:53:49</publishTime>
     </File>
     <File Include="AplicacionRHGit.dll">
-      <publishTime>12/07/2023 17:25:21</publishTime>
+      <publishTime>12/15/2023 12:53:39</publishTime>
     </File>
     <File Include="AplicacionRHGit.exe">
-      <publishTime>12/07/2023 17:25:21</publishTime>
+      <publishTime>12/15/2023 12:53:40</publishTime>
     </File>
     <File Include="AplicacionRHGit.pdb">
-      <publishTime>12/07/2023 17:25:20</publishTime>
+      <publishTime>12/15/2023 12:53:39</publishTime>
     </File>
     <File Include="AplicacionRHGit.runtimeconfig.json">
       <publishTime>12/07/2023 17:25:21</publishTime>
@@ -186,13 +186,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/22/2021 18:49:44</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>12/07/2023 17:25:29</publishTime>
+      <publishTime>12/15/2023 12:53:49</publishTime>
     </File>
     <File Include="wwwroot/AplicacionRHGit.styles.css">
       <publishTime>11/07/2023 15:26:26</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
-      <publishTime>12/06/2023 16:07:44</publishTime>
+      <publishTime>12/14/2023 17:30:31</publishTime>
     </File>
     <File Include="wwwroot/favicon.ico">
       <publishTime>11/07/2023 13:41:49</publishTime>
@@ -218,6 +218,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="wwwroot/ImagesDimex/0117860836/dimex.png">
       <publishTime>12/05/2023 20:50:14</publishTime>
     </File>
+    <File Include="wwwroot/ImagesEvaluaciones/0117860836/1003.png">
+      <publishTime>12/15/2023 10:52:16</publishTime>
+    </File>
+    <File Include="wwwroot/ImagesPerfilExpediente/0117860836/fotoPerfil.webp">
+      <publishTime>12/14/2023 17:05:48</publishTime>
+    </File>
+    <File Include="wwwroot/ImagesReferencias/0117860836/1006.png">
+      <publishTime>12/15/2023 09:10:43</publishTime>
+    </File>
     <File Include="wwwroot/ImagesReferencias/0117860836/2.png">
       <publishTime>11/28/2023 13:22:25</publishTime>
     </File>
@@ -226,6 +235,12 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     </File>
     <File Include="wwwroot/ImagesTitulos/0117860836/1.png">
       <publishTime>11/22/2023 16:24:26</publishTime>
+    </File>
+    <File Include="wwwroot/ImagesTitulos/0117860836/24.png">
+      <publishTime>12/12/2023 18:15:46</publishTime>
+    </File>
+    <File Include="wwwroot/ImagesTitulos/0117860836/26.png">
+      <publishTime>12/13/2023 18:11:28</publishTime>
     </File>
     <File Include="wwwroot/ImagesTitulos/0117860836/4.png">
       <publishTime>11/24/2023 20:13:53</publishTime>
@@ -237,16 +252,16 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/27/2023 14:24:01</publishTime>
     </File>
     <File Include="wwwroot/js/Login/login.js">
-      <publishTime>11/30/2023 17:09:13</publishTime>
+      <publishTime>12/15/2023 12:41:45</publishTime>
     </File>
     <File Include="wwwroot/js/Oferente/expediente.js">
-      <publishTime>12/06/2023 18:09:29</publishTime>
+      <publishTime>12/15/2023 12:52:14</publishTime>
     </File>
     <File Include="wwwroot/js/Oferente/paginaInicio.js">
       <publishTime>12/07/2023 17:17:56</publishTime>
     </File>
     <File Include="wwwroot/js/Oferente/postulaciones.js">
-      <publishTime>12/07/2023 17:24:43</publishTime>
+      <publishTime>12/08/2023 12:55:31</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>11/30/2023 16:31:16</publishTime>

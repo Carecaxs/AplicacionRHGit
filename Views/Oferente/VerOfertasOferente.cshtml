@@ -9,30 +9,42 @@
     <div class="container mt-5">
         <div class="contenedorExpediente">
 
+            <div class="row">
+                <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                    <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                    <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+                </form>
+
+                <div class="col-sm-6">
+                    <img id="fotoPerfil" class="img-fluid img-perfil" data-toggle="modal" data-target="#imagenModal" />
+                </div>
+
+            </div>
             <form class="formEnlaces" method="post">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceBuscar" class="nav-link">Buscar Vacantes</button>
-
+                        <button id="enlaceBuscar" class="btn-primary">Buscar Vacantes</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCrear" class="nav-link">Crear Oferta</button>
+                        <button id="enlaceCrear" class="btn-primary">Crear Oferta</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceVerMisOfertas" class="nav-link">Ver mis Ofertas</button>
+                        <button id="enlaceVerMisOfertas" class="btn-primary">Ver mis Ofertas</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceVerVacantesAplicadas" class="nav-link">Ver Vacantes Aplicadas</button>
+                        <button id="enlaceVerVacantesAplicadas" class="btn-primary">Ver Vacantes Aplicadas</button>
 
                     </li>
 
                 </ul>
-            </form>
 
-            <h2 class="text-center mt-2">Ver Ofertas para mi</h2>
+            </form>
 
             <div class="table-responsive mt-5">
                 <table id="" class="table table-bordered">
@@ -51,13 +63,6 @@
 
 
 
-            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
-                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-                <div class="form-group col-sm-12">
-                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
-                </div>
-            </form>
 
         </div>
 

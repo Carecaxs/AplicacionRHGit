@@ -276,7 +276,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult CrearOfertaOferente(string identification, string clave)
+        public IActionResult CrearOfertaOferente(string identification="0117860836", string clave="123")
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -312,7 +312,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult VerOfertasOferente(string identification = "0117860836", string clave = "123")
+        public IActionResult VerOfertasOferente(string identification , string clave )
         {
             if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
             {
@@ -2078,7 +2078,7 @@ namespace AplicacionRHGit.Controllers
         {
             try
             {
-                int idProvincia = int.Parse(form["provincias"].FirstOrDefault());
+   
                 // Recibir la cadena JSON del campo "listaMaterias" en el formulario
                 string listaMateriasJson = form["listaMaterias"];
 
@@ -2086,13 +2086,27 @@ namespace AplicacionRHGit.Controllers
                 List<int> listaMaterias = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaMateriasJson);
 
 
-                int idCanton = int.Parse(form["cantones"].FirstOrDefault());
+
+                string listaUbicacionesJson = form["listaUbicaciones"];
+
+                // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
+                List<int> listaUbicaciones = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaUbicacionesJson);
+
+
+                string listaGruposJson = form["listaGrupos"];
+
+                // Deserializar la cadena JSON a una lista (puedes usar la clase JavaScriptSerializer o Newtonsoft.Json.JsonConvert)
+                List<int> listaGrupos = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(listaGruposJson);
+
+
+
+
                 string descripcion = form["descripcion"].FirstOrDefault();
                 string identificacion = form["identificacion"].FirstOrDefault();
 
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
 
-                int retorno = oferentesDAO.CrearOferta(identificacion, idProvincia, idCanton, descripcion, listaMaterias);
+                int retorno = oferentesDAO.CrearOferta(identificacion, descripcion, listaMaterias, listaUbicaciones, listaGrupos);
 
                 if (retorno > 0)
                 {
@@ -2116,66 +2130,103 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        [HttpGet]
+        public JsonResult CargarGruposProfesionales(string identificacion) {
 
+            var idOferente = _context.Oferente
+                     .Where(o => o.identificacion == identificacion)
+                     .Select(o => o.idOferente)
+                     .FirstOrDefault();
+
+            //consulta el id del expediente de ese oferente
+            var idExpediente = _context.Expediente
+            .Where(e => e.idOferente == idOferente)
+            .Select(e => e.ID_EXPEDIENTE)
+            .FirstOrDefault();
+
+            var grupos = (from grupoOferente in _context.GrupoProfesionalOferente
+                         where grupoOferente.ID_EXPEDIENTE == idExpediente
+                         join gruposProfesionales in _context.GrupoProfesional on grupoOferente.id_grupoProfesional equals gruposProfesionales.idGrupoProfesional
+                         select new
+                         {
+                             idGrupoProfesional = gruposProfesionales.idGrupoProfesional,
+                             codigo = gruposProfesionales.Codigo
+                         }).ToList();
+
+            //si el oferente tiene registrado ya grupos en su expediente se retorna una lista de los que tiene 
+            //y si no contiene ninguno se mostraran todos
+            if(grupos != null && grupos.Any())
+            {
+                return Json(grupos);
+            }
+            else
+            {
+                List<GrupoProfesional> grupos2 = _context.GrupoProfesional.ToList();
+                return Json(grupos2);
+            }
+
+       
+
+        }
 
 
         ///////////////////////////////////////////////////////    SECCION ver mis OFERTAS LABORALES ////////////////////////////////////////////////////////////////
 
 
-        [HttpGet]
-        public JsonResult CargarMisOfertas(string identificacion)
-        {
-            try
-            {
+        //[HttpGet]
+        //public JsonResult CargarMisOfertas(string identificacion)
+        //{
+        //    try
+        //    {
 
-                // Obtener el idOferente usando la identificación
-                var idOferente = _context.Oferente
-                    .Where(o => o.identificacion == identificacion)
-                    .Select(o => o.idOferente)
-                    .FirstOrDefault();
-
-
-                var ofertas = from oferta in _context.Oferta_Creada_Oferente
-                              where oferta.idOferente == idOferente && oferta.estado == false
-                              join materiaOferta in _context.Materia_Oferta_Creada_Oferente
-                              on oferta.id equals materiaOferta.id_Ofertas_Creadas_Oferentes
-                              join materia in _context.Materia
-                                  on materiaOferta.ID_Materia equals materia.ID_Materia
-                              join provincia in _context.Provincia on oferta.IdProvincia equals provincia.IdProvincia
-                              join canton in _context.Canton on oferta.IdCanton equals canton.IdCanton
-
-                              select new
-                              {
-                                  idOferta = oferta.id,
-                                  descripcionOferta = oferta.descripcion,
-                                  publicacionOferta = oferta.fecha_publicacion,
-                                  estadoOferta = oferta.estado,
-                                  materia = materia.Nombre,
-                                  provincia = provincia.NombreProvincia,
-                                  canton = canton.NombreCanton
-                              };
+        //        // Obtener el idOferente usando la identificación
+        //        var idOferente = _context.Oferente
+        //            .Where(o => o.identificacion == identificacion)
+        //            .Select(o => o.idOferente)
+        //            .FirstOrDefault();
 
 
-                if (ofertas != null)
-                {
-                    return Json(ofertas);
+        //        var ofertas = from oferta in _context.Oferta_Creada_Oferente
+        //                      where oferta.idOferente == idOferente && oferta.estado == false
+        //                      join materiaOferta in _context.Materia_Oferta_Creada_Oferente
+        //                      on oferta.id equals materiaOferta.id_Ofertas_Creadas_Oferentes
+        //                      join materia in _context.Materia
+        //                          on materiaOferta.ID_Materia equals materia.ID_Materia
+        //                      join provincia in _context.Provincia on oferta.IdProvincia equals provincia.IdProvincia
+        //                      join canton in _context.Canton on oferta.IdCanton equals canton.IdCanton
 
-                }
-                else
-                {
-                    return Json(new { vacio = true });
+        //                      select new
+        //                      {
+        //                          idOferta = oferta.id,
+        //                          descripcionOferta = oferta.descripcion,
+        //                          publicacionOferta = oferta.fecha_publicacion,
+        //                          estadoOferta = oferta.estado,
+        //                          materia = materia.Nombre,
+        //                          provincia = provincia.NombreProvincia,
+        //                          canton = canton.NombreCanton
+        //                      };
 
-                }
 
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message });
+        //        if (ofertas != null)
+        //        {
+        //            return Json(ofertas);
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { vacio = true });
+
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { error = ex.Message });
 
 
-            }
+        //    }
 
-        }
+        //}
 
 
 

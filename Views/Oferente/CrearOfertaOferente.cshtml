@@ -11,73 +11,143 @@
     <div class="container mt-5">
         <div class="contenedorExpediente">
 
+            <div class="row">
+                <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                    <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                    <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+                </form>
+
+                <div class="col-sm-6">
+                    <img id="fotoPerfil" class="img-fluid img-perfil" data-toggle="modal" data-target="#imagenModal" />
+                </div>
+
+            </div>
             <form class="formEnlaces" method="post">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
 
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceBuscar" class="nav-link">Buscar Vacantes</button>
-
+                        <button id="enlaceBuscar" class="btn-primary">Buscar Vacantes</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCrear" class="nav-link">Crear Oferta</button>
+                        <button id="enlaceCrear" class="btn-primary">Crear Oferta</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceVerMisOfertas" class="nav-link">Ver mis Ofertas</button>
+                        <button id="enlaceVerMisOfertas" class="btn-primary">Ver mis Ofertas</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceVerVacantesAplicadas" class="nav-link">Ver Vacantes Aplicadas</button>
+                        <button id="enlaceVerVacantesAplicadas" class="btn-primary">Ver Vacantes Aplicadas</button>
 
                     </li>
 
                 </ul>
+
             </form>
 
-            <h2 class="text-center mt-2">Crear Oferta</h2>
 
             <form id="formAgregarOferta" method="post">
                 <input name="identificacion" type="hidden" value="@ViewBag.identificacion" />
+                <fieldset class="border p-3 mt-1">
+                    <legend class="w-auto">Ubicaciones</legend>
+                    <hr />
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+
+                            <ul id="listaUbicaciones" class="list-group mt-1">
+                                <!-- Agrega aquí los elementos de la lista de ubicaciones -->
 
 
-                <div class="form-group row mt-3">
-                    <div class="col-md-6">
-                        <label for="provincias">Provincia:</label>
-                        <select id="provincias" name="provincias" class="form-control" tabindex="1">
-                            <!-- Opciones de provincias -->
-                            <option value="null">Seleccione una opción</option>
+                            </ul>
 
-                        </select>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <label for="provincias">Provincia:</label>
+                                <select id="provincias" name="provincias" class="form-control" tabindex="1">
+                                    <!-- Opciones de provincias -->
+                                    <option value="null">Seleccione una opción</option>
+
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="cantones">Cantón:</label>
+                                <select id="cantones" name="cantones" class="form-control" tabindex="2">
+                                    <!-- Opciones de cantones -->
+                                    <option value="null">Seleccione una opción</option>
+
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button id="btnAgregarUbicacion" class="btn-primary btn-sm mt-4">
+                                    Añadir Ubicación
+                                </button>
+                            </div>
+
+                        </div>
+
+
+
                     </div>
-                    <div class="col-md-6">
-                        <label for="cantones">Cantón:</label>
-                        <select id="cantones" name="cantones" class="form-control" tabindex="2">
-                            <!-- Opciones de cantones -->
-                            <option value="null">Seleccione una opción</option>
+                </fieldset>
 
-                        </select>
+
+
+                <fieldset class="border p-3 mt-2">
+                    <legend class="w-auto">Descripción</legend>
+                    <hr />
+                    <div class="form-group">
+                        <textarea class="form-control" id="descripcion" name="descripcion" required tabindex="3" placeholder="Horario, disponibilidad inmediata..."></textarea>
+                    </div>
+                </fieldset>
+
+   
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <fieldset class="border p-3">
+                            <legend class="w-auto">Materias</legend>
+                            <hr />
+                            <div class="form-group">
+
+                                <ul id="listaMaterias" class="list-group">
+                                    <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
+
+
+                                </ul>
+                                <button id="" type="button" class="btn-sm btn-primary mt-1" data-toggle="modal" data-target="#agregarMateriaModal">
+                                    Añadir Materia
+                                </button>
+                            </div>
+                        </fieldset>
+
                     </div>
 
-                </div>
+                    <div class="col-md-6">
+
+                        <fieldset class="border p-3">
+                            <legend class="w-auto">Grupos Profesionales</legend>
+                            <hr />
+                            <div class="form-group">
+
+                                <ul id="listaGrupoProfesional" class="list-group">
+                                    <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
 
 
-                <div class="form-group">
-                    <label for="descripcion">Descripción:</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" required tabindex="3" placeholder="Horario, disponibilidad inmediata..."></textarea>
-                </div>
+                                </ul>
+                                <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#agregarGrupoProfesionalModal" tabindex="8">
+                                    Añadir
+                                </button>
+                            </div>
+                        </fieldset>
 
 
-                <div class="form-group">
-                    <label for="listaMaterias">Materias:</label>
-
-                    <ul id="listaMaterias" class="list-group">
-                        <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
-
-
-                    </ul>
-                    <button id="" type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#agregarMateriaModal">
-                        Añadir Materia
-                    </button>
+                    </div>
                 </div>
 
 
@@ -85,16 +155,6 @@
 
                 <button id="btnAgregarOferta" class="btn btn-success mt-2 w-100" tabindex="8">Agregar Oferta</button>
 
-            </form>
-
-
-
-            <form method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
-                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
-                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-                <div class="form-group col-sm-12">
-                    <button id="btnRegresar" class="btn btn-secondary mt-2 w-100">Regresar</button>
-                </div>
             </form>
 
         </div>
@@ -109,7 +169,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Añadir Materia</h5>
+                    <h5 class="modal-title">Añadir Materia</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -120,7 +180,7 @@
                         <label for="materias">Materia:</label>
                         <select id="materias" class="form-control">
                             <!-- Opciones de materias -->
-                       
+
                         </select>
                     </div>
                     <button id="btnAgregarMateria" class="btn btn-success mt-2">Agregar Materia</button>
@@ -135,7 +195,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
+                    <h5 class="modal-title" id="">Confirmar Eliminación</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -149,8 +209,103 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
+    <!-- Modal de Confirmación para Eliminar Ubicacion -->
+    <div class="modal fade" id="confirmacionEliminarModalUbicacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar esta Ubicación?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmarEliminarUbicacion" type="button" class="btn btn-danger confirmarEliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para Añadir Grupo Profesional -->
+    <div class="modal fade" id="agregarGrupoProfesionalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Añadir Grupo Profesional</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir  -->
+                    <form id="formAgregarGrupoProfesional" method="post">
+                        <div class="form-group col-sm-6">
+                            <label for="grupoProfesional">Grupos Profesionales:</label>
+
+                            <select class="form-control" id="grupoProfesional" name="grupoProfesional" tabindex="1">
+                         
+
+
+                            </select>
+                        </div>
+
+                        <!-- Puedes agregar más campos según tus necesidades -->
+                        <button id="btnAgregarGrupoProfesional" class="btn btn-success mt-2" tabindex="2">Agregar</button>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de Confirmación para Eliminar Grupo Profesional -->
+    <div class="modal fade" id="confirmacionEliminarModalGrupo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este Grupo Profesional?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmarEliminarGrupo" type="button" class="btn btn-danger confirmarEliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para la imagen ampliada -->
+    <div class="modal fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="imagenAmpliada" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
 
 </main>
 

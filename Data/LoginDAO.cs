@@ -43,31 +43,107 @@ namespace AplicacionRHGit.Data
         public void AgregarUsuario(Usuario usuario, string tipoUsuario)
         {
 
-            if(tipoUsuario == "Oferente") {
+            if (tipoUsuario == "Oferente")
+            {
 
 
-                _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_OFERENTE @identificacion, @correo, @telefono, @nombre, @apellido1, @apellido2",
-               new SqlParameter("@identificacion", usuario.identificacion.Replace("-", "").Replace("_", "")),
-               new SqlParameter("@correo", usuario.correo),
-               new SqlParameter("@telefono", usuario.telefono.Replace("-", "")),
-               new SqlParameter("@nombre", usuario.nombre),
-               new SqlParameter("@apellido1", usuario.apellido1),
-               new SqlParameter("@apellido2", usuario.apellido2));
+
+                OFERENTE agregarOferente = new OFERENTE()
+                {
+                    identificacion = usuario.identificacion.Replace("-", "").Replace("_", ""),
+                    correo = usuario.correo,
+                    telefono = usuario.telefono.Replace("-", ""),
+                    nombre = usuario.nombre,
+                    apellido1 = usuario.apellido1,
+                    apellido2 = usuario.apellido2,
+                    activo = false,
+                    clave = "0",
+                    verificado = false
+                };
+
+                _context.Oferente.Add(agregarOferente);
+                _context.SaveChanges();
+
+
+                EXPEDIENTE expediente = new EXPEDIENTE()
+                {
+                    idOferente = agregarOferente.idOferente,
+                    nacimiento = DateTime.Parse(usuario.nacimiento),
+                    IdProvincia = null,
+                    IdCanton = null,
+                    IdDistrito = null,
+                    direccion = null,
+                    genero = usuario.sexo,
+                    correoOpcional = "",
+                    telefonoOpcional = ""
+                };
+
+                //crear el expediente para el oferente
+                _context.Expediente.Add(expediente);
+
+                //guardar cambios
+                _context.SaveChanges();
+
+                //ahora a ese expediente lo relacionamos con tabla titulos, refrencias, experiencias
+
+                TITULO titulo = new TITULO()
+                {
+                    ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
+                };
+
+                REFERENCIA refrencia = new REFERENCIA()
+                {
+                    ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
+                };
+
+
+
+                EXPERIENCIA experiencia = new EXPERIENCIA()
+                {
+                    ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
+                };
+
+
+                //comprobar si es cedula o dimex
+                //si es dimex agreagamos un registro a la tabla verificacionDimex para poder validar mas adelante el dimex de la persona
+                if (agregarOferente.identificacion.Length != 10)
+                {
+                    VerificacionDimex dimex = new VerificacionDimex()
+                    {
+                        idOferente = agregarOferente.idOferente,
+                        estado = 0
+                    };
+                    _context.VerificacionDimex.Add(dimex);
+                }
+
+                _context.Titulo.Add(titulo);
+                _context.Referencia.Add(refrencia);
+                _context.Experiencia.Add(experiencia);
+
+                _context.SaveChanges();
+
             }
             else
             {
 
-                _context.Database.ExecuteSqlRaw("EXEC SP_AGREGAR_RECLUTADOR @identificacion, @correo, @telefono, @nombre, @apellido1, @apellido2",
-               new SqlParameter("@identificacion", usuario.identificacion.Replace("-", "").Replace("_", "")),
-               new SqlParameter("@correo", usuario.correo),
-               new SqlParameter("@telefono", usuario.telefono.Replace("-", "")),
-               new SqlParameter("@nombre", usuario.nombre),
-               new SqlParameter("@apellido1", usuario.apellido1),
-               new SqlParameter("@apellido2", usuario.apellido2));
+                RECLUTADOR agregarReclutador = new RECLUTADOR()
+                {
+                    identificacion = usuario.identificacion.Replace("-", "").Replace("_", ""),
+                    correo = usuario.correo,
+                    telefono = usuario.telefono.Replace("-", ""),
+                    nombre = usuario.nombre,
+                    apellido1 = usuario.apellido1,
+                    apellido2 = usuario.apellido2,
+                    activo = false,
+                    clave = "0",
+                    verificado = false
+                };
+
+                _context.Reclutador.Add(agregarReclutador);
             }
-           
+
         }
-        
+
         public void EliminarCodigosAnteriores(string identificacion)
         {
             try
@@ -109,79 +185,8 @@ namespace AplicacionRHGit.Data
                         oferente.verificado = true;
 
 
-                        //consulta el id del oferente con la identificacion dada
-                        var idOferente = _context.Oferente
-                        .Where(o => o.identificacion == identificacion)
-                        .Select(o => o.idOferente)
-                        .FirstOrDefault();
+                        _context.SaveChanges();
 
-                        //consultar si ya tiene un expediente
-                        var expedienteExistente = _context.Expediente
-                            .Where(e => e.idOferente == idOferente)
-                            .FirstOrDefault();
-
-                        if (expedienteExistente == null)
-                        {
-
-                            EXPEDIENTE expediente = new EXPEDIENTE()
-                            {
-                                idOferente = oferente.idOferente,
-                                nacimiento = null,
-                                IdProvincia = null,
-                                IdCanton = null,
-                                IdDistrito = null,
-                                direccion = null,
-                                genero= 0,
-                                correoOpcional="0",
-                                telefonoOpcional="0"
-                            };
-
-                            //crear el expediente para el oferente
-                            _context.Expediente.Add(expediente);
-
-                            //guardar cambios
-                            _context.SaveChanges();
-
-                            //ahora a ese expediente lo relacionamos con tabla titulos y refrencias
-                            TITULO titulo = new TITULO()
-                            {
-                                ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
-                            };
-
-                            REFERENCIA refrencia = new REFERENCIA()
-                            {
-                                ID_EXPEDIENTE=expediente.ID_EXPEDIENTE
-                            };
-
-
-
-                            EXPERIENCIA experiencia = new EXPERIENCIA()
-                            {
-                                ID_EXPEDIENTE = expediente.ID_EXPEDIENTE
-                            };
-
-                            _context.Titulo.Add(titulo);
-                            _context.Referencia.Add(refrencia);
-                            _context.Experiencia.Add(experiencia);
-
-
-                            //comprobar si es cedula o dimex
-                            //si es dimex agreagamos un registro a la tabla verificacionDimex para poder validar mas adelante el dimex de la persona
-                            if (identificacion.Length != 10)
-                            {
-                                VerificacionDimex dimex = new VerificacionDimex()
-                                {
-                                    idOferente= oferente.idOferente,
-                                    estado=0
-                                };
-                                _context.VerificacionDimex.Add(dimex);
-                            }
-
-                            //guardar cambios
-                            _context.SaveChanges();
-
-
-                        }
 
 
                     }

@@ -143,10 +143,13 @@ $(document).ready(function () {
 
 
     if ($("#nombreVista").val() == "DatosPersonalesOferente") {
+
+
         //poner activo al enlace de los encabezados de datos personales
         $("#enlaceDatosPersonales").addClass("active");
 
         AgregarMascarasPaginaDatosPersonales();
+        ObtenerDatosPersonales();
         MostrarGruposProfesionalesOferente();
 
         //cargar idiomas del oferente
@@ -155,6 +158,8 @@ $(document).ready(function () {
         //se verifica que tipo de identificacion es, dinex o cedula
         //si es diferente a 10 es cedula
         if ($("#identification").val().length != 10) {
+
+            
 
             $.ajax({
                 type: "Get",
@@ -284,7 +289,7 @@ $(document).ready(function () {
 
         });
 
-        ObtenerDatosPersonales();
+       
 
 
     }

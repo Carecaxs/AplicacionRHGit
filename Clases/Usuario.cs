@@ -11,6 +11,9 @@ namespace AplicacionRHGit.Clases
         public string apellido2 { get; set; }
         public string correo { get; set; }
         public string telefono { get; set; }
+        public string nacimiento { get; set; }
+        public int sexo { get; set; }
+
 
     }
 }

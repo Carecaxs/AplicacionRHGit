@@ -58,14 +58,14 @@ button.card-link {
     padding: 0; /* Elimina el relleno del botón si es necesario */
 }
 
-.col-md-6 {
-    margin-bottom: 3rem; /* Agrega espacio entre las columnas en pantallas más pequeñas */
-}
+/*.col-md-6 {
+    margin-bottom: 3rem;*/ /* Agrega espacio entre las columnas en pantallas más pequeñas */
+/*}*/
 
 
 
 .contenedorInicioSesion {
-    background-color: #f8f9fa;
+    background-color: rgba(248, 249, 250, 0.7);
     margin-top: 5rem;
     padding: 1rem;
     max-width: 35rem; /*55rem*/ /* Ajusta el ancho máximo según tus necesidades */
@@ -163,3 +163,9 @@ fieldset {
 }
 
 
+
+
+
+tbody {
+    background-color: aliceblue; /* Establece el color de fondo para el cuerpo de la tabla */
+}

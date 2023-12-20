@@ -3,12 +3,12 @@ $(document).ready(function () {
 
     var identificationField = $("#identification");//input donde se pone la identificacion
     $("#identification").inputmask({ mask: "99-9999-9999" });
-    
+
 
 
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
         $('#btnCrearUsuario').hide();
-
+      
         var selectedType = $(this).val();
         var mask = "";
         $("#identification").val('');
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
         if (selectedType === "Cedula") {
             mask = "99-9999-9999";
-           
+
 
         } else if (selectedType === "Dimex") {
             mask = "99-999999-9999";
@@ -75,13 +75,11 @@ $(document).ready(function () {
         $('#btnCrearUsuario').hide();
 
         $("#identification").focus();
-        
+
 
         $("#campoVerificarDimex").hide();
 
-        // Aplicar la máscara al campo de teléfono
-        $('#telefono').inputmask('9999-9999');
-        $("#dimex").inputmask({ mask: "99-999999-9999" });
+        MascarasPaginaCrear();
 
         esconderForm();
 
@@ -96,8 +94,9 @@ $(document).ready(function () {
             if (selectedIdentificationType === "Dimex") {
                 // Habilitar el campo de identificación
                 mostrarForm();
-                $("#campoNacimiento").hide();
-                $("#campoSexo").hide();
+                $('#sexo').val("1");
+                $("#nacimiento").prop("disabled", false);
+                $("#sexo").prop("disabled", false);
                 $("#campoVerificarDimex").show();
 
 
@@ -108,6 +107,8 @@ $(document).ready(function () {
                 $("#btnVerificarCedula").hide();
 
             } else {
+                $("#nacimiento").prop("disabled", true);
+                $("#sexo").prop("disabled", true);
                 $("#campoVerificarDimex").hide();
 
                 // Deshabilitar campos
@@ -157,69 +158,9 @@ $(document).ready(function () {
         var identificacion = $("#identification").val();//obtener el valor de la cedula
 
         var tipoIdentificacionSeleccionado = $("#identificationType").val();//acceder al tipo de identificacion seleccionado
+        CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado);
+        
 
-        $.ajax({
-            type: "Get",//tipo de solicitud
-            url: "/Login/GetPersona", //direccion del controlador
-            data: {//se envia el parametro
-                identificacion: identificacion,
-                tipoIdentificacion: tipoIdentificacionSeleccionado
-            },
-            success: function (data) {//en caso de que sale bien
-
-                if (data.error) { //si data.error contiene algo
-
-                    if ($("#msjValidacionCedula").length) {
-
-                        $("#msjValidacionCedula").remove();
-
-                        $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
-                    }
-                    else {
-                        $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
-
-                    }
-
-
-
-                } else {
-
-
-                    if ($("#msjValidacionCedula").length) {
-
-                        $("#msjValidacionCedula").remove();
-                    }
-
-
-
-
-                    // Actualizar el valor visual del campo #cedula
-                    if ($("#identificationType").val() == "Cédula de Identidad") {
-                        $("#identificacion").val(cedula.startsWith("0") ? identificacion : "0" + identificacion);// Verificar si la cédula tiene un 0 al inicio
-                    }
-                    else {
-                        $("#identificacion").val(identificacion);
-
-                    }
-
-                    // asignar valores a los inputs de la consulta
-                    $("#nombre").val(data.nombre);
-                    $("#apellidos").val(data.apellido1 + " " + data.apellido2);
-                    $("#sexo").val((data.genero == '1' ? "Masculino" : "Femenino"));
-                    $("#nacimiento").val(cambiarFormatoFecha(data.fechaNacimiento));
-
-
-                    mostrarForm();
-
-
-
-
-                }
-            },
-            error: function (xhr, status, error) { //error en la solicitud de ajax
-                console.error(error);
-            }
-        });
     });
 
 
@@ -244,6 +185,9 @@ $(document).ready(function () {
     });
 
     $('#dimex').on('keyup', function () {
+        verificarCondiciones();
+    });
+    $('#nacimiento').on('keyup', function () {
         verificarCondiciones();
     });
 
@@ -276,110 +220,121 @@ $(document).ready(function () {
 
 
         //si todos estan completados
-        if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#nombre').val() != "" && $('#apellidos').val() != "") {
+        // Dividir los apellidos en un array
+        var apellidosArray = $('#apellidos').val().split(" ");
+        if (apellidosArray.length == 2) {
 
-            //si se esta registrando con dimex hay que verificar que coincidan los dos campos donde tiene que digitar el dimex
-            if ($("#identificationType").val() == "Dimex") {
-                if ($("#identification").val() != $("#campoVerificarDimex").val()) {
+            if ($('#identification').val() != "" && $('#correo').val() != "" && $('#telefono').val() != "" && $('#nombre').val() != "" && $('#apellidos').val() != ""
+                && $('#sexo').val() != "") {
 
+                //si se esta registrando con dimex hay que verificar que coincidan los dos campos donde tiene que digitar el dimex
+                if ($("#identificationType").val() == "Dimex") {
+                    if ($("#identification").val() != $("#campoVerificarDimex").val()) {
+
+                        if ($("#msjFormulario").length) {
+
+                            $("#msjFormulario").remove();
+
+                            $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+                        }
+                        else {
+                            $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+
+                        }
+                    }
+                }
+                //retorna true si se valida el correo y telefono
+                if (validarCorreoTelefono()) {
+
+                    //si se encuentra un mensaje de error se elimina
                     if ($("#msjFormulario").length) {
 
                         $("#msjFormulario").remove();
 
-                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
+                    }
+
+                    //obtener el valor si se accedio como oferente o reclutador 
+                    var contenidoH2 = $("#seccionInicioSesion").text();
+                    if (contenidoH2 == 'Registrarse como Oferente') {
+                        var tipoUsuario = 'Oferente';
+
                     }
                     else {
-                        $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Los campos Dimex no coinciden" + "</p>");
-
+                        var tipoUsuario = 'Reclutador';
                     }
-                }
-            }
-            //retorna true si se valida el correo y telefono
-            if (validarCorreoTelefono()) {
 
-                //si se encuentra un mensaje de error se elimina
+                    //campos para crear usuario
+                    var usuario = {
+                        identificacion: $('#identification').val().replace(/-/g, ""),
+                        nombre: $('#nombre').val(),
+                        apellido1: apellidosArray[0] || "",
+                        apellido2: apellidosArray[1] || "",
+                        correo: $('#correo').val(),
+                        telefono: $('#telefono').val().replace("-", ""),
+                        sexo: $('#sexo').val(),
+                        nacimiento: $('#nacimiento').val()
+                    };
+
+
+                    $.ajax({
+                        url: '/Login/AgregarUsuario',
+                        method: 'POST',
+                        data: {
+                            usuario: usuario,
+                            tipoUsuario: tipoUsuario
+                        },
+                        success: function (data) {
+
+
+
+                            if (data.exitoso == true) {
+                                // Si no hay error, muestra el mensaje de éxito en el modal
+
+                                // Muestra el modal
+                                $("#confirmacionModal").modal("show");
+
+
+                            }
+                            else {
+
+                                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+
+                            }
+
+
+                        },
+                        error: function (xhr, status, error) { //error en la solicitud de ajax
+                            console.error(error);
+                        }
+                    });
+                }
+
+
+
+
+            }
+            else {//si algun campo no esta completado se muestra un mensaje 
+
                 if ($("#msjFormulario").length) {
 
                     $("#msjFormulario").remove();
 
-                }
-
-                //obtener el valor si se accedio como oferente o reclutador 
-                var contenidoH2 = $("#seccionInicioSesion").text();
-                if (contenidoH2 == 'Registrarse como Oferente') {
-                    var tipoUsuario = 'Oferente';
+                    $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
                 }
                 else {
-                    var tipoUsuario = 'Reclutador';
+                    $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
+
                 }
 
-                // Dividir los apellidos en un array
-                var apellidosArray = $('#apellidos').val().split(" ");
-
-                //campos para crear usuario
-                var usuario = {
-                    identificacion: $('#identification').val().replace(/-/g, ""),
-                    nombre: $('#nombre').val(),
-                    apellido1: apellidosArray[0] || "",
-                    apellido2: apellidosArray[1] || "",
-                    correo: $('#correo').val(),
-                    telefono: $('#telefono').val().replace("-", "")
-                };
 
 
-                $.ajax({
-                    url: '/Login/AgregarUsuario',
-                    method: 'POST',
-                    data: {
-                        usuario: usuario,
-                        tipoUsuario: tipoUsuario
-                    },
-                    success: function (data) {
-
-
-
-                        if (data.exitoso == true) {
-                            // Si no hay error, muestra el mensaje de éxito en el modal
-
-                            // Muestra el modal
-                            $("#confirmacionModal").modal("show");
-
-
-                        }
-                        else {
-
-                            $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
-
-                        }
-
-
-                    },
-                    error: function (xhr, status, error) { //error en la solicitud de ajax
-                        console.error(error);
-                    }
-                });
             }
-
-
-
-
         }
-        else {//si algun campo no esta completado se muestra un mensaje 
-
-            if ($("#msjFormulario").length) {
-
-                $("#msjFormulario").remove();
-
-                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
-            }
-            else {
-                $("#botones").before("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Debes de llenar todos los campos" + "</p>");
-
-            }
-
-
-
+        else {
+            alert("Debes de ingresar los dos apellidos!!");
         }
+
+        
 
 
 
@@ -1039,10 +994,10 @@ function ComprobarIdentificacion() {
     } else if (identificationType === 'Dimex') {
         // Validar que el DIMEX tenga la longitud deseada (ajusta según tus requisitos)
         if (identificationValue.length === 12) {
-        
+
             return true;
         } else {
-        
+
             return false;
 
         }
@@ -1054,6 +1009,7 @@ function ComprobarIdentificacion() {
 // Función para cambiar el formato de fecha
 function cambiarFormatoFecha(fechaEnFormatoOriginal) {
     // Dividir la cadena en mes, día y año
+
     var partes = fechaEnFormatoOriginal.split('/');
 
     // Crear una nueva cadena con el formato deseado
@@ -1063,12 +1019,106 @@ function cambiarFormatoFecha(fechaEnFormatoOriginal) {
 }
 
 
+
+
+function validarFechaNacimiento() {
+    var nacimiento = $('#nacimiento').val();
+    var regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
+
+    // Verificar si la fecha cumple con la máscara y contiene 8 dígitos en total
+    if (regexFecha.test(nacimiento)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 //funcion que detecta si todos los campos tienen contenido para mostrar boton de crear
 function verificarCondiciones() {
-    if ($('#identification').val() !== "" && $('#correo').val() !== "" && $('#telefono').val() !== "" &&
-        $('#nombre').val() !== "" && $('#apellidos').val() !== "") {
+    if (
+        $('#identification').val() !== "" &&
+        $('#correo').val() !== "" &&
+        $('#telefono').val() !== "" &&
+        $('#nombre').val() !== "" &&
+        $('#apellidos').val() !== "" &&
+        $('#sexo').val() !== "" &&
+        validarFechaNacimiento()
+    ) {
         $('#btnCrearUsuario').show();
     } else {
         $('#btnCrearUsuario').hide();
     }
+}
+function MascarasPaginaCrear() {
+    // Aplicar la máscara al campo de teléfono
+    $('#telefono').inputmask('9999-9999');
+    $("#dimex").inputmask({ mask: "99-999999-9999" });
+    $('#nacimiento').inputmask('99/99/9999', { placeholder: 'dd/mm/yyyy' });
+}
+
+function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
+
+    $.ajax({
+        type: "Get",//tipo de solicitud
+        url: "/Login/GetPersona", //direccion del controlador
+        data: {//se envia el parametro
+            identificacion: identificacion,
+            tipoIdentificacion: tipoIdentificacionSeleccionado
+        },
+        success: function (data) {//en caso de que sale bien
+
+            if (data.error) { //si data.error contiene algo
+
+                if ($("#msjValidacionCedula").length) {
+
+                    $("#msjValidacionCedula").remove();
+
+                    $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+                }
+                else {
+                    $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
+
+                }
+
+
+
+            } else {
+
+
+                if ($("#msjValidacionCedula").length) {
+
+                    $("#msjValidacionCedula").remove();
+                }
+
+
+
+
+                // Actualizar el valor visual del campo #cedula
+                if ($("#identificationType").val() == "Cédula de Identidad") {
+                    $("#identificacion").val(cedula.startsWith("0") ? identificacion : "0" + identificacion);// Verificar si la cédula tiene un 0 al inicio
+                }
+                else {
+                    $("#identificacion").val(identificacion);
+
+                }
+
+                // asignar valores a los inputs de la consulta
+                $("#nombre").val(data.nombre).prop("disabled", true);
+                $("#apellidos").val(data.apellido1 + " " + data.apellido2).prop("disabled", true);
+                $("#sexo").val((data.genero == '1' ? 1 : 2)).prop("disabled", true);
+                $("#nacimiento").val(cambiarFormatoFecha(data.fechaNacimiento)).prop("disabled", true);
+
+
+                mostrarForm();
+
+                $("#correo").focus();
+
+
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
 }

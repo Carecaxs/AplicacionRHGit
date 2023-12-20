@@ -957,7 +957,8 @@ namespace AplicacionRHGit.Data
 
         ///////////////////////////////////////////////////// seccion de crear oferta ////////////////////////////////////////////////////////////////
 
-        public int CrearOferta(string identificacion, int idProvincia, int idCanton, string descripcion, List<int> listaMaterias)
+        public int CrearOferta(string identificacion, string descripcion, List<int> listaMaterias, List<int> listaUbicaciones, 
+            List<int> listaGrupos)
         {
 
             try
@@ -975,9 +976,7 @@ namespace AplicacionRHGit.Data
                     idOferente = idOferente,
                     estado = false,
                     descripcion = descripcion,
-                    fecha_publicacion = DateTime.Now,
-                    IdCanton = idCanton,
-                    IdProvincia = idProvincia
+                    fecha_publicacion = DateTime.Now
                 };
 
                 // Agregar la oferta principal a la base de datos
@@ -998,6 +997,30 @@ namespace AplicacionRHGit.Data
 
                     // Agregar la relación materia-oferta a la base de datos
                     _context.Materia_Oferta_Creada_Oferente.Add(materiaOferta);
+                }
+
+
+                // Insertar las cantones asociadas a la oferta creada
+                foreach (int idCanton in listaUbicaciones)
+                {
+                    Ubicaciones_Ofertas_Creadas_Oferentes cantonOferta = new Ubicaciones_Ofertas_Creadas_Oferentes()
+                    {
+                        id_Ofertas_Creadas_Oferentes= idOfertaCreada,
+                        idCanton= idCanton
+                    };
+                    _context.Ubicacion_Oferta_Creada_Oferente.Add(cantonOferta);
+                }
+
+
+                // Insertar las grupos profesionales asociadas a la oferta creada
+                foreach (int idGrupo in listaGrupos)
+                {
+                    GruposProf_Ofertas_Creadas_Oferentes grupoOferta = new GruposProf_Ofertas_Creadas_Oferentes()
+                    {
+                        id_Ofertas_Creadas_Oferentes = idOfertaCreada,
+                        idGrupoProf = idGrupo
+                    };
+                    _context.GruposProf_Oferta_Creada_Oferente.Add(grupoOferta);
                 }
 
                 // Guardar los cambios en la base de datos
