@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
 
+
     //poner el el nav el nombre del usuario
     var nombreUsuario = $("#nombreUsuario").val();
     $("#navNombre").text(nombreUsuario);
@@ -234,4 +235,165 @@
     });
 
 
+    $("#dropdownVerVacantesAplicadas").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        var actionUrl = '/Oferente/VerVacantesAplicadasOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioOferente");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#dropdownVerMisOfertas").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        var actionUrl = '/Oferente/VerOfertasOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioOferente");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#dropdownCambiarClave").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        var actionUrl = '/Oferente/CambiarPasswordOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioOferente");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#dropdownInactivarCuenta").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        var actionUrl = '/Oferente/InactivarCuentaOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioOferente");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+
+
+    if ($("#nombreVista").length) {
+
+        if ($("#nombreVista").val() == "MenuPrincipalOferente") {
+
+
+            if (ValidarEstadoPerfil()==false) {
+       
+                $("#modalActivacion").modal("show");
+            }
+
+
+        }
+    }
+
+    $("#btnNoActivarCuenta").click(function (event) {
+
+        // Redirigir al menu principal
+        window.location.href = "/MenuPrincipal/MenuAcceso";
+        
+    });
+
+    $("#btnActivarCuenta").click(function (event) {
+        ActivarCuenta();
+       
+    });
+ 
 });
+
+
+////////////////////////////////////  funciones  ////////////////////////
+
+
+//funcion retorna true si esta activa, false si esta inactiva
+function ValidarEstadoPerfil() {
+
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/ValidarEstadoPerfil",
+        data: {
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+                console.error(data.error);
+
+            }
+            else {
+    
+                return data.resultado;
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+function ActivarCuenta() {
+    $.ajax({
+        type: "PUT",
+        url: "/Oferente/ActivarCuenta",
+        data: {
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.exito == true) {
+                //sale bien la activacion
+
+                //cerrar modal 
+                $("#modalActivacion").modal("hide");
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}

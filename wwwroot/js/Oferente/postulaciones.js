@@ -13,7 +13,7 @@
 
     ///////////// seccion de enlaces
 
-    //seccion de enlaces
+
     $("#enlaceBuscar").click(function (event) {
 
         event.preventDefault();
@@ -37,6 +37,40 @@
 
 
         var actionUrl = '/Oferente/CrearOfertaOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#enlaceVerMisOfertas").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/VerOfertasOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#enlaceVerVacantesAplicadas").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/VerVacantesAplicadasOferente';
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -238,7 +272,7 @@
     });
 
     $("#btnCloseModalUbicaciones").click(function (event) {
-       
+
         LimpiarCheckBoxUbicaciones();
     });
 
@@ -289,6 +323,77 @@
     }
 
 
+    $("#listaOfertasOferente").on("click", ".btnDesactivarOferta", function (event) {
+
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var idOferta = $(this).closest("li").data("id");
+        DesactivarOfertaCreadaOferente(idOferta);
+
+
+    });
+
+    $("#listaOfertasOferenteDesactivadas").on("click", ".btnActivarOferta", function (event) {
+
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var idOferta = $(this).closest("li").data("id");
+        ActivarOfertaCreadaOferente(idOferta);
+
+
+    });
+
+    $("#listaOfertasOferente").on("click", ".btnVerCoincidencias", function (event) {
+        event.preventDefault();
+        // Obtén el data-id del li padre
+        var idOferta = $(this).closest("li").data("id");
+        CargarColegiosCoincidentesOfertaOferente(idOferta);
+
+
+    });
+
+
+
+
+
+    /////////////////////////////////////////// seccion de ver ofertas aplicadas ///////////////////////////////////////////////////
+
+    if ($("#vistaActual").val() == "VerVacantesAplicadasOferente") {
+        //poner activo al enlace de activo a esta vista
+        $("#enlaceVerVacantesAplicadas").addClass("active");
+
+        //cargar ofertas 
+        CargarOfertasAplicadas();
+
+    }
+
+
+    $("#listaOfertasAplicadas").on("click", ".btnVerOferta", function () {
+        //obtener fila donde se dio click
+        var fila = $(this).closest("tr");
+
+        let idOferta = fila.attr("id");
+
+        MostrarDetallesOferta(idOferta);
+
+        //mostrar modal 
+        $("#verOfertaModal").modal("show");
+
+
+
+    });
+
+    // si toca boton de cancelar postulacion se abre modal de confirmar cancelacion
+    $("#btnCancelarPostulacion").click(function (event) {
+
+        $("#confirmacionCancelacionModal").modal("show");
+    });
+
+    $("#confirmarCancelacion").click(function (event) {
+        CancelarPostulacion();
+
+
+    });
 
 
 
@@ -350,7 +455,7 @@ function agregarOfertasALaTabla(oferta) {
 }
 
 
-//el num va indicar cual tipo de titulo se va cargar, 1 secundaria, 2 universitario, 3 otros
+
 function procesarRespuestaOfertas(data) {
 
     var tbody = document.getElementById("listaOfertas");
@@ -635,40 +740,6 @@ function agregarGrupoALaLista(id, nombre) {
 }
 
 
-function agregarMateriaALaLista(id, nombre) {
-    var listaMaterias = document.getElementById("listaMaterias");
-
-    // Verificar si el id ya existe en la lista
-    var existeId = Array.from(listaMaterias.children).some(function (li) {
-        return li.getAttribute("data-id") === id.toString();
-    });
-
-    if (!existeId) {
-        var li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
-        li.setAttribute("data-id", id);
-
-        var span = document.createElement("span");
-        span.textContent = nombre;
-
-        var div = document.createElement("div");
-
-        var btnEliminar = document.createElement("button");
-        btnEliminar.className = "btnEliminarMateria btn btn-danger btn-sm";
-        btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
-
-        div.appendChild(btnEliminar);
-
-        li.appendChild(span);
-        li.appendChild(div);
-
-        listaMaterias.appendChild(li);
-    } else {
-        // Muestra un mensaje o realiza alguna acción indicando que el id ya existe
-        alert("La materia " + nombre + " ya la escogiste.");
-    }
-}
-
 
 
 
@@ -782,6 +853,12 @@ function CrearOferta() {
             console.error(error);
         }
     });
+
+
+
+
+
+
 }
 
 //retorna 1 si se completan los campos necesarios
@@ -929,33 +1006,7 @@ function procesarRespuestaOfertasCreadasOferente(data) {
 
 
 
-function CargarOfertasCreadasOferente() {
 
-    $.ajax({
-        type: "GET",
-        url: "/Oferente/CargarMisOfertas",
-        data: {
-            identificacion: $("#identification").val()
-
-        },
-        success: function (data) {
-
-            if (data.error) {
-
-                console.log(data.error);
-
-            } else {
-
-                console.log(data);
-
-            }
-
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
 
 /// funciones genrales
 
@@ -1152,8 +1203,504 @@ function EliminarCantonesDiv(idProvincia) {
 
 
 function LimpiarCheckBoxUbicaciones() {
-    for (let i=1; i<=7; i++) {
+    for (let i = 1; i <= 7; i++) {
         EliminarCantonesDiv(i);
         $("#provincia_" + i).prop("checked", false);
     }
 }
+
+
+
+
+
+
+///// funciones para vista VerOfertasOferente
+
+
+
+
+function agregarMiOfertaALaLista(oferta) {
+    if (oferta.estado == false) {
+        var listaOfertas = document.getElementById("listaOfertasOferente");
+    }
+    else {
+        var listaOfertas = document.getElementById("listaOfertasOferenteDesactivadas");
+    }
+
+
+    var li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.setAttribute("data-id", oferta.idOferta);
+
+    let partesFecha = oferta.publicacionOferta.split('T');
+    let partesFecha2 = partesFecha[0].split('-');
+    
+    var span1 = document.createElement("span");
+    span1.innerHTML = "<strong>Publicado:</strong> " + partesFecha2[2] + "/" + ObtenerMes(partesFecha2[1]) + "/" + partesFecha2[0];
+
+    var span2 = document.createElement("span");
+    span2.innerHTML = "<strong>Materia:</strong> " + oferta.materia;
+
+    var span3 = document.createElement("span");
+    span3.innerHTML = "<strong>Grupos Profesionales:</strong> " + obtenerCadenaGrupos(oferta.grupos);
+
+    var div = document.createElement("div");
+
+
+
+    if (oferta.estado == false) {
+
+        var btnVer = document.createElement("button");
+        btnVer.className = "btnVerCoincidencias btn btn-info btn-sm w-100";
+        btnVer.innerHTML = '<i class="fas fa-eye"></i> Ver';
+        div.appendChild(btnVer);
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnDesactivarOferta btn btn-danger btn-sm mt-1 w-100";
+        btnEliminar.innerHTML = '<i class="fas fa-ban"></i> Desactivar';
+        div.appendChild(btnEliminar);
+    }
+    else {
+        var btnActivar = document.createElement("button");
+        btnActivar.className = "btnActivarOferta btn btn-success btn-sm mt-1 w-100";
+        btnActivar.innerHTML = '<i class="fas fa-check"></i> Activar';
+        div.appendChild(btnActivar);
+
+    }
+
+
+
+
+ 
+
+
+    li.appendChild(span1);
+    li.appendChild(span2);
+    li.appendChild(span3);
+
+
+    li.appendChild(div);
+
+    listaOfertas.appendChild(li);
+}
+
+function procesarRespuestaMisOfertas(data) {
+
+
+    var listaOfertasActivas = document.getElementById("listaOfertasOferente");
+    listaOfertasActivas.innerHTML = "";
+
+    var listaOfertasDesactivadas = document.getElementById("listaOfertasOferenteDesactivadas");
+    listaOfertasDesactivadas.innerHTML = "";
+
+    data.forEach(function (oferta) {
+        agregarMiOfertaALaLista(oferta);
+    });
+
+
+}
+
+
+function CargarOfertasCreadasOferente() {
+
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarMisOfertas",
+        data: {
+            identificacion: $("#identification").val()
+
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            } else if (!data.vacio) {
+
+
+                procesarRespuestaMisOfertas(data);
+            }
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function obtenerCadenaGrupos(grupos) {
+    // Utilizar forEach para recorrer el arreglo de grupos y concatenar los códigos
+    var cadenaGrupos = "";
+    grupos.forEach(function (grupo, index) {
+        cadenaGrupos += grupo;
+        // Agregar "/" solo si no es el último elemento
+        if (index < grupos.length - 1) {
+            cadenaGrupos += " / ";
+        }
+    });
+    return cadenaGrupos;
+}
+
+function ObtenerMes(numeroMes) {
+    switch (numeroMes) {
+        case '01':
+            return 'Enero';
+        case '02':
+            return 'Febrero';
+        case '03':
+            return 'Marzo';
+        case '04':
+            return 'Abril';
+        case '05':
+            return 'Mayo';
+        case '06':
+            return 'Junio';
+        case '07':
+            return 'Julio';
+        case '08':
+            return 'Agosto';
+        case '09':
+            return 'Septiembre';
+        case '10':
+            return 'Octubre';
+        case '11':
+            return 'Noviembre';
+        case '12':
+            return 'Diciembre';
+        default:
+            return 'Mes no válido';
+    }
+}
+
+
+
+function DesactivarOfertaCreadaOferente(idOferta) {
+
+
+    // Muestra el modal de confirmación
+    $("#confirmacionDesactivarModalOferta").modal("show");
+
+    $("#confirmarDesactivarOferta").click(function (event) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Oferente/DesactivarOfertaCreadaOferente",
+            data: {
+                idOferta: idOferta,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    $("#confirmacionDesactivarModalOferta").modal("hide");
+                    alert("Hubo un problema al desactivar la oferta, vuelva a intentar de nuevo");
+
+
+                }
+                else {
+                    $("#confirmacionDesactivarModalOferta").modal("hide");        
+                    ///recargar la lista de ofertas
+                    CargarOfertasCreadasOferente();
+ 
+                }
+               
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+
+    });
+}
+
+
+
+function ActivarOfertaCreadaOferente(idOferta) {
+
+
+    // Muestra el modal de confirmación
+    $("#confirmacionActivarModalOferta").modal("show");
+
+    $("#confirmarActivarOferta").click(function (event) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Oferente/ActivarOfertaCreadaOferente",
+            data: {
+                idOferta: idOferta,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    $("#confirmacionActivarModalOferta").modal("hide");
+                    alert("Hubo un problema al activar la oferta, vuelva a intentar de nuevo");
+
+
+                }
+                else {
+                    $("#confirmacionActivarModalOferta").modal("hide");
+                    ///recargar la lista de ofertas
+
+                    CargarOfertasCreadasOferente();
+  
+
+                }
+            
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+
+    });
+}
+
+function agregarColegioALaLista(colegio) {
+    var listaColegios = document.getElementById("listaColegios");
+
+    var li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+
+    var span1 = document.createElement("span");
+    span1.innerHTML = "<strong>Institución Educativa:</strong> " + colegio.nombre;
+
+    var span2 = document.createElement("span");
+    span2.innerHTML = "<strong>Provincia:</strong> " + colegio.provincia;
+
+    var span3 = document.createElement("span");
+    span3.innerHTML = "<strong>Cantón:</strong> " + colegio.canton;
+
+    var span4 = document.createElement("span");
+    span4.innerHTML = "<strong>Teléfono:</strong> " + colegio.telefono;
+   
+    li.appendChild(span1);
+    li.appendChild(span2);
+    li.appendChild(span3);
+    li.appendChild(span4);
+
+
+
+
+    listaColegios.appendChild(li);
+}
+
+function mostrarListaColegios(data) {
+    console.log("entra");
+    if (data.vacio) {
+        var listaColegios = document.getElementById("listaColegios");
+        listaColegios.innerHTML = "";
+        if ($("#mensaje").length) {
+
+            $("#mensaje").remove();
+
+            $("#listaColegios").after("<p id='mensaje'>No se encontraron coincidencias...</p>");
+        }
+        
+
+    } else {
+
+        if ($("#mensaje").length) {
+
+            $("#mensaje").remove();
+
+            $("#listaColegios").before("<p id='mensaje'>Registros mostrados: "+ data.length+"</p>");
+        }
+        //si contiene algo 
+        var listaColegios = document.getElementById("listaColegios");
+        listaColegios.innerHTML = "";
+
+        data.forEach(function (colegio) {
+            agregarColegioALaLista(colegio);
+        });
+
+    }
+
+   
+
+}
+
+
+
+
+function CargarColegiosCoincidentesOfertaOferente(idOferta) {
+
+
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarColegiosCoincidentes",
+        data: {
+            idOferta: idOferta
+           
+        },
+        success: function (data) {
+
+            if (data.error) {
+                console.log(data.error);
+
+
+            }
+            else {
+                ///recargar la lista de colegios
+                mostrarListaColegios(data);
+                $("#modalVerColegios").modal("show");
+                console.log(data);
+
+            }
+
+        },
+        error: function (xhr, status, error) { //error en la solicitud de ajax
+            console.error(error);
+        }
+    });
+}
+
+
+
+
+/////////////////  funciones vista ver vacantes aplicadas //////////////
+function CargarOfertasAplicadas() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarOfertasAplicadas",
+        data: {
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            } else {
+
+                procesarRespuestaOfertasAplicadas(data);
+            }
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+
+function procesarRespuestaOfertasAplicadas(data) {
+
+    var tbody = document.getElementById("listaOfertasAplicadas");
+
+    tbody.innerHTML = "";
+
+    //verificar si se retorno algo en el data
+    if (data.vacio) {
+
+        //no hay titulos para mostrar
+        var mensajeTr = document.createElement("tr");
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay Ofertas Aplicadas";
+
+        mensajeTr.appendChild(mensajeTd);
+        tbody.appendChild(mensajeTr);
+    }
+    else {
+        data.forEach(function (oferta) {
+            agregarOfertasAplicadasALaTabla(oferta);
+        });
+    }
+
+}
+
+
+
+function agregarOfertasAplicadasALaTabla(oferta) {
+    var tbody = document.getElementById("listaOfertasAplicadas");
+
+    var row = tbody.insertRow(-1);
+    row.id = oferta.idOferta;
+
+    var cellPublicado = row.insertCell(0);
+    var fecha = oferta.publicacionOferta.split('T');
+    var partesFecha = fecha[0].split('-');
+    cellPublicado.textContent = partesFecha[2] + "/" + partesFecha[1] + "/" + partesFecha[0];
+    cellPublicado.style.textAlign = "center";
+    cellPublicado.className = "text-sm";
+
+    //var cellInstitución = row.insertCell(1);
+    //cellInstitución.textContent = oferta.nombreInstitucion;
+    //cellInstitución.style.textAlign = "center";
+
+    var cellPuesto = row.insertCell(1);
+    cellPuesto.textContent = oferta.nombreOferta;
+    cellPuesto.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+    cellPuesto.className = "text-sm";
+
+
+    //var cellMateria = row.insertCell(1);
+    //cellMateria.textContent = oferta.nombreMateria;
+    //cellMateria.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    //var cellDescripcion = row.insertCell(2);
+    //cellDescripcion.textContent = oferta.descripcionOferta;
+    //cellDescripcion.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(2);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+
+    var btnVerOferta = document.createElement("button");
+    btnVerOferta.className = "btnVerOferta btn btn-primary btn-sm  w-100";
+    btnVerOferta.innerHTML = 'Ver Detalles <i class="fas fa-eye"></i>';
+
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVerOferta);
+
+
+}
+
+function CancelarPostulacion() {
+    $.ajax({
+        type: "DELETE",
+        url: "/Oferente/CancelarPostulacion",
+        data: {
+            idOferta: $("#idOferta").val(),
+            identificacion: $("#identification").val()
+
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            }
+            else if (data.exito == true) {
+
+                $("#verOfertaModal").modal("hide");
+                alert("Se ha eliminado la postulación correctamente!!");
+
+
+            } else {
+                $("#verOfertaModal").modal("hide");
+                alert("Hubo un problema al eliminar la postulación");
+            }
+
+            $("#confirmacionCancelacionModal").modal("hide");
+
+
+            //se recargar las ofertas aplicadas para que ya no salga la que se cancelo 
+            CargarOfertasAplicadas();
+
+         
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+

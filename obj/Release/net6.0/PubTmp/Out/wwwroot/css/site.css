@@ -58,14 +58,14 @@ button.card-link {
     padding: 0; /* Elimina el relleno del botón si es necesario */
 }
 
-.col-md-6 {
-    margin-bottom: 3rem; /* Agrega espacio entre las columnas en pantallas más pequeñas */
-}
+/*.col-md-6 {
+    margin-bottom: 3rem;*/ /* Agrega espacio entre las columnas en pantallas más pequeñas */
+/*}*/
 
 
 
 .contenedorInicioSesion {
-    background-color: #f8f9fa;
+    background-color: rgba(248, 249, 250, 0.7);
     margin-top: 5rem;
     padding: 1rem;
     max-width: 35rem; /*55rem*/ /* Ajusta el ancho máximo según tus necesidades */
@@ -81,7 +81,7 @@ button.card-link {
     padding: 3rem;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
     border-radius: 8rem; /* Esquinas redondeadas */
-    max-width: 60rem;  /*Ajusta el ancho máximo según tus necesidades */
+    max-width: 60rem; /*Ajusta el ancho máximo según tus necesidades */
     margin-right: auto;
     margin-left: auto;
 }
@@ -151,7 +151,6 @@ button.card-link {
 
 
 fieldset {
-
     background-color: cornsilk; /* Color de fondo */
 }
 
@@ -159,7 +158,57 @@ fieldset {
     width: 7rem; /* Ajusta el ancho según sea necesario */
     height: 5rem; /* Ajusta la altura según sea necesario */
     border-radius: 50%; /* Añade un borde redondeado si lo deseas */
-    float:right;
+    float: right;
 }
 
 
+
+
+
+tbody {
+    background-color: aliceblue; /* Establece el color de fondo para el cuerpo de la tabla */
+}
+
+.cantonesCheckBox, provinciasCheck {
+    margin-left: 20px;
+}
+
+
+/* Estilo base para todos los checkboxes */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    margin-top: 1rem;
+    margin-left:0.5rem;
+}
+
+    /* Estilo para checkboxes seleccionados */
+    input[type="checkbox"]:checked {
+        background-color: #4CAF50;
+        border: 1px solid #4CAF50;
+        color: white;
+    }
+
+.labelCheck {
+    display: inline-block; /* Mantiene el texto en línea con el checkbox */
+    margin-bottom: 8px; /* Agrega espacio entre los elementos */
+    margin-left: 5px; /* Ajusta el margen izquierdo del texto */
+}
+
+
+#provinciasCheck > label {
+    font-weight: bold;
+}
+
+.deshabilitado {
+    color: #555555; /* Color de texto gris oscuro */
+    background-color: #eeeeee; /* Fondo gris claro */
+    opacity: 0.7; /* Opacidad reducida para indicar que está deshabilitado */
+    
+}

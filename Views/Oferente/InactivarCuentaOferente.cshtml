@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutOferente.cshtml";
+}
+<main role="main" class="pb-3">
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="vistaActual" name="clave" type="hidden" value="@ViewBag.VistaActual" />
+
+
+    <div class="container mt-5">
+        <div class="contenedorCuenta">
+            <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+            </form>
+
+            <form class="mt-3 centrar">
+                <h3>Inactivar Perfil</h3>
+                <p>¿Está seguro de que desea inactivar su perfil?</p>
+                <button id="btnInactivarPerfil" class="btn btn-danger">Inactivar</button>
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalInactivacion" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="modalInactivacionLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalInactivacionLabel">Cuenta Inactivada</h5>
+
+                </div>
+                <div class="modal-body">
+                    <p>Su cuenta ha sido inactivada. Para volver a activarla, por favor inicie sesión nuevamente.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCerrarModalInactivacion" type="button" class="btn btn-primary" data-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+<script src="~/js/oferente/cuentaOferente.js"></script>

@@ -28,10 +28,16 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Oferente\CrearOfertaOferente.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Oferente\VerVacantesAplicadasOferente.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\Oferente\CrearOfertaOferente.cshtml" />
+    <None Include="Views\Oferente\VerVacantesAplicadasOferente.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Oferente\VerVacantesAplicadasOferente.cshtml" />
   </ItemGroup>
 
 </Project>

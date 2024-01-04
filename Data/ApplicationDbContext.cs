@@ -73,6 +73,8 @@ namespace AplicacionRHGit.Data
 
 
 
+
+
         private readonly IConfiguration Configuration;
 
         public ApplicationDbContext(IConfiguration configuration)

@@ -47,31 +47,23 @@
             </form>
 
 
-            <fieldset class="border p-3 mt-1">
-                <legend class="w-auto">Ofertas Activas</legend>
-                <hr />
-                <div class="form-group">
-                    <ul id="listaOfertasOferente" class="list-group">
-                        <!-- lista de ofertas creadas por el oferente -->
 
-
-                    </ul>
-                </div>
-            </fieldset>
-
-            <fieldset class="border p-3 mt-3">
-                <legend class="w-auto">Ofertas Desactivadas</legend>
-                <hr />
-                <div class="form-group">
-                    <ul id="listaOfertasOferenteDesactivadas" class="list-group deshabilitado">
-                        <!-- lista de ofertas creadas por el oferente -->
-
-
-                    </ul>
-                </div>
-            </fieldset>
-
-
+            <div class="table-responsive mt-5">
+                <table id="" class="table table-bordered">
+                    <thead class="tabla-head">
+                        <tr class="text-center">
+                            <th>Publicado</th>
+                            @*      <th>Institución</th> *@
+                            <th>Puesto</th>
+                            @*       <th>Materia</th>
+                            <th>Descripción</th> *@
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaOfertasAplicadas">
+                    </tbody>
+                </table>
+            </div>
 
 
         </div>
@@ -80,76 +72,82 @@
 
 
 
-    <!-- Modal de Confirmación para desactivar Oferta -->
-    <div class="modal fade" id="confirmacionDesactivarModalOferta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <!-- Modal para ver detqalles de oferta -->
+    <div class="modal fade" id="verOfertaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Confirmar Desactivación</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Ver Oferta</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ¿Estás seguro de que deseas desactivar esta Oferta?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmarDesactivarOferta" type="button" class="btn btn-danger">Desactivar</button>
+                    <!-- Formulario para ver oferta -->
+
+
+                    <input type="hidden" class="form-control" id="idOferta" />
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="tituloOferta">Oferta</label>
+                        <input type="text" class="form-control" id="tituloOferta" readonly tabindex="1" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="nombreInstitucion">Institución</label>
+                        <input type="text" class="form-control" id="nombreInstitucion" readonly tabindex="2" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="nombreMateria">Materia</label>
+                        <input type="text" class="form-control" id="nombreMateria" readonly tabindex="3" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="descripcionOferta">Requisitos</label>
+                        <textarea class="form-control" id="descripcionOferta" readonly tabindex="4"></textarea>
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-4">
+                        <label class="label-custom-font" for="publicacionOferta">Publicado</label>
+                        <input type="date" class="form-control" id="publicacionOferta" readonly tabindex="5" />
+                    </div>
+
+
+                    <div class="form-group mt-2 col-sm-12 text-end">
+                        <button id="btnCancelarPostulacion" class="btn btn-danger" tabindex="6">Cancelar Postulación</button>
+                    </div>
+
+
                 </div>
             </div>
         </div>
     </div>
 
 
-    <!-- Modal de Confirmación para activar Oferta -->
-    <div class="modal fade" id="confirmacionActivarModalOferta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+
+    <!-- Modal de Confirmación para Cancelar Postulacion -->
+    <div class="modal fade" id="confirmacionCancelacionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Confirmar Activación</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ¿Estás seguro de que deseas activar esta Oferta?
+                    ¿Estás seguro de que deseas cancelar está postulación?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmarActivarOferta" type="button" class="btn btn-success">Activar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button id="confirmarCancelacion" type="button" class="btn btn-danger">Si</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-
-    <!-- Modal para mostrar lista de colegios que pueden solicitar esta oferta -->
-    <div class="modal fade" id="modalVerColegios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Colegios que coinciden con esta oferta</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-             
-                        <ul id="listaColegios" class="list-group">
-                            <!-- lista de ofertas creadas por el oferente -->
-
-
-                        </ul>
-         
-
-
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <!-- Modal para la imagen ampliada -->
@@ -168,6 +166,10 @@
             </div>
         </div>
     </div>
+
+
+
+
 
 </main>
 

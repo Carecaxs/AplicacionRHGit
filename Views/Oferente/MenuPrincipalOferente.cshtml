@@ -4,6 +4,8 @@
 
 @* <div class="container"> *@
 <main role="main" class="pb-3 d-flex align-items-center justify-content-center">
+    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
 
     <div class="container mt-3">
 
@@ -116,6 +118,26 @@
         @*  </form> *@
     </div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalActivacion" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="modalInactivacionLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalInactivacionLabel">Cuenta Inactivada</h5>
+
+                </div>
+                <div class="modal-body">
+                    <p>Su cuenta se encuentra inactivada. ¿Deseas activarla?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnActivarCuenta" type="button" class="btn btn-success" data-dismiss="modal">Si</button>
+                    <button id="btnNoActivarCuenta" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 </main>
 @* </div> *@

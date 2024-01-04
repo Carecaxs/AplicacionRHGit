@@ -81,14 +81,38 @@ button.card-link {
     padding: 3rem;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
     border-radius: 8rem; /* Esquinas redondeadas */
-    max-width: 60rem;  /*Ajusta el ancho máximo según tus necesidades */
+    max-width: 60rem; /*Ajusta el ancho máximo según tus necesidades */
     margin-right: auto;
     margin-left: auto;
 }
 
-    .contenedorExpediente label {
-        margin-right: 2rem;
-    }
+.contenedorCuenta {
+    background-color: rgba(248, 249, 250, 0.7); /*#f8f9fa;*/
+    margin-top: 4rem;
+    padding: 3rem;
+    box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
+    border-radius: 8rem; /* Esquinas redondeadas */
+    max-width: 40rem; /*Ajusta el ancho máximo según tus necesidades */
+    margin-right: auto;
+    margin-left: auto;
+
+}
+#cambiarClaveForm {
+    width: 50%; /* Ajusta el ancho según sea necesario */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.centrar {
+    width: 60%; /* Ajusta el ancho según sea necesario */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contenedorExpediente label {
+    margin-right: 2rem;
+}
 
 
 .cartas-header {
@@ -151,7 +175,6 @@ button.card-link {
 
 
 fieldset {
-
     background-color: cornsilk; /* Color de fondo */
 }
 
@@ -159,7 +182,7 @@ fieldset {
     width: 7rem; /* Ajusta el ancho según sea necesario */
     height: 5rem; /* Ajusta la altura según sea necesario */
     border-radius: 50%; /* Añade un borde redondeado si lo deseas */
-    float:right;
+    float: right;
 }
 
 
@@ -185,6 +208,8 @@ input[type="checkbox"] {
     border: 1px solid #ccc;
     border-radius: 3px;
     outline: none;
+    margin-top: 1rem;
+    margin-left:0.5rem;
 }
 
     /* Estilo para checkboxes seleccionados */
@@ -197,10 +222,17 @@ input[type="checkbox"] {
 .labelCheck {
     display: inline-block; /* Mantiene el texto en línea con el checkbox */
     margin-bottom: 8px; /* Agrega espacio entre los elementos */
-    margin-left:5px; /* Ajusta el margen izquierdo del texto */
+    margin-left: 5px; /* Ajusta el margen izquierdo del texto */
 }
 
 
 #provinciasCheck > label {
     font-weight: bold;
+}
+
+.deshabilitado {
+    color: #555555; /* Color de texto gris oscuro */
+    background-color: #eeeeee; /* Fondo gris claro */
+    opacity: 0.7; /* Opacidad reducida para indicar que está deshabilitado */
+    
 }

@@ -9,7 +9,7 @@ namespace AplicacionRHGit.Models.Ubicaciones
 
         [Key]
         public int IdProvincia { get; set; }
-        public int NombreProvincia { get; set; }
+        public string NombreProvincia { get; set; }
         public int NumeroProvincia { get; set; }
 
 

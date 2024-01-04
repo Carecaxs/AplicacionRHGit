@@ -1023,6 +1023,81 @@ namespace AplicacionRHGit.Data
         }
 
 
+
+
+        //////////////          seccion ver ofertas creadas  ///////////////////////////////
+        ///
+        public void DesactivarOfertaCreadaOferente(string idOferta, string identificacion)
+        {
+            try
+            {
+                var oferta = _context.Oferta_Creada_Oferente.Where(o=>o.id== int.Parse(idOferta)).FirstOrDefault();
+                oferta.estado = true;//cerrar la oferta
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+        public void ActivarOfertaCreadaOferente(string idOferta, string identificacion)
+        {
+            try
+            {
+                var oferta = _context.Oferta_Creada_Oferente.Where(o => o.id == int.Parse(idOferta)).FirstOrDefault();
+                oferta.estado = false;//cerrar la oferta
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+
+            }
+        }
+
+
+
+        ///////////////////////////////////////////////////// seccion de ver ofertas aplicadas ////////////////////////////////////////////////////////////////
+
+        //retorna 1 si se hace la eliminacion, -1 si algo sale mal
+        public int CancelarPostulacion(int idOferta, string identificacion)
+        {
+            try
+            {
+                int retorno = -1;
+
+
+                var postulacion = _context.Postulaciones_Oferente.Where(o=>o.id_oferta==idOferta).FirstOrDefault();
+
+
+
+                if (postulacion != null)
+                {
+                    // Eliminar la postulación de la base de datos
+                    _context.Postulaciones_Oferente.Remove(postulacion);
+                    _context.SaveChanges(); // Guardar cambios en la base de datos
+
+                    return 1;
+                }
+
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción según tus necesidades
+                throw;
+            }
+        }
+
+
+
+
+
     }
 
 
