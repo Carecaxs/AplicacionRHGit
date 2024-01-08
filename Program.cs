@@ -38,7 +38,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Oferente}/{action=MenuPrincipalOferente}/{identification?}/{clave?}");
+    pattern: "{controller=Reclutador}/{action=MenuPrincipalReclutador}/{identification?}/{clave?}");
 
 
 

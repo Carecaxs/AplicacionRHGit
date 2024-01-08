@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Reclutadores"] - AplicacionRHGit</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AplicacionRHGit.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery Masked Input -->
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/jquery.inputmask.js"></script>
+
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="fondoImg">
+    <header>
+
+        <!-- Navbar -->
+        <form id="formPaginaInicioReclutador" method="post">
+            <input name="identification" type="hidden" value="@ViewBag.identificacion" />
+            <input name="clave" type="hidden" value="@ViewBag.clave" />
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark mb-3">
+
+                <a id="navNombre" class="navbar-brand" href="#"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav text-white">
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Institucion
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="dropdownCrearInstitucion" class="dropdown-item">Crear</button>
+                                    <button id="dropdownModificarInstitucion" class="dropdown-item">Modificar</button>
+                                    <button id="dropdownAdministrarMaterias" class="dropdown-item">Administrar Materias</button>
+                                 
+
+                                </div>
+                            </div>
+                        </li>
+                        @* personal *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Personal
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="dropdownExpedientes" class="dropdown-item">Expedientes</button>
+                                    <button id="dropdownEvaluaciones" class="dropdown-item">Evaluaciones</button>
+                                    <button id="dropdownContratos" class="dropdown-item">Contratos</button>
+                                    <button id="dropdownEditarEmpleados" class="dropdown-item">Agregar/Editar Empleado</button>
+
+                           
+                                </div>
+                            </div>
+                        </li>
+                        @* Reclutamiento *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Reclutamiento
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <a class="dropdown-item" href="#">Ver Vacantes</a>
+                                    <a class="dropdown-item" href="#">Crear Vacante</a>
+                                    <button id="" class="dropdown-item">Candidatos</button>
+                                    <button id="" class="dropdown-item">Entrevistas</button>
+                                    <button id="" class="dropdown-item">Historial Entrevistas</button>
+
+
+                                </div>
+                            </div>
+                        </li>
+                        @* pagos *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Pagos
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="" class="dropdown-item">Agregar Tarjeta</button>
+                                    <button id="" class="dropdown-item">Eliminar Tarjeta</button>
+                                </div>
+                            </div>
+                        </li>
+
+                        @* suscripcion *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Suscripción
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="" class="dropdown-item">Cambiar</button>
+                                    <button id="" class="dropdown-item">Cancelar</button>
+                                </div>
+                            </div>
+                        </li>
+
+                        @* aplicacion *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Suscripción
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="" class="dropdown-item">Enviar comentario</button>
+                                </div>
+                            </div>
+                        </li>
+
+                        @* cuenta *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Cuenta
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="" class="dropdown-item">Cambiar contraseña</button>
+                                    <button id="" class="dropdown-item">Cerrar sesion</button>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </form>
+
+        <!-- input con nombre de uusario -->
+        <input id="nombreUsuario" type="hidden" value="@ViewBag.nombre" />
+    </header>
+
+
+
+
+    @RenderBody()
+
+
+
+
+
+
+
+
+
+
+
+    <script src="~/js/reclutador/paginainicio.js"></script>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

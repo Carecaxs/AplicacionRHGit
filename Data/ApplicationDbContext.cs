@@ -42,6 +42,8 @@ namespace AplicacionRHGit.Data
         public DbSet<GrupoProfesionalOferente> GrupoProfesionalOferente { get; set; }
         public DbSet<Ubicaciones_Ofertas_Creadas_Oferentes> Ubicacion_Oferta_Creada_Oferente { get; set; }
         public DbSet<GruposProf_Ofertas_Creadas_Oferentes> GruposProf_Oferta_Creada_Oferente { get; set; }
+        public DbSet<RECLUTADOR_INSTITUCION> Reclutador_Institucion { get; set; }
+
 
 
 

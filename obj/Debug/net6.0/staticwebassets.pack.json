@@ -73,16 +73,16 @@
       "PackagePath": "staticwebassets\\js\\Oferente\\expediente.js"
     },
     {
-      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\menuOferente.js",
-      "PackagePath": "staticwebassets\\js\\Oferente\\menuOferente.js"
-    },
-    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\paginaInicio.js",
       "PackagePath": "staticwebassets\\js\\Oferente\\paginaInicio.js"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Oferente\\postulaciones.js",
       "PackagePath": "staticwebassets\\js\\Oferente\\postulaciones.js"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\paginaInicio.js",
+      "PackagePath": "staticwebassets\\js\\Reclutador\\paginaInicio.js"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",

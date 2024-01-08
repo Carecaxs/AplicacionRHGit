@@ -1,0 +1,142 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutReclutador.cshtml";
+}
+
+@* <div class="container"> *@
+<main role="main" class="pb-3 d-flex align-items-center justify-content-center">
+    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+    <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+
+    <div class="container mt-3">
+
+        @*         <form id="formPaginaInicioOferente" method="post">
+        <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+        <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" /> *@
+
+    </div>
+
+
+    <!-- Botón para abrir el modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSuscripciones">
+        Ver Suscripciones
+    </button>
+
+    <!-- Botón para abrir el modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAgregarTarjeta">
+        Agregar Tarjeta de Método de Pago
+    </button>
+
+
+
+
+
+    <!-- Modal agregar metodo de pago -->
+    <div class="modal fade" id="modalAgregarTarjeta" tabindex="-1" role="dialog" aria-labelledby="modalAgregarTarjetaLabel" aria-hidden="true">
+        <div class="modal-dialog card-add-modal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarTarjetaLabel">Agregar Tarjeta de Método de Pago</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para agregar información de la tarjeta -->
+                    <form id="agregarTarjeta">
+                        <div class="form-group col-md-6">
+                            <label for="numeroTarjeta">Número de Tarjeta</label>
+                            <input type="text" class="form-control" id="numeroTarjeta" placeholder="Ingrese el número de la tarjeta">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nombreTitular">Nombre del Titular</label>
+                            <input type="text" class="form-control" id="nombreTitular" placeholder="Ingrese el nombre del titular">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="fechaExpiracion">Fecha de Expiración</label>
+                                <input type="text" class="form-control" id="fechaExpiracion" placeholder="MM/AA" maxlength="5">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="codigoSeguridad">Código de Seguridad</label>
+                                <input type="text" class="form-control" id="codigoSeguridad" placeholder="CSV" maxlength="3">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">Agregar Tarjeta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de suscripciones -->
+    <div class="modal fade" id="modalSuscripciones" tabindex="-1" role="dialog" aria-labelledby="modalSuscripcionesLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSuscripcionesLabel">Selecciona tu suscripción</h5>
+           
+                </div>
+                <div class="modal-body">
+
+                    <!-- Contenido del modal -->
+                    <div class="d-flex flex-row">
+
+                        <div class="card border-green mx-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Mensual</h5>
+                                <h4 class="card-title">$10.99</h4>
+                                <p class="card-text">
+                                    Características:
+                                    <ul class="not-style">
+                                        <li><i class="fas fa-check text-success"></i> Todas las funciones de reclutamiento</li>
+                                        <li><i class="fas fa-times text-danger"></i> Ahorro</li>              
+                                    </ul>
+                                </p>
+                                <button type="button" class="btn btn-success">Suscribir</button>
+                            </div>
+                        </div>
+
+                        <div class="card border-blue mx-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Trimestral</h5>
+                                <h4 class="card-title">$27.90</h4>
+                                <p class="card-text">
+                                    Características:
+                                    <ul class="not-style">
+                                        <li><i class="fas fa-check text-success"></i> Todas las funciones de reclutamiento</li>
+                                        <li><i class="fas fa-check text-success"></i> Ahorro 5%</li>
+            
+                                    </ul>
+                                </p>
+                                <button type="button" class="btn btn-primary">Suscribir</button>
+                            </div>
+                        </div>
+
+                        <div class="card border-purple mx-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Anual</h5>
+                                <h4 class="card-title">$118.60</h4>
+                                <p class="card-text">
+                                    Características:
+                                    <ul class="not-style">
+                                        <li><i class="fas fa-check text-success"></i> Todas las funciones de reclutamiento</li>
+                                        <li><i class="fas fa-check text-success"></i> Ahorro 10%</li>
+
+                                    </ul>
+                                </p>
+                                <button type="button" class="btn btn-purple">Suscribir</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</main>
+@* </div> *@

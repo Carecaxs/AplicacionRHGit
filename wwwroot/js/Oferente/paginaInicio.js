@@ -314,16 +314,14 @@
 
 
     if ($("#nombreVista").length) {
-
         if ($("#nombreVista").val() == "MenuPrincipalOferente") {
-
-
-            if (ValidarEstadoPerfil()==false) {
-       
-                $("#modalActivacion").modal("show");
-            }
-
-
+            ValidarEstadoPerfil(function (estado) {
+                if (!estado) {
+           
+                    $("#modalActivacion").modal("show");
+                }
+                // Continúa con el resto de tu código aquí
+            });
         }
     }
 
@@ -346,8 +344,7 @@
 
 
 //funcion retorna true si esta activa, false si esta inactiva
-function ValidarEstadoPerfil() {
-
+function ValidarEstadoPerfil(callback) {
     $.ajax({
         type: "GET",
         url: "/Oferente/ValidarEstadoPerfil",
@@ -355,18 +352,16 @@ function ValidarEstadoPerfil() {
             identificacion: $("#identification").val()
         },
         success: function (data) {
-
             if (data.error) {
                 console.error(data.error);
-
-            }
-            else {
-    
-                return data.resultado;
+                callback(false);
+            } else {
+                callback(data.resultado);
             }
         },
-        error: function (xhr, status, error) { //error en la solicitud de ajax
+        error: function (xhr, status, error) {
             console.error(error);
+            callback(false);
         }
     });
 }

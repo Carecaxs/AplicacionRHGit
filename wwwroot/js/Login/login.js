@@ -455,7 +455,7 @@ $(document).ready(function () {
 
                             //Construir la URL de destino en función del tipo de usuario                        
                             if (tipoUsuario == 'Reclutador') {
-                                var actionUrl = '/Reclutador/nombreVista';
+                                var actionUrl = '/Reclutador/MenuPrincipalReclutador';
                             }
                             else {
                                 var actionUrl = '/Oferente/MenuPrincipalOferente';
@@ -710,7 +710,7 @@ $(document).ready(function () {
 
                             //Construir la URL de destino en función del tipo de usuario                        
                             if (tipoUsuario == 'Reclutador') {
-                                var actionUrl = '/Reclutador/nombreVista';
+                                var actionUrl = '/Reclutador/MenuPrincipalReclutador';
                             }
                             else {
                                 var actionUrl = '/Oferente/MenuPrincipalOferente';
@@ -803,7 +803,7 @@ $(document).ready(function () {
 
                         //Construir la URL de destino en función del tipo de usuario                        
                         if (tipoUsuario == 'Reclutador') {
-                            var actionUrl = '/Reclutador/nombreVista';
+                            var actionUrl = '/Reclutador/MenuPrincipalReclutador';
                         }
                         else {
                             var actionUrl = '/Oferente/MenuPrincipalOferente';

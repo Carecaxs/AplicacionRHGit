@@ -13,7 +13,7 @@
 
     ///////////// seccion de enlaces
 
-    //seccion de enlaces
+
     $("#enlaceBuscar").click(function (event) {
 
         event.preventDefault();
@@ -54,6 +54,23 @@
 
 
         var actionUrl = '/Oferente/VerOfertasOferente';
+
+        // Tu lógica para enviar el formulario
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#enlaceVerVacantesAplicadas").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Oferente/VerVacantesAplicadasOferente';
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -339,6 +356,48 @@
 
 
 
+    /////////////////////////////////////////// seccion de ver ofertas aplicadas ///////////////////////////////////////////////////
+
+    if ($("#vistaActual").val() == "VerVacantesAplicadasOferente") {
+        //poner activo al enlace de activo a esta vista
+        $("#enlaceVerVacantesAplicadas").addClass("active");
+
+        //cargar ofertas 
+        CargarOfertasAplicadas();
+
+    }
+
+
+    $("#listaOfertasAplicadas").on("click", ".btnVerOferta", function () {
+        //obtener fila donde se dio click
+        var fila = $(this).closest("tr");
+
+        let idOferta = fila.attr("id");
+
+        MostrarDetallesOferta(idOferta);
+
+        //mostrar modal 
+        $("#verOfertaModal").modal("show");
+
+
+
+    });
+
+    // si toca boton de cancelar postulacion se abre modal de confirmar cancelacion
+    $("#btnCancelarPostulacion").click(function (event) {
+
+        $("#confirmacionCancelacionModal").modal("show");
+    });
+
+    $("#confirmarCancelacion").click(function (event) {
+        CancelarPostulacion();
+
+
+    });
+
+
+
+
 });
 
 
@@ -396,7 +455,7 @@ function agregarOfertasALaTabla(oferta) {
 }
 
 
-//el num va indicar cual tipo de titulo se va cargar, 1 secundaria, 2 universitario, 3 otros
+
 function procesarRespuestaOfertas(data) {
 
     var tbody = document.getElementById("listaOfertas");
@@ -794,6 +853,12 @@ function CrearOferta() {
             console.error(error);
         }
     });
+
+
+
+
+
+
 }
 
 //retorna 1 si se completan los campos necesarios
@@ -1491,3 +1556,151 @@ function CargarColegiosCoincidentesOfertaOferente(idOferta) {
         }
     });
 }
+
+
+
+
+/////////////////  funciones vista ver vacantes aplicadas //////////////
+function CargarOfertasAplicadas() {
+    $.ajax({
+        type: "GET",
+        url: "/Oferente/CargarOfertasAplicadas",
+        data: {
+            identificacion: $("#identification").val()
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            } else {
+
+                procesarRespuestaOfertasAplicadas(data);
+            }
+
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+
+function procesarRespuestaOfertasAplicadas(data) {
+
+    var tbody = document.getElementById("listaOfertasAplicadas");
+
+    tbody.innerHTML = "";
+
+    //verificar si se retorno algo en el data
+    if (data.vacio) {
+
+        //no hay titulos para mostrar
+        var mensajeTr = document.createElement("tr");
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay Ofertas Aplicadas";
+
+        mensajeTr.appendChild(mensajeTd);
+        tbody.appendChild(mensajeTr);
+    }
+    else {
+        data.forEach(function (oferta) {
+            agregarOfertasAplicadasALaTabla(oferta);
+        });
+    }
+
+}
+
+
+
+function agregarOfertasAplicadasALaTabla(oferta) {
+    var tbody = document.getElementById("listaOfertasAplicadas");
+
+    var row = tbody.insertRow(-1);
+    row.id = oferta.idOferta;
+
+    var cellPublicado = row.insertCell(0);
+    var fecha = oferta.publicacionOferta.split('T');
+    var partesFecha = fecha[0].split('-');
+    cellPublicado.textContent = partesFecha[2] + "/" + partesFecha[1] + "/" + partesFecha[0];
+    cellPublicado.style.textAlign = "center";
+    cellPublicado.className = "text-sm";
+
+    //var cellInstitución = row.insertCell(1);
+    //cellInstitución.textContent = oferta.nombreInstitucion;
+    //cellInstitución.style.textAlign = "center";
+
+    var cellPuesto = row.insertCell(1);
+    cellPuesto.textContent = oferta.nombreOferta;
+    cellPuesto.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+    cellPuesto.className = "text-sm";
+
+
+    //var cellMateria = row.insertCell(1);
+    //cellMateria.textContent = oferta.nombreMateria;
+    //cellMateria.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    //var cellDescripcion = row.insertCell(2);
+    //cellDescripcion.textContent = oferta.descripcionOferta;
+    //cellDescripcion.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(2);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+
+    var btnVerOferta = document.createElement("button");
+    btnVerOferta.className = "btnVerOferta btn btn-primary btn-sm  w-100";
+    btnVerOferta.innerHTML = 'Ver Detalles <i class="fas fa-eye"></i>';
+
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVerOferta);
+
+
+}
+
+function CancelarPostulacion() {
+    $.ajax({
+        type: "DELETE",
+        url: "/Oferente/CancelarPostulacion",
+        data: {
+            idOferta: $("#idOferta").val(),
+            identificacion: $("#identification").val()
+
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            }
+            else if (data.exito == true) {
+
+                $("#verOfertaModal").modal("hide");
+                alert("Se ha eliminado la postulación correctamente!!");
+
+
+            } else {
+                $("#verOfertaModal").modal("hide");
+                alert("Hubo un problema al eliminar la postulación");
+            }
+
+            $("#confirmacionCancelacionModal").modal("hide");
+
+
+            //se recargar las ofertas aplicadas para que ya no salga la que se cancelo 
+            CargarOfertasAplicadas();
+
+         
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
