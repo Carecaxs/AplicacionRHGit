@@ -2101,11 +2101,12 @@ namespace AplicacionRHGit.Controllers
 
 
                 var consulta = from oferta in _context.Oferta_Laboral
-                               join institucion in _context.Institucion on oferta.id_institucion equals institucion.ID_INSTITUCION
+                               join institucion in _context.Reclutador_Institucion on oferta.id_reclutador_institucion equals institucion.ID_RECLUTADOR_INSTITUCION
+                               join centroEducativo in _context.CentrosEducativos on institucion.ID_INSTITUCION equals centroEducativo.Cod_Presupuestario
                                join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
 
-                               where (provincia == 0 || institucion.IdProvincia == provincia) &&
-                                     (canton == 0 || institucion.IdCanton == canton) &&
+                               where (provincia == 0 || centroEducativo.Cod_Pro == provincia) &&
+                                     (canton == 0 || centroEducativo.Cod_Cant == canton) &&
                                      (idMateria == 0 || oferta.id_materia == idMateria) &&
                                      (oferta.estado == false) &&
                                      (oferta.cantidadVacantes > 0)
@@ -2116,7 +2117,7 @@ namespace AplicacionRHGit.Controllers
                                    nombreOferta = oferta.titulo,
                                    descripcionOferta = oferta.descripcion,
                                    publicacionOferta = oferta.fecha_publicacion,
-                                   nombreInstitucion = institucion.NOMBRE,
+                                   nombreInstitucion = centroEducativo.Nombre_Institucion,
                                    nombreMateria = materia.Nombre
                                };
 
@@ -2151,7 +2152,8 @@ namespace AplicacionRHGit.Controllers
 
 
                 var consulta = (from oferta in _context.Oferta_Laboral
-                                join institucion in _context.Institucion on oferta.id_institucion equals institucion.ID_INSTITUCION
+                                join institucion in _context.Reclutador_Institucion on oferta.id_reclutador_institucion equals institucion.ID_RECLUTADOR_INSTITUCION
+                                join centroEducativo in _context.CentrosEducativos on institucion.ID_INSTITUCION equals centroEducativo.Cod_Presupuestario
                                 join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
 
                                 where (idOferta == 0 || oferta.id_oferta == idOferta)
@@ -2161,7 +2163,7 @@ namespace AplicacionRHGit.Controllers
                                     nombreOferta = oferta.titulo,
                                     descripcionOferta = oferta.descripcion,
                                     publicacionOferta = oferta.fecha_publicacion,
-                                    nombreInstitucion = institucion.NOMBRE,
+                                    nombreInstitucion = centroEducativo.Nombre_Institucion,
                                     nombreMateria = materia.Nombre
                                 }).FirstOrDefault();
 
@@ -2465,20 +2467,21 @@ namespace AplicacionRHGit.Controllers
 
                 var ListaColegios = (from ofertasColegios in _context.Oferta_Laboral
                                      where ofertasColegios.id_materia == oferta.id_Materia
-                                     join colegio in _context.Institucion
-                                    on ofertasColegios.id_institucion equals colegio.ID_INSTITUCION
-                                     where ubicacionesOferta.Contains(colegio.IdCanton)
+                                     join colegioUnion in _context.Reclutador_Institucion
+                                    on ofertasColegios.id_reclutador_institucion equals colegioUnion.ID_RECLUTADOR_INSTITUCION
+                                    join centrosEducativos in _context.CentrosEducativos on colegioUnion.ID_INSTITUCION equals centrosEducativos.Cod_Presupuestario
+                                     where ubicacionesOferta.Contains(centrosEducativos.Cod_Cant)
                                      join provincia in _context.Provincia
-                                    on colegio.IdProvincia equals provincia.IdProvincia
+                                    on centrosEducativos.Cod_Pro equals provincia.IdProvincia
                                     join canton in _context.Canton 
-                                    on colegio.IdCanton equals canton.IdCanton
+                                    on centrosEducativos.Cod_Cant equals canton.IdCanton
     
                                     select new
                                     {
-                                        nombre=colegio.NOMBRE,
+                                        nombre=centrosEducativos.Nombre_Institucion,
                                         provincia = provincia.NombreProvincia,
                                         canton = canton.NombreCanton,
-                                        telefono=colegio.TELEFONO
+                                        telefono=centrosEducativos.Num_Tel
 
                                     }).ToList();
 
@@ -2521,7 +2524,8 @@ namespace AplicacionRHGit.Controllers
 
                 var consulta = from ofertasAplicadas in _context.Postulaciones_Oferente
                                join ofertas in _context.Oferta_Laboral on ofertasAplicadas.id_oferta equals ofertas.id_oferta
-                               join institucion in _context.Institucion on ofertas.id_institucion equals institucion.ID_INSTITUCION
+                               join institucionUnion in _context.Reclutador_Institucion on ofertas.id_reclutador_institucion equals institucionUnion.ID_RECLUTADOR_INSTITUCION
+                               join institucion in _context.CentrosEducativos on institucionUnion.ID_INSTITUCION equals institucion.Cod_Presupuestario
                                join materia in _context.Materia on ofertas.id_materia equals materia.ID_Materia
 
                                where (ofertasAplicadas.idOferente == idOferente && ofertasAplicadas.estado==false)
@@ -2532,7 +2536,7 @@ namespace AplicacionRHGit.Controllers
                                    nombreOferta = ofertas.titulo,
                                    descripcionOferta = ofertas.descripcion,
                                    publicacionOferta = ofertas.fecha_publicacion,
-                                   nombreInstitucion = institucion.NOMBRE,
+                                   nombreInstitucion = institucion.Nombre_Institucion,
                                    nombreMateria = materia.Nombre
                                };
 

@@ -10,7 +10,7 @@ namespace AplicacionRHGit.Models.InstitucionesEducativas
         [Key]
         public int ID_MateriaInstitucion { get; set; }
         public int ID_Materia { get; set; }
-        public int ID_Institucion { get; set; }
+        public int id_reclutador_institucion { get; set; }
 
     }
 }

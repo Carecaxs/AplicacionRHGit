@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets\\js\\Oferente\\postulaciones.js"
     },
     {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\SeccionInstitucionReclutador.js",
+      "PackagePath": "staticwebassets\\js\\Reclutador\\SeccionInstitucionReclutador.js"
+    },
+    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\paginaInicio.js",
       "PackagePath": "staticwebassets\\js\\Reclutador\\paginaInicio.js"
     },

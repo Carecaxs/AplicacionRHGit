@@ -86,3 +86,4 @@ C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\re
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\AplicacionRHGit.pdb
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\AplicacionRHGit.genruntimeconfig.cache
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Debug\net6.0\ref\AplicacionRHGit.dll
+C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Debug\net6.0\Stripe.net.dll

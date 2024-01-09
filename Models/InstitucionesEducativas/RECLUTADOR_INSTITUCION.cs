@@ -9,8 +9,10 @@ namespace AplicacionRHGit.Models.InstitucionesEducativas
     {
         [Key]
         public int ID_RECLUTADOR_INSTITUCION { get; set; }
-        public int? ID_RECLUTADOR { get; set; }
-        public int? ID_INSTITUCION { get; set; }
+        public int ID_RECLUTADOR { get; set; }
+        public int ID_INSTITUCION { get; set; }
+        public string DIRECCION { get; set; }
+
 
 
     }

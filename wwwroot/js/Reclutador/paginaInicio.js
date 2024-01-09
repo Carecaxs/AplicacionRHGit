@@ -11,6 +11,25 @@
 
     MaskAgregartarjeta();
 
+
+    $("#dropdownCrearInstitucion").click(function (event) {
+
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Reclutador/AñadirInstitutoReclutador';
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+  
+
 });
 
 
@@ -31,7 +50,7 @@ function ComprobacionMostrarCrearinstitucion() {
                 //significa que ya hay creada una instituucion ligada a ese oferente
 
                 // Oculta el botón con el id "dropdownCrearInstitucion"
-                $("#dropdownCrearInstitucion").hide();      
+                $("#dropdownCrearInstitucion").hide();
 
             }
             else if (data.error) {
@@ -99,3 +118,5 @@ function MaskAgregartarjeta() {
         }
     });
 }
+
+
