@@ -48,5 +48,58 @@ namespace AplicacionRHGit.Data
                 throw ex;
             }
         }
+
+
+
+        //metodos para la secccion de administrar materias
+        public void AgregarMateriaInstitucion(int idMateria, int idReclutadorInstitucion)
+        {
+            try
+            {
+                Materia_Institucion agregarMateria = new Materia_Institucion()
+                {
+                    ID_Materia = idMateria,
+                    id_reclutador_institucion = idReclutadorInstitucion
+                };
+
+                _context.Materia_Institucion.Add(agregarMateria);
+                _context.SaveChanges();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public void EliminarMateriaInstitucion(int idMateria, string identificacion)
+        {
+            try
+            {
+                //consulta el id del oferente con la cedula dada
+                var idReclutador = _context.Reclutador
+               .Where(o => o.identificacion == identificacion)
+               .Select(o => o.idReclutador)
+               .FirstOrDefault();
+
+                var idReclutadorInstitucion = _context.Reclutador_Institucion.Where(r => r.ID_RECLUTADOR == idReclutador)
+                     .Select(r => r.ID_RECLUTADOR_INSTITUCION).FirstOrDefault();
+
+                var materia = _context.Materia_Institucion.Where(m => m.id_reclutador_institucion == idReclutadorInstitucion && m.ID_Materia == idMateria)
+                    .SingleOrDefault();
+
+                _context.Materia_Institucion.Remove(materia);
+                _context.SaveChanges();
+                
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutReclutador.cshtml";
+}
+
+
+
+<main role="main" class="pb-3">
+    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="apellidosOferente" type="hidden" value="@ViewBag.apellidos" />
+
+
+    <div class="container">
+        <div class="contenedorCuenta">
+            <form id="formRegresar" class="col-sm-6" method="post" asp-controller="Reclutador" asp-action="MenuPrincipalReclutador">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+            </form>
+
+            <form class="formEnlaces" method="post">
+  
+
+                <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
+                    <li class="nav-item">
+                        <button id="enlaceModificar" class="btn-primary">Modificar</button>
+
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceAdministrarMaterias" class="btn-primary">Administrar Materias</button>
+                    </li>
+
+                </ul>
+
+            </form>
+
+            <fieldset class="border p-3">
+                <legend class="w-auto">Administrar Materias</legend>
+                <hr />
+                <ul id="listaMaterias" class="list-group">
+                    <!-- Agrega aquí los elementos de la lista de materias -->
+                </ul>
+                <button type="button" class="btn btn-primary btn-sm mt-2" data-toggle="modal" data-target="#agregarMateriaModal" tabindex="7">Ver lista</button>
+
+
+            </fieldset>
+        </div>
+    </div>
+
+
+    <!-- Modal para Añadir Materia -->
+    <div class="modal fade" id="agregarMateriaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Añadir Idioma</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para Añadir Título -->
+                    <form id="formAgregarIdioma" method="post">
+                        <div class="form-group">
+                            <label for="materias">Materia:</label>
+                            <select class="form-control" id="materias" name="materias" required tabindex="1">
+                            
+                            </select>
+                        </div>
+
+                        <!-- Puedes agregar más campos según tus necesidades -->
+                        <button id="btnAgregarMateriaModal" class="btn btn-success mt-2" tabindex="2">Agregar</button>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de Confirmación para Eliminar Materia -->
+    <div class="modal fade" id="confirmacionEliminarModalMateria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar esta Materia?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmarEliminar" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/js/reclutador/seccioninstitucionreclutador.js"></script>
+
+</main>
+

@@ -38,7 +38,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Reclutador}/{action=AñadirInstitutoReclutador}/{identification?}/{clave?}");
+    pattern: "{controller=Reclutador}/{action=AdministrarMateriasReclutador}/{identification?}/{clave?}");
 
 
 

@@ -88,12 +88,32 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZlcmVudGVcVmVyVmFjYW50ZXNBcGxpY2FkYXNPZmVyZW50ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/AdministrarMateriasReclutador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxBZG1pbmlzdHJhck1hdGVyaWFzUmVjbHV0YWRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/AñadirInstitutoReclutador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxBw7FhZGlySW5zdGl0dXRvUmVjbHV0YWRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/MenuPrincipalReclutador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxNZW51UHJpbmNpcGFsUmVjbHV0YWRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/ModificarInstitutoReclutador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxNb2RpZmljYXJJbnN0aXR1dG9SZWNsdXRhZG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Shared/LayoutOferente.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXExheW91dE9mZXJlbnRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Shared/LayoutReclutador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXExheW91dFJlY2x1dGFkb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Shared/_ValidationScriptsPartial.cshtml]

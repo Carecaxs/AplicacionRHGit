@@ -86,3 +86,4 @@ C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Release\net6.0\
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Release\net6.0\AplicacionRHGit.genruntimeconfig.cache
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\obj\Release\net6.0\ref\AplicacionRHGit.dll
 C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Release\net6.0\Newtonsoft.Json.dll
+C:\Users\Oscar\Desktop\Rogus\AplicacionRHGit\AplicacionRHGit\bin\Release\net6.0\Stripe.net.dll

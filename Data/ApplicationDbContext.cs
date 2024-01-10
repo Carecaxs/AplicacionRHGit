@@ -29,7 +29,6 @@ namespace AplicacionRHGit.Data
         public DbSet<DETALLE_REFERENCIAS> DetalleReferencia { get; set; }
         public DbSet<DETALLE_EXPERIENCIA> DetalleExperiencia { get; set; }
         public DbSet<VerificacionDimex> VerificacionDimex { get; set; }
-        public DbSet<INSTITUCION> Institucion { get; set; }
         public DbSet<MATERIA> Materia { get; set; }
         public DbSet<Materia_Institucion> Materia_Institucion { get; set; }
         public DbSet<Oferta_Laboral> Oferta_Laboral { get; set; }
@@ -43,6 +42,8 @@ namespace AplicacionRHGit.Data
         public DbSet<Ubicaciones_Ofertas_Creadas_Oferentes> Ubicacion_Oferta_Creada_Oferente { get; set; }
         public DbSet<GruposProf_Ofertas_Creadas_Oferentes> GruposProf_Oferta_Creada_Oferente { get; set; }
         public DbSet<RECLUTADOR_INSTITUCION> Reclutador_Institucion { get; set; }
+        public DbSet<Distrito> Distrito { get; set; }
+
 
 
 

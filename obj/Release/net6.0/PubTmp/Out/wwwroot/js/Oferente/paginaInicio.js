@@ -317,7 +317,7 @@
         if ($("#nombreVista").val() == "MenuPrincipalOferente") {
             ValidarEstadoPerfil(function (estado) {
                 if (!estado) {
-                    console.log("¡Hola!");
+           
                     $("#modalActivacion").modal("show");
                 }
                 // Continúa con el resto de tu código aquí

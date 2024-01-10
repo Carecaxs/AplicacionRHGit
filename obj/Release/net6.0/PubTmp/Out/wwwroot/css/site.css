@@ -95,8 +95,8 @@ button.card-link {
     max-width: 40rem; /*Ajusta el ancho máximo según tus necesidades */
     margin-right: auto;
     margin-left: auto;
-
 }
+
 #cambiarClaveForm {
     width: 50%; /* Ajusta el ancho según sea necesario */
     margin-left: auto;
@@ -209,7 +209,7 @@ input[type="checkbox"] {
     border-radius: 3px;
     outline: none;
     margin-top: 1rem;
-    margin-left:0.5rem;
+    margin-left: 0.5rem;
 }
 
     /* Estilo para checkboxes seleccionados */
@@ -234,5 +234,51 @@ input[type="checkbox"] {
     color: #555555; /* Color de texto gris oscuro */
     background-color: #eeeeee; /* Fondo gris claro */
     opacity: 0.7; /* Opacidad reducida para indicar que está deshabilitado */
-    
 }
+
+
+/* Estilo personalizado para el borde morado */
+.border-purple {
+    border: 0.5rem solid #800080;
+}
+
+.border-blue {
+    border: 0.5rem solid #007BFF; /* 0.5rem borde azul */
+}
+
+.border-green {
+    border: 0.5rem solid#28a745; /* 0.5rem borde verde */
+}
+
+/* Estilo personalizado para el botón morado */
+.btn-purple {
+    color: #fff;
+    background-color: #800080;
+    border: 1px solid #800080;
+}
+
+    .btn-purple:hover {
+        color: #fff;
+        background-color: #660066;
+        border: 1px solid #660066;
+    }
+
+.not-style {
+    list-style: none;
+    padding: 0;
+}
+
+/* Color verde para el check y rojo para la x */
+.text-success {
+    color: #28a745; /* Verde */
+}
+
+.text-danger {
+    color: #dc3545; /* Rojo */
+}
+
+/*
+.card-add-modal {
+    max-width: 500px;
+    margin: auto;
+}*/
