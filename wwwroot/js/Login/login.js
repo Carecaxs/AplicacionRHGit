@@ -6,6 +6,22 @@ $(document).ready(function () {
 
 
 
+    identificationField.on("input", function () {
+
+
+
+        var selectedType = $("#identificationType").val();//aceder al valor de tipo de identificacion
+
+        if (selectedType === "Cedula") {
+            MascaraCedula(identificationField);
+
+        }
+
+
+    });
+
+
+
     $("#identificationType").change(function () {//al cambiar de seleccion en el campo tipo de cedula se aplica una diferente mascara segun su selección
         $('#btnCrearUsuario').hide();
       
@@ -26,27 +42,7 @@ $(document).ready(function () {
     });
 
 
-    identificationField.on("input", function () {
-        // Escuchar el evento "input" en el campo de identificación
-        var inputValue = identificationField.val();
-
-        var selectedType = $("#identificationType").val();//aceder al valor de tipo de identificacion
-
-        if (selectedType === "Cedula") {
-
-            // Verificar si no comienza con "0" y no está vacío
-            if (inputValue && inputValue.charAt(0) !== "0") {
-                // Agregar un "0" al principio
-                identificationField.val("0" + inputValue);
-                // Posicionar el cursor en el tercer carácter
-                identificationField[0].setSelectionRange(2, 2);
-            }
-
-        }
-
-
-    });
-
+   
 
 
 
@@ -155,6 +151,8 @@ $(document).ready(function () {
         // Evitar la recarga de la página
         event.preventDefault();
 
+        $("#loader-container").show();  // Muestra el modal de carga
+
         var identificacion = $("#identification").val();//obtener el valor de la cedula
 
         var tipoIdentificacionSeleccionado = $("#identificationType").val();//acceder al tipo de identificacion seleccionado
@@ -253,15 +251,7 @@ $(document).ready(function () {
 
                     }
 
-                    //obtener el valor si se accedio como oferente o reclutador 
-                    var contenidoH2 = $("#seccionInicioSesion").text();
-                    if (contenidoH2 == 'Registrarse como Oferente') {
-                        var tipoUsuario = 'Oferente';
-
-                    }
-                    else {
-                        var tipoUsuario = 'Reclutador';
-                    }
+                    let tipoUsuario = $('#tipoUsuario').val();
 
                     //campos para crear usuario
                     var usuario = {
@@ -275,9 +265,9 @@ $(document).ready(function () {
                         nacimiento: $('#nacimiento').val()
                     };
 
-
+                    let url = ObtenerUrlSolicitud('Login', "Login/AgregarUsuario");
                     $.ajax({
-                        url: '/Login/AgregarUsuario',
+                        url: url,
                         method: 'POST',
                         data: {
                             usuario: usuario,
@@ -354,9 +344,9 @@ $(document).ready(function () {
         //se valida que el input donde se ingresa el codigo no este vacio
         if ($('#codigo').val() != "") {
 
-
+            let url = ObtenerUrlSolicitud('Login', "Login/ConfirmacionCuenta");
             $.ajax({
-                url: '/Login/ConfirmacionCuenta',
+                url: url,
                 method: 'GET',
                 data: {
                     identificacion: $('#identificacion').val(),
@@ -432,9 +422,9 @@ $(document).ready(function () {
         if ($('#contraseña1').val() != "" && $('#contraseña2').val() != "") {
 
             if ($('#contraseña1').val() == $('#contraseña2').val()) {//se combrueba que sea igual
-
+                let url = ObtenerUrlSolicitud('Login', "Login/GuardarContraseña");
                 $.ajax({
-                    url: '/Login/GuardarContraseña',
+                    url:url,
                     method: 'POST',
                     data: {
                         identificacion: $('#identificacion').val(),
@@ -455,13 +445,17 @@ $(document).ready(function () {
 
                             //Construir la URL de destino en función del tipo de usuario                        
                             if (tipoUsuario == 'Reclutador') {
-                                var actionUrl = '/Reclutador/MenuPrincipalReclutador';
+                                let url = ObtenerUrlSolicitud('Login', "Reclutador/MenuPrincipalReclutador");
+
+                                var actionUrl = url;
                             }
                             else {
-                                var actionUrl = '/Oferente/MenuPrincipalOferente';
+                                let url = ObtenerUrlSolicitud('Login', "Oferente/MenuPrincipalOferente");
+
+                                var actionUrl = url;
                             }
 
-                            // Tu lógica para enviar el formulario
+                            // enviar el formulario
                             var form = $("#formGuardarContraseña");
 
                             //asignar la accion al formulario
@@ -534,9 +528,10 @@ $(document).ready(function () {
             $("#msjInformativo").remove();
         }
 
+        let url = ObtenerUrlSolicitud('Login', "Login/CambiarVerificadoFalse");
 
         $.ajax({
-            url: '/Login/CambiarVerificadoFalse',
+            url: url,
             method: 'POST',
             data: {
                 identificacion: $('#identificacion').val(),
@@ -575,10 +570,14 @@ $(document).ready(function () {
         var nombreVista = $("#nombreVista").val();
 
         if (nombreVista === "Ingresar") {
-            window.location.href = '/MenuPrincipal/MenuAcceso';
+            let url = ObtenerUrlSolicitud('Login', "MenuPrincipal/MenuAcceso");
+
+            window.location.href = url;
         }
         else if (nombreVista === "Crear") {
-            window.location.href = '/Login/Ingresar?tipoUsuario=' + $("#tipoUsuario").val();
+            let rutaController = 'Login/Ingresar?tipoUsuario=' + $("#tipoUsuario").val();
+            let url = ObtenerUrlSolicitud('Login', rutaController);
+            window.location.href = url;
         }
 
     });
@@ -588,9 +587,11 @@ $(document).ready(function () {
         //validar que el campo correo no este vacio
         if ($("#correo").val() != "") {
 
+            let url = ObtenerUrlSolicitud('Login', "Login/OlvidarContraseña");
+
             $.ajax({
                 type: "POST",
-                url: "/Login/OlvidarContraseña",
+                url: url,
                 data: {
                     correo: $("#correo").val(),
                     tipoUsuario: $("#tipoUsuario").val()
@@ -689,8 +690,10 @@ $(document).ready(function () {
 
             if ($('#clave1').val() == $('#clave2').val()) {//se combrueba que sea igual
 
+                let url = ObtenerUrlSolicitud('Login', "Login/GuardarContraseña");
+
                 $.ajax({
-                    url: '/Login/GuardarContraseña',
+                    url: url,
                     method: 'POST',
                     data: {
                         identificacion: $('#identificacion').val(),
@@ -710,10 +713,15 @@ $(document).ready(function () {
 
                             //Construir la URL de destino en función del tipo de usuario                        
                             if (tipoUsuario == 'Reclutador') {
-                                var actionUrl = '/Reclutador/MenuPrincipalReclutador';
+
+                                let url = ObtenerUrlSolicitud('Login', "Reclutador/MenuPrincipalReclutador");
+
+                                var actionUrl = url;
                             }
                             else {
-                                var actionUrl = '/Oferente/MenuPrincipalOferente';
+                                let url = ObtenerUrlSolicitud('Login', "Oferente/MenuPrincipalOferente");
+
+                                var actionUrl = url;
                             }
 
                             // Tu lógica para enviar el formulario
@@ -783,8 +791,11 @@ $(document).ready(function () {
             identificacion = $('#identification').val().replace(/-/g, "");
 
             //verificar que el usuario exista
+
+            let url = ObtenerUrlSolicitud('Login', "Login/IniciarSesion");
+
             $.ajax({
-                url: '/Login/IniciarSesion',
+                url: url,
                 method: 'Get',
                 data: {
                     identificacion: identificacion,
@@ -803,10 +814,14 @@ $(document).ready(function () {
 
                         //Construir la URL de destino en función del tipo de usuario                        
                         if (tipoUsuario == 'Reclutador') {
-                            var actionUrl = '/Reclutador/MenuPrincipalReclutador';
+                            let url = ObtenerUrlSolicitud('Login', "Reclutador/MenuPrincipalReclutador");
+
+                            var actionUrl = url;
                         }
                         else {
-                            var actionUrl = '/Oferente/MenuPrincipalOferente';
+                            let url = ObtenerUrlSolicitud('Login', "Oferente/MenuPrincipalOferente");
+
+                            var actionUrl = url;
                         }
 
                         // Tu lógica para enviar el formulario
@@ -922,10 +937,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
 
         }
         return false;
@@ -936,10 +951,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
 
         }
         return false;
@@ -949,10 +964,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
 
         }
         return false;
@@ -1059,9 +1074,12 @@ function MascarasPaginaCrear() {
 
 function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
+  
+    let url = ObtenerUrlSolicitud('Login', "Login/GetPersona");
+
     $.ajax({
         type: "Get",//tipo de solicitud
-        url: "/Login/GetPersona", //direccion del controlador
+        url: url, //direccion del controlador
         data: {//se envia el parametro
             identificacion: identificacion,
             tipoIdentificacion: tipoIdentificacionSeleccionado
@@ -1070,17 +1088,8 @@ function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
             if (data.error) { //si data.error contiene algo
 
-                if ($("#msjValidacionCedula").length) {
-
-                    $("#msjValidacionCedula").remove();
-
-                    $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
-                }
-                else {
-                    $("#campoNombre").before("<p class='alert alert-danger mt-2' id='msjValidacionCedula'>" + data.error + "</p>");
-
-                }
-
+                console.log(data.error);
+                $("#loader-container").hide(); 
 
 
             } else {
@@ -1090,7 +1099,7 @@ function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
                     $("#msjValidacionCedula").remove();
                 }
-
+           
 
 
 
@@ -1114,11 +1123,41 @@ function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
                 $("#correo").focus();
 
-
+                $("#loader-container").hide(); 
             }
         },
         error: function (xhr, status, error) { //error en la solicitud de ajax
             console.error(error);
+            $("#loader-container").hide(); 
         }
     });
 }
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
+}
+
+function MascaraCedula(identificationField) {
+    // Escuchar el evento "input" en el campo de identificación
+    var inputValue = identificationField.val();
+
+    // Verificar si no comienza con "0" y no está vacío
+    if (inputValue && inputValue.charAt(0) !== "0") {
+        // Agregar un "0" al principio
+        identificationField.val("0" + inputValue);
+        // Posicionar el cursor en el tercer carácter
+        identificationField[0].setSelectionRange(2, 2);
+    }
+}
+

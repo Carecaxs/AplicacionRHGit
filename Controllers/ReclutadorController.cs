@@ -19,7 +19,7 @@ namespace AplicacionRHGit.Controllers
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult MenuPrincipalReclutador(string identification = "0117860836", string clave = "123")
+        public IActionResult MenuPrincipalReclutador(string identification, string clave)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -46,15 +46,14 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
 
                 }
             }
             else
             {
-
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
 
@@ -62,7 +61,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult AñadirInstitutoReclutador(string identification = "0117860836", string clave = "123")
+        public IActionResult AñadirInstitutoReclutador(string identification, string clave)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -89,7 +88,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
 
                 }
@@ -97,7 +96,7 @@ namespace AplicacionRHGit.Controllers
             else
             {
 
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
 
@@ -105,7 +104,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult ModificarInstitutoReclutador(string identification = "0117860836", string clave = "123")
+        public IActionResult ModificarInstitutoReclutador(string identification , string clave )
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -132,15 +131,15 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
 
                 }
             }
             else
             {
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
 
             }
 
@@ -149,7 +148,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult AdministrarMateriasReclutador(string identification = "0117860836", string clave = "123")
+        public IActionResult AdministrarMateriasReclutador(string identification , string clave)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -176,7 +175,8 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
 
 
                 }
@@ -184,7 +184,93 @@ namespace AplicacionRHGit.Controllers
             else
             {
 
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+            }
+
+
+        }
+
+
+        public IActionResult CrearOfertaReclutador(string identification="0117860836", string clave= "123")
+        {
+
+            identification = identification.Replace("-", "").Replace("_", "");
+
+
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Reclutador", clave);
+
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.tipoUsuario = "Reclutador";
+                    ViewBag.VistaActual = "CrearOfertaReclutador";
+
+
+
+
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+                }
+            }
+            else
+            {
+
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+            }
+        }
+
+        public IActionResult VerVacantesReclutador(string identification = "0117860836", string clave = "123")
+        {
+
+            identification = identification.Replace("-", "").Replace("_", "");
+
+
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Reclutador", clave);
+
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.tipoUsuario = "Reclutador";
+                    ViewBag.VistaActual = "VerVacantesReclutador";
+
+
+
+
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+                }
+            }
+            else
+            {
+
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
 
             }
 
@@ -522,6 +608,30 @@ namespace AplicacionRHGit.Controllers
             }
 
 
+        }
+
+
+
+        //metodos para la vista de CrearOferta
+        [HttpPost]
+        public JsonResult CrearOferta(IFormCollection formData)
+        {
+
+            try
+            {
+                ReclutadorDAO acceso = new ReclutadorDAO(_context);
+
+                acceso.CrearOferta(formData);
+
+                return Json(new { exito = true });
+
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
         }
 
 

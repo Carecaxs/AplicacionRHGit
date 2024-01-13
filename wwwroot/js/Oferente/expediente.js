@@ -18,8 +18,9 @@ $(document).ready(function () {
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ReferenciasOferente");
 
-        var actionUrl = '/Oferente/ReferenciasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -35,8 +36,9 @@ $(document).ready(function () {
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/DatosPersonalesOferente");
 
-        var actionUrl = '/Oferente/DatosPersonalesOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -52,8 +54,9 @@ $(document).ready(function () {
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/TitulosOferente");
 
-        var actionUrl = '/Oferente/TitulosOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -70,8 +73,9 @@ $(document).ready(function () {
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ExperienciaOferente");
 
-        var actionUrl = '/Oferente/ExperienciaOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -160,10 +164,11 @@ $(document).ready(function () {
         if ($("#identification").val().length != 10) {
 
             
+            let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerEstadoDimex");
 
             $.ajax({
                 type: "Get",
-                url: "/Oferente/ObtenerEstadoDimex",
+                url: url,
                 data: {
                     identificacion: $("#identification").val()
                 },
@@ -577,10 +582,11 @@ $(document).ready(function () {
         $("#confirmacionEliminarModal").modal("show");
 
         $("#confirmarEliminar").click(function (event) {
+            let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarTitulo");
 
             $.ajax({
                 type: "POST",
-                url: "/Oferente/EliminarTitulo",
+                url: url,
                 data: {
                     idTitulo: idTitulo,
                     identificacion: $("#identification").val()
@@ -652,10 +658,11 @@ $(document).ready(function () {
         $("#confirmacionEliminarModal").modal("show");
 
         $("#confirmarEliminar").click(function (event) {
+            let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarTitulo");
 
             $.ajax({
                 type: "POST",
-                url: "/Oferente/EliminarTitulo",
+                url: url,
                 data: {
                     idTitulo: idTitulo,
                     identificacion: $("#identification").val()
@@ -723,10 +730,11 @@ $(document).ready(function () {
         $("#confirmacionEliminarModal").modal("show");
 
         $("#confirmarEliminar").click(function (event) {
+            let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarTitulo");
 
             $.ajax({
                 type: "POST",
-                url: "/Oferente/EliminarTitulo",
+                url: url,
                 data: {
                     idTitulo: idTitulo,
                     identificacion: $("#identification").val()
@@ -789,10 +797,11 @@ $(document).ready(function () {
 
         var idTitulo = fila.attr("id");
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarTitulo");
 
         $.ajax({
             type: "GET",
-            url: "/Oferente/MostrarTitulo",
+            url: url,
             data: {
                 idTitulo: idTitulo,
                 identificacion: $("#identification").val()
@@ -861,10 +870,11 @@ $(document).ready(function () {
 
         var idTitulo = fila.attr("id");
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarTitulo");
 
         $.ajax({
             type: "GET",
-            url: "/Oferente/MostrarTitulo",
+            url: url,
             data: {
                 idTitulo: idTitulo,
                 identificacion: $("#identification").val()
@@ -935,10 +945,11 @@ $(document).ready(function () {
 
         var idTitulo = fila.attr("id");
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarTitulo");
 
         $.ajax({
             type: "GET",
-            url: "/Oferente/MostrarTitulo",
+            url: url,
             data: {
                 idTitulo: idTitulo,
                 identificacion: $("#identification").val()
@@ -1225,9 +1236,11 @@ $(document).ready(function () {
         $("#enlaceExpLaboral").addClass("active");
 
         //cargar experiencias en la tabla
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarExperiencias");
+
         $.ajax({
             type: "GET",
-            url: "/Oferente/CargarExperiencias",
+            url: url,
             data: {
                 identificacion: $("#identification").val(),
                 clave: $("#clave").val()
@@ -1279,10 +1292,11 @@ $(document).ready(function () {
             formData.append("identificacion", $("#identification").val());
             formData.append("clave", $("#clave").val());
 
+            let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarExperiencia");
 
             $.ajax({
                 method: "POST",//tipo de solicitud
-                url: "/Oferente/AgregarExperiencia",
+                url: url,
                 data: formData,
                 processData: false,  // Necesario para enviar FormData correctamente
                 contentType: false,  // Necesario para enviar FormData correctamente
@@ -1309,10 +1323,11 @@ $(document).ready(function () {
                         ///recargar la lista de titulos
 
                         // Después de guardar, realiza una solicitud Ajax para obtener la lista actualizada de títulos
+                        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarExperiencias");
 
                         $.ajax({
                             type: "GET",
-                            url: "/Oferente/CargarExperiencias",
+                            url: url,
                             data: {
                                 identificacion: $("#identification").val(),
                                 clave: $("#clave").val()
@@ -2214,9 +2229,11 @@ function CargarCanton(idProvincia) {
 
 function CargarInstitutosSecundaria(idCanton = 0) {
     return new Promise(function (resolve, reject) {
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarInstitutosSecundaria");
+
         $.ajax({
             type: "GET",
-            url: "/Oferente/MostrarInstitutosSecundaria",
+            url: url,
             data: {
                 idCanton: idCanton
             },
@@ -2247,9 +2264,11 @@ function CargarInstitutosSecundaria(idCanton = 0) {
 //mostrar carreras de diplomado (1) o bachillerato, licenciatura, maestria (2),
 //y si es tecnico o secundaria(3)
 function CargarTitulos(tipoTitulo) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarTitulos");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarTitulos",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val(),
@@ -2278,10 +2297,11 @@ function AgregarTituloSecundaria() {
     formData.append("identificacion", $("#identification").val());
     formData.append("clave", $("#clave").val());
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarTituloSecundaria");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/AgregarTituloSecundaria",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2330,10 +2350,11 @@ function AgregarTituloUniversidad() {
     formData.append("textoCarrera", $("#carrerasUniversitarias").find('option:selected').text());
 
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarTituloUniversidad");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/AgregarTituloUniversidad",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2387,10 +2408,11 @@ function AgregarTituloDiploma() {
 
 
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarTituloUniversidad");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/AgregarTituloUniversidad",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2697,10 +2719,11 @@ function ObtenerMes(numeroMes) {
 
 
 function CargarGradosUniversitarios() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarGrados");
 
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarGrados",
+        url: url,
         success: function (data) {
 
 
@@ -2727,9 +2750,11 @@ function CargarGradosUniversitarios() {
 }
 
 function CargarUniversidades() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarUniversidades");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/MostrarUniversidades",
+        url: url,
         success: function (data) {
 
 
@@ -2759,9 +2784,11 @@ function CargarUniversidades() {
 
 
 function CargarCarrerasUniversitarias() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarCarreras");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/MostrarCarreras",
+        url: url,
         data: {
             instituto: $("#institutoUniversitario").find(":selected").text(),
             grado: $("#nivelEducacionUniversitaria").find(":selected").text()
@@ -2791,9 +2818,11 @@ function CargarCarrerasUniversitarias() {
 
 
 function CargarCarrerasDiplomas() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarCarreras");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/MostrarCarreras",
+        url:url,
         data: {
             instituto: $("#institutoDiploma").find(":selected").text(),
             grado: "Diplomado"
@@ -2832,10 +2861,11 @@ function ActualizarTituloSecundria(idTitulo) {
     formData.append("idTitulo", idTitulo);
 
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ActualizarTituloSecundaria");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/ActualizarTituloSecundaria",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2888,10 +2918,11 @@ function ActualizarTituloUniversitario(idTitulo) {
     formData.append("idTitulo", idTitulo);
 
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ActualizarTituloUniversitario");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/ActualizarTituloUniversitario",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2945,10 +2976,11 @@ function ActualizarTituloDiploma(idTitulo) {
     formData.append("idTitulo", idTitulo);
     formData.append("nivelEducacion", "2");
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ActualizarTituloUniversitario");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/ActualizarTituloUniversitario",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -2991,9 +3023,10 @@ function ActualizarTituloDiploma(idTitulo) {
 
 
 function MostrarTitulo(identificacion, idTitulo) {
-    console.log("hola");
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerUrlTitulo");
+
     $.ajax({
-        url: '/Oferente/ObtenerUrlTitulo',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'GET',
         data: {
             identificacion: identificacion,
@@ -3046,9 +3079,11 @@ function AgregarMascarasPaginaDatosPersonales() {
 
 
 function ObtenerDatosPersonales() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerDatosPersonalesEx");
+
     $.ajax({
         type: "Get",//tipo de solicitud
-        url: "/Oferente/ObtenerDatosPersonalesEx",
+        url: url,
         data: {//se envia el parametro
             identificacion: $("#identification").val(),
 
@@ -3120,9 +3155,11 @@ function ObtenerDatosPersonales() {
 
 
 function CargarIdiomasOferente() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarIdiomaLista");
+
     $.ajax({
         type: "Get",
-        url: "/Oferente/MostrarIdiomaLista",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val()
@@ -3139,11 +3176,12 @@ function CargarIdiomasOferente() {
 }
 
 function ActualizarDatosPersonales() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/GuardarCambiosDatosPersonalesEx");
 
     var formData = new FormData($("#expedienteForm")[0]);
     $.ajax({
         type: "Post",//tipo de solicitud
-        url: "/Oferente/GuardarCambiosDatosPersonalesEx",
+        url: url,
         data: formData,
         processData: false,
         contentType: false,
@@ -3187,9 +3225,11 @@ function ActualizarDatosPersonales() {
 }
 
 function MostrarIdiomasOferente() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/MostrarIdiomaLista");
+
     $.ajax({
         type: "Get",
-        url: "/Oferente/MostrarIdiomaLista",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val()
@@ -3206,9 +3246,11 @@ function MostrarIdiomasOferente() {
 }
 
 function MostrarGruposProfesionalesOferente() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarGrupoProfesionalOferente");
+
     $.ajax({
         type: "Get",
-        url: "/Oferente/CargarGrupoProfesionalOferente",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val()
@@ -3225,10 +3267,11 @@ function MostrarGruposProfesionalesOferente() {
 }
 
 function AñadirGrupoProfesional() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AñadirGrupoProfesionalExpediente");
 
     $.ajax({
         type: "POST",
-        url: "/Oferente/AñadirGrupoProfesionalExpediente",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             idGrupoProf: $("#grupoProfesional").val()
@@ -3263,10 +3306,11 @@ function AñadirGrupoProfesional() {
 
 
 function AñadirIdioma() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AñadirIdiomaExpediente");
 
     $.ajax({
         type: "POST",
-        url: "/Oferente/AñadirIdiomaExpediente",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             idIdioma: $("#nombreIdioma").val()
@@ -3306,10 +3350,11 @@ function EliminarIdiomaOferente(idIdioma) {
     $("#confirmacionEliminarModalIdioma").modal("show");
 
     $("#confirmarEliminar").click(function (event) {
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarIdioma");
 
         $.ajax({
             type: "POST",
-            url: "/Oferente/EliminarIdioma",
+            url: url,
             data: {
                 idIdioma: idIdioma,
                 identificacion: $("#identification").val()
@@ -3368,10 +3413,11 @@ function EliminarGrupoProfesionalOferente(idGrupo) {
     $("#confirmacionEliminarModalGrupo").modal("show");
 
     $("#confirmarEliminarGrupo").click(function (event) {
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarGrupoProfesionalOferente");
 
         $.ajax({
             type: "POST",
-            url: "/Oferente/EliminarGrupoProfesionalOferente",
+            url: url,
             data: {
                 idGrupoProf: idGrupo,
                 identificacion: $("#identification").val()
@@ -3426,9 +3472,10 @@ function SubirDimex() {
     // Obtener el formulario y los datos del formulario
     var form = $("#expedienteForm")[0];
     var formData = new FormData(form);
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/SubirImagenDimex");
 
     $.ajax({
-        url: '/Oferente/SubirImagenDimex',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'POST',
         data: formData,
         processData: false,
@@ -3475,9 +3522,10 @@ function SubirFotoPerfil() {
     // Obtener el formulario y los datos del formulario
     var form = $("#fotoPerfilExpediente")[0];
     var formData = new FormData(form);
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/SubirFotoPerfil");
 
     $.ajax({
-        url: '/Oferente/SubirFotoPerfil',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'POST',
         data: formData,
         processData: false,
@@ -3544,8 +3592,10 @@ function mostrarFoto() {
 function cargarImagenPerfil() {
 
     var identificacion = $("#identification").val();
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerUrlImagen");
+
     $.ajax({
-        url: '/Oferente/ObtenerUrlImagen',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'GET',
         data: { identificacion: identificacion },
         success: function (data) {
@@ -3589,9 +3639,11 @@ function abrirModalAñadirTituloSecundaria() {
 
 //recibe 1 para cargar referencia personal, 2 para profesional
 function CargarReferencias(tipo) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarReferencias");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarReferencias",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val(),
@@ -3610,8 +3662,10 @@ function CargarReferencias(tipo) {
 
 
 function MostrarEvaluacion(identificacion, idReferencia) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerUrlEvaluacion");
+
     $.ajax({
-        url: '/Oferente/ObtenerUrlEvaluacion',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'GET',
         data: {
             identificacion: identificacion,
@@ -3649,10 +3703,10 @@ function AgregarReferencia() {
     formData.append("identificacion", $("#identification").val());
     formData.append("clave", $("#clave").val());
 
-
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarReferecia");
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/AgregarReferecia",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -3704,9 +3758,11 @@ function AgregarReferencia() {
 }
 
 function EliminarReferencia(idReferencia) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarReferencia");
+
     $.ajax({
         type: "POST",
-        url: "/Oferente/EliminarReferencia",
+        url: url,
         data: {
             idReferencia: idReferencia,
             identificacion: $("#identification").val()
@@ -3761,9 +3817,11 @@ function EliminarReferencia(idReferencia) {
 //////  funciones seccion experiencias  /////////////////////
 
 function CargarExperiencias() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarExperiencias");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarExperiencias",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             clave: $("#clave").val()
@@ -3799,9 +3857,11 @@ function CargarExperiencias() {
 }
 
 function EliminarExperiencia(idExperiencia) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/EliminarExperiencia");
+
     $.ajax({
         type: "POST",
-        url: "/Oferente/EliminarExperiencia",
+        url: url,
         data: {
             idExperiencia: idExperiencia,
             identificacion: $("#identification").val()
@@ -3852,8 +3912,10 @@ function EliminarExperiencia(idExperiencia) {
 
 
 function MostrarExperiencia(identificacion, idExperiencia) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerUrlExperiencia");
+
     $.ajax({
-        url: '/Oferente/ObtenerUrlExperiencia',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'GET',
         data: {
             identificacion: identificacion,
@@ -3880,4 +3942,19 @@ function MostrarExperiencia(identificacion, idExperiencia) {
             console.log(error);
         }
     });
+}
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
 }

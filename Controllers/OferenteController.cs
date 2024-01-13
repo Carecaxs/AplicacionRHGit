@@ -28,7 +28,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult MenuPrincipalOferente(string identification="0117860836", string clave = "123")
+        public IActionResult MenuPrincipalOferente(string identification, string clave)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -55,15 +55,14 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
 
                 }
             }
             else
             {
-
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
 
@@ -118,13 +117,13 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
 
@@ -157,7 +156,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -166,7 +165,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -193,7 +192,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -202,7 +201,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -230,7 +229,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -239,7 +238,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -264,7 +263,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
                 }
 
 
@@ -272,7 +271,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -298,7 +297,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -307,7 +306,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -334,7 +333,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -343,7 +342,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -369,7 +368,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -378,7 +377,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -405,7 +404,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -414,7 +413,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -440,7 +439,7 @@ namespace AplicacionRHGit.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
                 }
 
@@ -449,7 +448,7 @@ namespace AplicacionRHGit.Controllers
             }
             else
             {
-                return RedirectToAction("MenuPrincipal", "MenuAcceso");
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
 
             }
         }
@@ -1158,7 +1157,7 @@ namespace AplicacionRHGit.Controllers
                     var titulos = (from detalleTitulo in _context.DetalleTitulo
                                    join institucion in _context.CentrosEducativos on detalleTitulo.ID_INSTITUCION equals institucion.Cod_Presupuestario
                                    join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
-                                   where detalleTitulo.TIPO_TITULO == 1
+                                   where detalleTitulo.TIPO_TITULO == 1 && detalleTitulo.ID_TITULO==idTitulo
                                    select new
                                    {
                                        idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
@@ -1198,7 +1197,8 @@ namespace AplicacionRHGit.Controllers
                                   join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
                                   join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
                                   where (detalleTitulo.TIPO_TITULO == 3 || detalleTitulo.TIPO_TITULO == 4 ||
-                                         detalleTitulo.TIPO_TITULO == 5 || detalleTitulo.TIPO_TITULO == 6 || detalleTitulo.TIPO_TITULO == 7)
+                                         detalleTitulo.TIPO_TITULO == 5 || detalleTitulo.TIPO_TITULO == 6 || detalleTitulo.TIPO_TITULO == 7 
+                                         && detalleTitulo.ID_TITULO == idTitulo)
                                   select new
                                   {
                                       idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
@@ -1231,7 +1231,7 @@ namespace AplicacionRHGit.Controllers
                     var tituloVarios = (from detalleTitulo in _context.DetalleTitulo
                                         join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
                                         join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
-                                        where (detalleTitulo.TIPO_TITULO == 2)
+                                        where (detalleTitulo.TIPO_TITULO == 2 && detalleTitulo.ID_TITULO == idTitulo)
                                         select new
                                         {
                                             idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,

@@ -25,6 +25,30 @@
     });
 
 
+    $("#enlaceAdministrarMaterias").click(function (event) {
+
+        event.preventDefault();
+
+
+        var actionUrl = '/Reclutador/AdministrarMateriasReclutador';
+
+        // Tu lógica para enviar el formulario
+
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+        var identificacion = $("#identification").val();
+        var clave = $("#clave").val();
+
+        form.append('<input type="hidden" name="identification" value="' + identificacion + '">');
+        form.append('<input type="hidden" name="clave" value="' + clave + '">');
+
+
+        form.submit();
+    });
+
+
 
     if ($("#nombreVista").val() == "AñadirInstitutoReclutador") {
         CargarProvincias();
@@ -109,6 +133,7 @@
         MostrarMateriasReclutador();
 
 
+        //evento click agregar materia
         $("#btnAgregarMateriaModal").click(function (event) {
 
             event.preventDefault();
@@ -116,6 +141,20 @@
             AgregarMateria();
 
         });
+
+        //evento click eliminar materia
+        //evento para eliminar Idioma de expediente
+        $("#listaMaterias").on("click", ".btnEliminarMateria", function (event) {
+
+            event.preventDefault();
+            // Obtén el data-id del li padre
+            var idMateria = $(this).closest("li").data("id");
+            EliminarMateriaInstitucion(idMateria);
+
+
+        });
+
+
 
     }
 
@@ -498,14 +537,13 @@ function AgregarMateria() {
 function MostrarMateriasReclutador() {
     $.ajax({
         type: "Get",
-        url: "/Oferente/MostrarMateriasInstitucion",
+        url: "/Reclutador/MostrarMateriasInstitucion",
         data: {
             identificacion: $("#identification").val()
         },
         success: function (data) {
             //recargar titulos
-
-            procesarRespuestaMaterias(data);
+            procesarRespuestaMaterias(data.materias);
         },
         error: function (error) {
             console.log("Error al cargar idiomas: " + error);
@@ -559,5 +597,52 @@ function agregarMateriaALaLista(materia) {
     li.appendChild(span);
     li.appendChild(div);
 
-    listaIdiomas.appendChild(li);
+    listaMaterias.appendChild(li);
+}
+
+
+
+function EliminarMateriaInstitucion(idMateria) {
+
+
+    // Muestra el modal de confirmación
+    $("#confirmacionEliminarModalMateria").modal("show");
+
+    $("#confirmarEliminar").click(function (event) {
+
+        $.ajax({
+            type: "DELETE",
+            url: "/Reclutador/EliminarMateriaInstitucion",
+            data: {
+                idMateria: idMateria,
+                identificacion: $("#identification").val()
+            },
+            success: function (data) {
+
+                if (data.error) {
+                    if ($("#mensaje").length) {
+
+                        $("#mensaje").remove();
+
+                        $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+                    }
+                    else {
+                        $("#listaIdiomas").after("<p class='alert alert-danger mt-2' id='mensaje'>" + data.error + "</p>");
+
+                    }
+                }
+                else {
+                    $("#confirmacionEliminarModalMateria").modal("hide");
+
+                    //recargar lista de materias
+                    MostrarMateriasReclutador();
+
+                }
+            },
+            error: function (xhr, status, error) { //error en la solicitud de ajax
+                console.error(error);
+            }
+        });
+
+    });
 }

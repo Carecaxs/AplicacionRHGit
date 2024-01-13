@@ -184,6 +184,12 @@ namespace AplicacionRHGit.Services
 
             using (MensajeriaContext db = new MensajeriaContext())
             {
+                var existeNotificacion=db.Notificacion.Where(n=>n.ced_Funcionario== usuario.identificacion).SingleOrDefault();
+                if (existeNotificacion != null)
+                {
+                    //si existe en la bd una notiificacion para ese numero de edula se elimina ya que se enviara una nueva
+                    db.Notificacion.Remove(existeNotificacion);
+                }
                 db.Notificacion.Add(notificacion);
                 db.SaveChanges();
             }

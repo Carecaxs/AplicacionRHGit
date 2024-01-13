@@ -74,9 +74,11 @@ function ValidarDatos() {
 
 
 function CambiarClave() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CambiarClave");
+
     $.ajax({
         type: "POST",
-        url: "/Oferente/CambiarClave",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             nuevaClave: $("#nuevaClave").val()
@@ -110,9 +112,11 @@ function limpiarCampos() {
 
 
 function InactivarCuenta() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/InactivarCuenta");
+
     $.ajax({
         type: "PUT",
-        url: "/Oferente/InactivarCuenta",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -132,4 +136,19 @@ function InactivarCuenta() {
             console.error(error);
         }
     });
+}
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
 }

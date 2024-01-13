@@ -32,13 +32,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Reclutador}/{action=AdministrarMateriasReclutador}/{identification?}/{clave?}");
+    pattern: "{controller=MenuPrincipal}/{action=MenuAcceso}/{id?}");
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Reclutador}/{action=CrearOfertaReclutador}/{identification?}/{clave?}");
 
 
 

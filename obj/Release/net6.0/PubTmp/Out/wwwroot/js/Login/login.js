@@ -922,10 +922,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo y teléfono icorrecto" + "</p>");
 
         }
         return false;
@@ -936,10 +936,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de correo icorrecto" + "</p>");
 
         }
         return false;
@@ -949,10 +949,10 @@ function validarCorreoTelefono() {
 
             $("#msjFormulario").remove();
 
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
         }
         else {
-            $("#btnCrearUsuario").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
+            $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + "Formato de teléfono icorrecto" + "</p>");
 
         }
         return false;
@@ -1059,9 +1059,23 @@ function MascarasPaginaCrear() {
 
 function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf('Login');
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+ 
+
+    // ruta relativa al controlador
+    var controllerUrl = baseUrl + "Login/GetPersona";
+    console.log(controllerUrl);
+
     $.ajax({
         type: "Get",//tipo de solicitud
-        url: "/Login/GetPersona", //direccion del controlador
+        url: controllerUrl, //direccion del controlador
         data: {//se envia el parametro
             identificacion: identificacion,
             tipoIdentificacion: tipoIdentificacionSeleccionado

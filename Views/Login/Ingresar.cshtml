@@ -8,9 +8,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AplicacionRHGit</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AplicacionRHGit.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="@Url.Content("~/lib/bootstrap/dist/css/bootstrap.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/site.css")" asp-append-version="true" />
+    <link rel="stylesheet" href="@Url.Content("~/AplicacionRHGit.styles.css")" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-"
           crossorigin="anonymous">
 
@@ -19,15 +19,13 @@
 <body class="fondoImg">
 
     <div class="container">
-        <div class="contenedorInicioSesion">
+        <div class="contenedorCuenta" style="max-width:35rem;">
+            <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+
+            <button id="btnRegresar" class="btn btn-secondary mt-2" tabindex="12">Regresar</button>
+
             <form id="formIngresar" method="post">
                 <div class="d-flex flex-column align-items-center">
-
-                    <h2 id="seccionInicioSesion">Iniciar sesión @TempData["Usuario"]</h2>
-                    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
-                    <input id="tipoUsuario" type="hidden" value="@TempData["Usuario"]" />
-
-
 
                     <div class="form-group col-sm-5 mt-2">
                         <label for="identificationType">Tipo de Identificación</label>
@@ -55,27 +53,22 @@
                         </div>
 
                     </div>
+                    <button type="button" class="btn btn-link" id="abrirModalRestablecerClave" tabindex="4">
+                        ¿Olvidó su contraseña?
+                    </button>
+              
 
-
-                    <button id="btnIniciarSesion" class="btn btn-primary mt-3" tabindex="4">Iniciar sesión</button>
+                    <button id="btnIniciarSesion" class="btn btn-primary mt-1" tabindex="5">Iniciar sesión</button>
                 </div>
             </form>
-            <div class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-column align-items-center mt-2">
 
-                <button type="button" class="btn btn-link" id="abrirModalRestablecerClave">
-                    ¿Olvidó su contraseña?
-                </button>
 
-                <div class="">
-                    <form method="post" asp-controller="Login" asp-action="Crear">
-                        <input type="hidden" name="tipoUsuario" value="@TempData["Usuario"]" />
-                        <button type="submit" class="btn btn-link">Registrarse</button>
-                    </form>
+                <form method="post" asp-controller="Login" asp-action="Crear">
+                    <input id="tipoUsuario" name="tipoUsuario" type="hidden" value="@ViewBag.tipoUsuario" />
+                    <button type="submit" class="btn btn-link">Registrarse</button>
+                </form>
 
-                </div>
-                <div>
-                    <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
-                </div>
             </div>
 
 
@@ -116,8 +109,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/jquery.inputmask.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="~/js/login/login.js"></script>
-    <script src="~/js/site.js"></script>
+    <script src="@Url.Content("~/js/login/login.js")"></script>
+    <script src="@Url.Content("~/js/site.js")"></script>
 
 
 

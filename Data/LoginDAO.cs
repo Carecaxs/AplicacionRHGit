@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Proyecto.Models;
 using System;
+using System.Globalization;
 
 namespace AplicacionRHGit.Data
 {
@@ -65,10 +66,11 @@ namespace AplicacionRHGit.Data
                 _context.SaveChanges();
 
 
+
                 EXPEDIENTE expediente = new EXPEDIENTE()
                 {
                     idOferente = agregarOferente.idOferente,
-                    nacimiento = DateTime.Parse(usuario.nacimiento),
+                    nacimiento = DateTime.ParseExact(usuario.nacimiento, "dd/MM/yyyy", CultureInfo.InvariantCulture),
                     IdProvincia = null,
                     IdCanton = null,
                     IdDistrito = null,
@@ -80,9 +82,9 @@ namespace AplicacionRHGit.Data
 
                 //crear el expediente para el oferente
                 _context.Expediente.Add(expediente);
-
-                //guardar cambios
                 _context.SaveChanges();
+
+
 
                 //ahora a ese expediente lo relacionamos con tabla titulos, refrencias, experiencias
 
@@ -140,6 +142,8 @@ namespace AplicacionRHGit.Data
                 };
 
                 _context.Reclutador.Add(agregarReclutador);
+                _context.SaveChanges();
+
             }
 
         }

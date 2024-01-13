@@ -10,9 +10,10 @@
 
 
         event.preventDefault();
-      
- 
-        var actionUrl = '/Oferente/DatosPersonalesOferente';
+
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/DatosPersonalesOferente");
+
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -29,8 +30,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/TitulosOferente");
 
-        var actionUrl = '/Oferente/TitulosOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -47,8 +49,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ReferenciasOferente");
 
-        var actionUrl = '/Oferente/ReferenciasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -67,10 +70,11 @@
 
 
         event.preventDefault();
-  
 
 
-        var actionUrl = '/Oferente/ExperienciaOferente';
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ExperienciaOferente");
+
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -88,8 +92,9 @@
         event.preventDefault();
 
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerOfertasOferente");
 
-        var actionUrl = '/Oferente/VerOfertasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -107,8 +112,9 @@
         event.preventDefault();
 
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CrearOfertaOferente");
 
-        var actionUrl = '/Oferente/CrearOfertaOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -127,7 +133,9 @@
         event.preventDefault();
 
         event.stopPropagation();
-        var actionUrl = '/Oferente/ExperienciaOferente';
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ExperienciaOferente");
+
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -145,8 +153,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/DatosPersonalesOferente");
 
-        var actionUrl = '/Oferente/DatosPersonalesOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -164,8 +173,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/TitulosOferente");
 
-        var actionUrl = '/Oferente/TitulosOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -183,8 +193,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ReferenciasOferente");
 
-        var actionUrl = '/Oferente/ReferenciasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -203,8 +214,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerOfertasOferente");
 
-        var actionUrl = '/Oferente/VerOfertasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -222,8 +234,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CrearOfertaOferente");
 
-        var actionUrl = '/Oferente/CrearOfertaOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -241,8 +254,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerVacantesAplicadasOferente");
 
-        var actionUrl = '/Oferente/VerVacantesAplicadasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -260,8 +274,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerOfertasOferente");
 
-        var actionUrl = '/Oferente/VerOfertasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -279,8 +294,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CambiarPasswordOferente");
 
-        var actionUrl = '/Oferente/CambiarPasswordOferente';
+        var actionUrl =url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -298,8 +314,9 @@
         event.preventDefault();
         event.stopPropagation();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/InactivarCuentaOferente");
 
-        var actionUrl = '/Oferente/InactivarCuentaOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioOferente");
@@ -317,7 +334,7 @@
         if ($("#nombreVista").val() == "MenuPrincipalOferente") {
             ValidarEstadoPerfil(function (estado) {
                 if (!estado) {
-           
+
                     $("#modalActivacion").modal("show");
                 }
                 // Continúa con el resto de tu código aquí
@@ -329,14 +346,14 @@
 
         // Redirigir al menu principal
         window.location.href = "/MenuPrincipal/MenuAcceso";
-        
+
     });
 
     $("#btnActivarCuenta").click(function (event) {
         ActivarCuenta();
-       
+
     });
- 
+
 });
 
 
@@ -345,9 +362,11 @@
 
 //funcion retorna true si esta activa, false si esta inactiva
 function ValidarEstadoPerfil(callback) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ValidarEstadoPerfil");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/ValidarEstadoPerfil",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -368,9 +387,11 @@ function ValidarEstadoPerfil(callback) {
 
 
 function ActivarCuenta() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ActivarCuenta");
+
     $.ajax({
         type: "PUT",
-        url: "/Oferente/ActivarCuenta",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -391,4 +412,19 @@ function ActivarCuenta() {
             console.error(error);
         }
     });
+}
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
 }

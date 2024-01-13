@@ -27,7 +27,7 @@ namespace AplicacionRHGit.Controllers
         public IActionResult Crear(string tipoUsuario)
         {
             ViewBag.VistaActual = "Crear";
-            TempData["Usuario"] = tipoUsuario;
+            ViewBag.tipoUsuario = tipoUsuario;
             return View();
         }
 
@@ -35,7 +35,8 @@ namespace AplicacionRHGit.Controllers
         public IActionResult Ingresar(string tipoUsuario)
         {
             ViewBag.VistaActual = "Ingresar";
-            TempData["Usuario"] = tipoUsuario;
+            ViewBag.tipoUsuario = tipoUsuario;
+
             return View();
         }
 
@@ -59,7 +60,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public ActionResult RestablecerContraseña(string identificacion = "0117860838", string tipoUsuario = "Oferente")
+        public ActionResult RestablecerContraseña(string identificacion, string tipoUsuario )
         {
             ViewBag.VistaActual = "Restablecer Clave";
             ViewBag.id = identificacion;
@@ -165,6 +166,11 @@ namespace AplicacionRHGit.Controllers
 
                         }
 
+                        if ( _context.Oferente.Any(o => o.telefono == usuario.telefono )){
+
+                            return Json(new { exitoso = false, error = "Telefono ya se encuentra registrado" });
+                        }
+
 
                         DA.AgregarUsuario(usuario, tipoUsuario);//se agregar el oferente
 
@@ -209,6 +215,13 @@ namespace AplicacionRHGit.Controllers
                             return Json(new { exitoso = false, error = "Correo ya existe" });
 
                         }
+
+                        if (_context.Reclutador.Any(r => r.telefono == usuario.telefono))
+                        {
+
+                            return Json(new { exitoso = false, error = "Telefono ya se encuentra registrado" });
+                        }
+
                         DA.AgregarUsuario(usuario, tipoUsuario);
                     }
                     catch (SqlException sqlEx)

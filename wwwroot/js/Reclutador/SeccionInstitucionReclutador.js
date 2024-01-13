@@ -5,8 +5,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ModificarInstitutoReclutador");
 
-        var actionUrl = '/Reclutador/ModificarInstitutoReclutador';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -29,8 +30,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AdministrarMateriasReclutador");
 
-        var actionUrl = '/Reclutador/AdministrarMateriasReclutador';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -289,8 +291,10 @@ function CargarInstitutosCombo() {
     var cmbInstituciones = $("#institucion");
 
     // Llamada AJAX para obtener los datos desde el controlador
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/MostrarInstitutosSecundaria");
+
     $.ajax({
-        url: '/Reclutador/MostrarInstitutosSecundaria', // Asegúrate de reemplazar 'TuControlador' con el nombre correcto de tu controlador
+        url: url, // Asegúrate de reemplazar 'TuControlador' con el nombre correcto de tu controlador
         type: 'GET',
         data: {
             idProvincia: $("#provincias").val(), // Reemplaza 'valorIdProvincia' con el valor correcto
@@ -318,8 +322,10 @@ function CargarInstitutosCombo() {
 //esta funcion obtiene el numero de telefono de la institucion seleccionada
 function ObtenerTelefonoInstituto(idInstituto) {
     return new Promise(function (resolve, reject) {
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ObtenerTelefonoInstitucion");
+
         $.ajax({
-            url: '/Reclutador/ObtenerTelefonoInstitucion',
+            url: url,
             type: 'GET',
             data: {
                 idProvincia: $("#provincias").val(),
@@ -352,9 +358,10 @@ function AgregarInstitucion() {
 
     // Agregar identificacion y clave al formData
     formData.append("identificacion", $("#identification").val());
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AgregarInstitucion");
 
     $.ajax({
-        url: '/Reclutador/AgregarInstitucion',
+        url: url,
         type: 'POST',
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
@@ -432,9 +439,10 @@ function AsignarValoresCampos(instituto) {
 }
 
 function CargarInstitutoReclutador() {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ObtenerInstitucionReclutador");
 
     $.ajax({
-        url: '/Reclutador/ObtenerInstitucionReclutador', // Asegúrate de reemplazar 'TuControlador' con el nombre correcto de tu controlador
+        url: url, // Asegúrate de reemplazar 'TuControlador' con el nombre correcto de tu controlador
         type: 'GET',
         data: {
             identificacion: $("#identification").val()
@@ -468,9 +476,11 @@ function CargarInstitutoReclutador() {
 
 function CargarMaterias() {
     // Hacer la solicitud AJAX para cargar las materias
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarMaterias");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarMaterias",
+        url: url,
         success: function (data) {
 
             // Llenar las opciones del select con las materias
@@ -492,10 +502,11 @@ function CargarMaterias() {
 
 
 function AgregarMateria() {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AgregarMateriaInstitucion");
 
     $.ajax({
         type: "POST",
-        url: "/Reclutador/AgregarMateriaInstitucion",
+        url: url,
         data: {
             identificacion: $("#identification").val(),
             idMateria: $("#materias").val()
@@ -535,9 +546,11 @@ function AgregarMateria() {
 
 
 function MostrarMateriasReclutador() {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/MostrarMateriasInstitucion");
+
     $.ajax({
         type: "Get",
-        url: "/Reclutador/MostrarMateriasInstitucion",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -609,10 +622,11 @@ function EliminarMateriaInstitucion(idMateria) {
     $("#confirmacionEliminarModalMateria").modal("show");
 
     $("#confirmarEliminar").click(function (event) {
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/EliminarMateriaInstitucion");
 
         $.ajax({
             type: "DELETE",
-            url: "/Reclutador/EliminarMateriaInstitucion",
+            url: url,
             data: {
                 idMateria: idMateria,
                 identificacion: $("#identification").val()
@@ -645,4 +659,19 @@ function EliminarMateriaInstitucion(idMateria) {
         });
 
     });
+}
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
 }

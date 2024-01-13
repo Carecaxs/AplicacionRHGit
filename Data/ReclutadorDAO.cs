@@ -1,4 +1,5 @@
 ﻿using AplicacionRHGit.Models.InstitucionesEducativas;
+using AplicacionRHGit.Models.OfertasLaborales;
 using AplicacionRHGit.Models.Ubicaciones;
 
 namespace AplicacionRHGit.Data
@@ -101,5 +102,47 @@ namespace AplicacionRHGit.Data
                 throw ex;
             }
         }
+
+
+        //metodos para la secccion de reclutamiento
+        public void CrearOferta(IFormCollection form)
+        {
+            try
+            {
+                //consulta el id del oferente con la cedula dada
+                var idReclutador = _context.Reclutador
+               .Where(o => o.identificacion == form["identificacion"].FirstOrDefault())
+               .Select(o => o.idReclutador)
+               .FirstOrDefault();
+
+                var idReclutadorInstitucion=_context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r=>r.ID_RECLUTADOR_INSTITUCION)
+                    .SingleOrDefault();
+
+                Oferta_Laboral oferta = new Oferta_Laboral()
+                {
+                    titulo= form["titulo"].FirstOrDefault(),
+                    descripcion= form["descripcion"].FirstOrDefault(),
+                    fecha_publicacion= DateTime.Now,
+                    estado=false,
+                    idOferente=null,
+                    id_reclutador_institucion=idReclutadorInstitucion,
+                    id_materia= int.Parse(form["materias"].FirstOrDefault()),
+                    idGrupoProf = int.Parse(form["grupoProfesional"].FirstOrDefault()),
+                    cantidadVacantes = int.Parse(form["numVacantes"].FirstOrDefault())
+                };
+
+                _context.Oferta_Laboral.Add(oferta);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }
