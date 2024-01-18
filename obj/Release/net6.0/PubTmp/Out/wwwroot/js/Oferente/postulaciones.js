@@ -18,8 +18,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/BuscarOfertasOferente");
 
-        var actionUrl = '/Oferente/BuscarOfertasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
 
@@ -35,8 +36,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/CrearOfertaOferente");
 
-        var actionUrl = '/Oferente/CrearOfertaOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -52,8 +54,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerOfertasOferente");
 
-        var actionUrl = '/Oferente/VerOfertasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -69,8 +72,9 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/VerVacantesAplicadasOferente");
 
-        var actionUrl = '/Oferente/VerVacantesAplicadasOferente';
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $(".formEnlaces");
@@ -485,9 +489,11 @@ function procesarRespuestaOfertas(data) {
 
 
 function CargarOfertas() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarOfertas");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarOfertas",
+        url: url,
         data: {
             provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
             canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
@@ -514,9 +520,11 @@ function CargarOfertas() {
 
 
 function MostrarDetallesOferta(id) {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerDatosOferta");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/ObtenerDatosOferta",
+        url: url,
         data: {
             idOferta: id
         },
@@ -557,9 +565,11 @@ function MostrarDetallesOferta(id) {
 
 function CargarMaterias() {
     // Hacer la solicitud AJAX para cargar las materias
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarMaterias");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarMaterias",
+        url: url,
         success: function (data) {
 
             // Llenar las opciones del select con las materias
@@ -581,9 +591,11 @@ function CargarMaterias() {
 
 function CargarGruposProfesionales() {
     // Hacer la solicitud AJAX para cargar las materias
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarGruposProfesionales");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarGruposProfesionales",
+        url: url,
         success: function (data) {
 
             // Llenar las opciones del select con las materias
@@ -666,9 +678,11 @@ function CargarCanton(idProvincia) {
 
 
 function AgregarPostulacion() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/AgregarPostulacion");
+
     $.ajax({
         type: "POST",
-        url: "/Oferente/AgregarPostulacion",
+        url: url,
         data: {
             idOferta: $("#idOferta").val(),
             identificacion: $("#identification").val()
@@ -804,10 +818,11 @@ function CrearOferta() {
     formData.append("listaGrupos", JSON.stringify(listaGrupos));
 
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CrearOferta");
 
     $.ajax({
         method: "POST",//tipo de solicitud
-        url: "/Oferente/CrearOferta",
+        url: url,
         data: formData,
         processData: false,  // Necesario para enviar FormData correctamente
         contentType: false,  // Necesario para enviar FormData correctamente
@@ -1014,8 +1029,10 @@ function procesarRespuestaOfertasCreadasOferente(data) {
 function cargarImagenPerfil() {
 
     var identificacion = $("#identification").val();
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/ObtenerUrlImagen");
+
     $.ajax({
-        url: '/Oferente/ObtenerUrlImagen',  // Reemplaza con la URL correcta de tu controlador
+        url: url,  // Reemplaza con la URL correcta de tu controlador
         type: 'GET',
         data: { identificacion: identificacion },
         success: function (data) {
@@ -1302,10 +1319,11 @@ function procesarRespuestaMisOfertas(data) {
 
 
 function CargarOfertasCreadasOferente() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarMisOfertas");
 
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarMisOfertas",
+        url: url,
         data: {
             identificacion: $("#identification").val()
 
@@ -1383,10 +1401,11 @@ function DesactivarOfertaCreadaOferente(idOferta) {
     $("#confirmacionDesactivarModalOferta").modal("show");
 
     $("#confirmarDesactivarOferta").click(function (event) {
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/DesactivarOfertaCreadaOferente");
 
         $.ajax({
             type: "POST",
-            url: "/Oferente/DesactivarOfertaCreadaOferente",
+            url: url,
             data: {
                 idOferta: idOferta,
                 identificacion: $("#identification").val()
@@ -1424,10 +1443,11 @@ function ActivarOfertaCreadaOferente(idOferta) {
     $("#confirmacionActivarModalOferta").modal("show");
 
     $("#confirmarActivarOferta").click(function (event) {
+        let url = ObtenerUrlSolicitud('Oferente', "Oferente/ActivarOfertaCreadaOferente");
 
         $.ajax({
             type: "POST",
-            url: "/Oferente/ActivarOfertaCreadaOferente",
+            url: url,
             data: {
                 idOferta: idOferta,
                 identificacion: $("#identification").val()
@@ -1527,10 +1547,11 @@ function mostrarListaColegios(data) {
 
 function CargarColegiosCoincidentesOfertaOferente(idOferta) {
 
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarColegiosCoincidentes");
 
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarColegiosCoincidentes",
+        url: url,
         data: {
             idOferta: idOferta
            
@@ -1562,9 +1583,11 @@ function CargarColegiosCoincidentesOfertaOferente(idOferta) {
 
 /////////////////  funciones vista ver vacantes aplicadas //////////////
 function CargarOfertasAplicadas() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarOfertasAplicadas");
+
     $.ajax({
         type: "GET",
-        url: "/Oferente/CargarOfertasAplicadas",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -1664,9 +1687,11 @@ function agregarOfertasAplicadasALaTabla(oferta) {
 }
 
 function CancelarPostulacion() {
+    let url = ObtenerUrlSolicitud('Oferente', "Oferente/CancelarPostulacion");
+
     $.ajax({
         type: "DELETE",
-        url: "/Oferente/CancelarPostulacion",
+        url: url,
         data: {
             idOferta: $("#idOferta").val(),
             identificacion: $("#identification").val()
@@ -1704,3 +1729,18 @@ function CancelarPostulacion() {
     });
 }
 
+
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
+}

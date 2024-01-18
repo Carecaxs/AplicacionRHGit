@@ -1,0 +1,148 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutReclutador.cshtml";
+}
+
+
+
+<main role="main" class="pb-3">
+    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="apellidosOferente" type="hidden" value="@ViewBag.apellidos" />
+
+
+    <div class="container">
+        <div class="contenedorCuenta">
+            <form id="formRegresar" class="col-sm-6" method="post" asp-controller="Reclutador" asp-action="MenuPrincipalReclutador">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+            </form>
+
+            <form class="formEnlaces" method="post">
+
+
+                <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
+                    <li class="nav-item">
+                        <button id="enlaceVervacantes" class="btn-primary">Ver Vacantes</button>
+
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceCrearVacante" class="btn-primary">Crear</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceAdministrarVacante" class="btn-primary">Administrar</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceCandidatos" class="btn-primary">Candidatos</button>
+                    </li>
+                </ul>
+
+            </form>
+
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <label for="provincias">Provincia:</label>
+                    <select id="provincias" class="form-control">
+                        <!-- Opciones de provincias -->
+                        <option value="null">Seleccione una opción</option>
+
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="cantones">Cantón:</label>
+                    <select id="cantones" class="form-control">
+                        <!-- Opciones de cantones -->
+                        <option value="null">Seleccione una opción</option>
+
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="materias">Materia:</label>
+                    <select id="materias" class="form-control">
+                        <!-- Opciones de materias -->
+                        <option value="null">Seleccione una opción</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button id="btnVerMisVacantes" class="btn btn-sm btn-info mt-3">Ver mis Vacantes</button>
+            <button id="btnVerTodo" class="btn btn-sm btn-info mt-3">Ver Todo</button>
+
+
+            <div class="table-responsive mt-2">
+                <table id="" class="table table-bordered">
+                    <thead class="tabla-head">
+                        <tr class="text-center">
+                            <th>Publicado</th>
+                            @*      <th>Institución</th> *@
+                            <th>Puesto</th>
+                            @*       <th>Materia</th>
+                            <th>Descripción</th> *@
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaOfertas">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para ver detqalles de oferta -->
+    <div class="modal fade" id="verOfertaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ver Oferta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para ver oferta -->
+
+
+                    <input type="hidden" class="form-control" id="idOferta" />
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="tituloOferta">Oferta</label>
+                        <input type="text" class="form-control" id="tituloOferta" readonly tabindex="1" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="nombreInstitucion">Institución</label>
+                        <input type="text" class="form-control" id="nombreInstitucion" readonly tabindex="2" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="nombreMateria">Materia</label>
+                        <input type="text" class="form-control" id="nombreMateria" readonly tabindex="3" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-12">
+                        <label class="label-custom-font" for="descripcionOferta">Requisitos</label>
+                        <textarea class="form-control" id="descripcionOferta" readonly tabindex="4"></textarea>
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-4">
+                        <label class="label-custom-font" for="publicacionOferta">Publicado</label>
+                        <input type="date" class="form-control" id="publicacionOferta" readonly tabindex="5" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="@Url.Content("~/js/reclutador/reclutamiento.js")"></script>
+
+
+</main>
+
+

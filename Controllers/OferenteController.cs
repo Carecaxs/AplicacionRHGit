@@ -2164,7 +2164,8 @@ namespace AplicacionRHGit.Controllers
                                     descripcionOferta = oferta.descripcion,
                                     publicacionOferta = oferta.fecha_publicacion,
                                     nombreInstitucion = centroEducativo.Nombre_Institucion,
-                                    nombreMateria = materia.Nombre
+                                    nombreMateria = materia.Nombre,
+                                    cantidadVacantes=oferta.cantidadVacantes
                                 }).FirstOrDefault();
 
 

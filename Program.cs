@@ -38,7 +38,7 @@ app.MapControllerRoute(
 
 //app.MapControllerRoute(
 //    name: "default",
-//    pattern: "{controller=Reclutador}/{action=CrearOfertaReclutador}/{identification?}/{clave?}");
+//    pattern: "{controller=Reclutador}/{action=VerCandidatosReclutador}/{identification?}/{clave?}");
 
 
 

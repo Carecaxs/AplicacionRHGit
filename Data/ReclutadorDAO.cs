@@ -1,6 +1,7 @@
 ﻿using AplicacionRHGit.Models.InstitucionesEducativas;
 using AplicacionRHGit.Models.OfertasLaborales;
 using AplicacionRHGit.Models.Ubicaciones;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AplicacionRHGit.Data
 {
@@ -135,6 +136,27 @@ namespace AplicacionRHGit.Data
 
                 _context.Oferta_Laboral.Add(oferta);
                 _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ActualizarOferta(string titulo, string descripcion, int cantidadVacantes, int idOferta)
+        {
+            try
+            {
+                var oferta=_context.Oferta_Laboral.SingleOrDefault(o=>o.id_oferta==idOferta);
+                if (oferta != null)
+                {
+                    oferta.titulo = titulo;
+                    oferta.descripcion = descripcion;
+                    oferta.cantidadVacantes = cantidadVacantes;
+                }
+
+                _context.SaveChanges();                    
 
             }
             catch (Exception ex)

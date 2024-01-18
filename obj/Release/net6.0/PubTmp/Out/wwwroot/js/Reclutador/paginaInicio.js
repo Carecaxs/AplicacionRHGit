@@ -17,8 +17,100 @@
 
         event.preventDefault();
 
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AñadirInstitutoReclutador");
 
-        var actionUrl = '/Reclutador/AñadirInstitutoReclutador';
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#dropdownModificarInstitucion").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ModificarInstitutoReclutador");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+    $("#dropdownAdministrarMaterias").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AdministrarMateriasReclutador");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+    $("#dropdownVerVacantes").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/VerVacantesReclutador");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+    $("#dropdownCrearVacantes").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CrearOfertaReclutador");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+    $("#dropdownAdministrarVacantes").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AdministrarOfertasReclutador");
+
+        var actionUrl = url;
 
         // Tu lógica para enviar el formulario
         var form = $("#formPaginaInicioReclutador");
@@ -38,9 +130,11 @@
 
 //funcion para comprobar si se debe de mostrar o no el crear institucion, se muestra unicamente si no se ha creado aun
 function ComprobacionMostrarCrearinstitucion() {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/InstitucionCreada");
+
     $.ajax({
         type: "GET",
-        url: "/Reclutador/InstitucionCreada",
+        url: url,
         data: {
             identificacion: $("#identification").val()
         },
@@ -120,3 +214,17 @@ function MaskAgregartarjeta() {
 }
 
 
+
+function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
+    //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
+    var segments = window.location.pathname.split('/');
+    var index = segments.indexOf(controllerVistaActual);
+    var baseUrl = window.location.origin + (index !== -1 ? '/' + segments.slice(1, index).join('/') : '');
+
+    if (baseUrl.charAt(baseUrl.length - 1) != '/') {
+        baseUrl += '/';  // Asegurar que la cadena termine con una barra diagonal
+    }
+
+    // ruta relativa al controlador
+    return baseUrl + solicitudAjax;
+}
