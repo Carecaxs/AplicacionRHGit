@@ -1,4 +1,5 @@
 ﻿using AplicacionRHGit.Data;
+using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.InstitucionesEducativas;
 using AplicacionRHGit.Models.Ubicaciones;
 using Microsoft.AspNetCore.Mvc;
@@ -281,7 +282,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult AdministrarOfertasReclutador(string identification, string clave)
+        public IActionResult AdministrarOfertasReclutador(string identification="0117860836", string clave="123")
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -326,7 +327,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult VerCandidatosReclutador(string identification, string clave)
+        public IActionResult VerCandidatosReclutador(string identification, string clave, int idOferta=0)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -345,9 +346,7 @@ namespace AplicacionRHGit.Controllers
                     ViewBag.clave = clave;
                     ViewBag.tipoUsuario = "Reclutador";
                     ViewBag.VistaActual = "VerCandidatosReclutador";
-
-
-
+                    ViewBag.idOferta = idOferta;
 
                     return View();
                 }
@@ -725,8 +724,12 @@ namespace AplicacionRHGit.Controllers
 
 
         //metodos para la vista VerVacantesReclutador
+
+        //este metodo carga la vacantes del reclutador
+        //recibe la identificacion del reclutador 
+        //recibe 1 si quiere mostrar las activas o 2 si todas
         [HttpGet]
-        public JsonResult CargarMisVacantes(string identification)
+        public JsonResult CargarMisVacantes(string identification, int num, int provincia, int canton, int idMateria)
         {
             try
             {
@@ -740,7 +743,10 @@ namespace AplicacionRHGit.Controllers
                                join centroEducativo in _context.CentrosEducativos on institucion.ID_INSTITUCION equals centroEducativo.Cod_Presupuestario
                                join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
 
-                               where (oferta.estado == false) &&
+                               where (num==1 || oferta.estado == false) &&
+                                     (provincia == 0 || centroEducativo.Cod_Pro == provincia) &&
+                                     (canton == 0 || centroEducativo.Cod_Cant == canton) &&
+                                     (idMateria == 0 || oferta.id_materia == idMateria) &&
                                      (oferta.cantidadVacantes > 0) &&
                                      (institucion.ID_RECLUTADOR == idReclutador)
 
@@ -1093,6 +1099,375 @@ namespace AplicacionRHGit.Controllers
 
             }
         }
+
+
+
+        [HttpGet]
+        public JsonResult CargarReferencias(int idOferente, char tipoReferencia)
+        {
+            try
+            {
+
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id de la referencia donde contenga ese id de expediente
+                var idReferencia = _context.Referencia
+                .Where(r => r.ID_EXPEDIENTE == idExpediente)
+                .Select(r => r.ID_REFERENCIA)
+                .FirstOrDefault();
+
+                //filtrar en una lista los titulos por id
+                List<DETALLE_REFERENCIAS> referencias = _context.DetalleReferencia
+                .Where(r => r.ID_REFERENCIA == idReferencia && r.TIPO == tipoReferencia)
+                .ToList();
+
+                if (referencias != null && referencias.Any())
+                {
+                    return Json(referencias);
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public JsonResult ObtenerUrlEvaluacion(int idOferente, int idReferencia)
+        {
+
+            try
+            {
+                var identificacion = _context.Oferente.Where(o => o.idOferente == idOferente).Select(o => o.identificacion).SingleOrDefault().Trim();
+
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesReferencias", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idReferencia + ".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesReferencias", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult CargarTitulos(int idOferente, int tipo)
+        {
+
+
+            var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+            var idTitulo = _context.Titulo
+                .Where(t => t.ID_EXPEDIENTE == idExpediente)
+                .Select(t => t.ID_TITULO)
+                .FirstOrDefault();
+
+
+            switch (tipo)
+            {
+                case 1:
+                    //consulta para secundaria
+                    var titulos = (from detalleTitulo in _context.DetalleTitulo
+                                   join institucion in _context.CentrosEducativos on detalleTitulo.ID_INSTITUCION equals institucion.Cod_Presupuestario
+                                   join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                   where detalleTitulo.TIPO_TITULO == 1 && detalleTitulo.ID_TITULO == idTitulo
+                                   select new
+                                   {
+                                       idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                       idTitulo = detalleTitulo.ID_TITULO,
+                                       especialidad = detalleTitulo.ESPECIALIDAD,
+                                       folio = detalleTitulo.FOLIO,
+                                       asiento = detalleTitulo.ASIENTO,
+                                       estado = detalleTitulo.ESTADO,
+                                       tipoTitulo = grado.gradoAcademico,
+                                       fechaInicio = detalleTitulo.FECHA_INICIO,
+                                       fechaFin = detalleTitulo.FECHA_FIN,
+                                       tomo = detalleTitulo.TOMO,
+                                       institucion = institucion.Nombre_Institucion,
+                                       codPrespuestario = institucion.Cod_Presupuestario
+                                   })
+                   .GroupBy(t => t.codPrespuestario) // Agrupar por Cod_Presupuestario
+                   .Select(group => group.First()) // Seleccionar el primer elemento de cada grupo
+                   .ToList();
+
+
+                    if (titulos != null && titulos.Any())
+                    {
+                        return Json(titulos);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
+
+
+                case 2:
+
+
+                    //consulta para universidades
+                    var titulo = (from detalleTitulo in _context.DetalleTitulo
+                                  join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                  join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
+                                  where (detalleTitulo.TIPO_TITULO == 3 || detalleTitulo.TIPO_TITULO == 4 ||
+                                         detalleTitulo.TIPO_TITULO == 5 || detalleTitulo.TIPO_TITULO == 6 || detalleTitulo.TIPO_TITULO == 7
+                                         && detalleTitulo.ID_TITULO == idTitulo)
+                                  select new
+                                  {
+                                      idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                      idTitulo = detalleTitulo.ID_TITULO,
+                                      especialidad = detalleTitulo.ESPECIALIDAD,
+                                      folio = detalleTitulo.FOLIO,
+                                      asiento = detalleTitulo.ASIENTO,
+                                      estado = detalleTitulo.ESTADO,
+                                      tipoTitulo = grado.gradoAcademico,
+                                      fechaInicio = detalleTitulo.FECHA_INICIO,
+                                      fechaFin = detalleTitulo.FECHA_FIN,
+                                      tomo = detalleTitulo.TOMO,
+                                      institucion = institutos.nombre_universidad
+                                  }).ToList();
+
+
+
+                    if (titulo != null && titulo.Any())
+                    {
+                        return Json(titulo);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
+
+                case 3:
+                    //consulta para diplomados
+                    var tituloVarios = (from detalleTitulo in _context.DetalleTitulo
+                                        join grado in _context.GradoAcademico on detalleTitulo.TIPO_TITULO equals grado.id
+                                        join institutos in _context.u_universidades on detalleTitulo.ID_INSTITUCION.ToString() equals institutos.id_universidad
+                                        where (detalleTitulo.TIPO_TITULO == 2 && detalleTitulo.ID_TITULO == idTitulo)
+                                        select new
+                                        {
+                                            idDetalleTitulo = detalleTitulo.ID_DETALLE_TITULOS,
+                                            idTitulo = detalleTitulo.ID_TITULO,
+                                            especialidad = detalleTitulo.ESPECIALIDAD,
+                                            folio = detalleTitulo.FOLIO,
+                                            asiento = detalleTitulo.ASIENTO,
+                                            estado = detalleTitulo.ESTADO,
+                                            tipoTitulo = grado.gradoAcademico,
+                                            fechaInicio = detalleTitulo.FECHA_INICIO,
+                                            fechaFin = detalleTitulo.FECHA_FIN,
+                                            tomo = detalleTitulo.TOMO,
+                                            institucion = institutos.nombre_universidad
+                                        }).ToList();
+
+
+
+                    if (tituloVarios != null && tituloVarios.Any())
+                    {
+                        return Json(tituloVarios);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+
+                    }
+            }
+
+
+
+            return Json(new { vacio = true });
+
+
+
+        }
+
+        [HttpGet]
+        public JsonResult CargarTituloEspecifico(int idTitulo)
+        {
+
+            try
+            {
+                var titulo = _context.DetalleTitulo.Where(t => t.ID_DETALLE_TITULOS == idTitulo).SingleOrDefault();
+
+
+                return Json(titulo);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+           
+
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerUrlTitulo(int idOferente, int idTitulo)
+        {
+
+            try
+            {
+                var identificacion = _context.Oferente.Where(o => o.idOferente == idOferente).Select(o => o.identificacion).SingleOrDefault().Trim();
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesTitulos", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idTitulo + ".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesTitulos", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+        [HttpGet]
+        public JsonResult CargarExperiencias(int idOferente)
+        {
+            try
+            {
+                //consulta el id del expediente de ese oferente
+                var idExpediente = _context.Expediente
+                .Where(e => e.idOferente == idOferente)
+                .Select(e => e.ID_EXPEDIENTE)
+                .FirstOrDefault();
+
+                //consulta el id de la experiencia
+                var idExperiencia = _context.Experiencia
+                .Where(e => e.ID_EXPEDIENTE == idExpediente)
+                .Select(e => e.ID_EXPERIENCIA)
+                .FirstOrDefault();
+
+                //filtrar en una lista los experiencias por id
+                List<DETALLE_EXPERIENCIA> experiencias = _context.DetalleExperiencia
+                .Where(e => e.ID_EXPERIENCIA == idExperiencia)
+                .OrderByDescending(e => e.fin)
+                .ToList();
+
+                if (experiencias != null)
+                {
+                    return Json(experiencias);
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public JsonResult ObtenerUrlExperiencia(int idOferente, int idExperiencia)
+        {
+
+            try
+            {
+                var identificacion = _context.Oferente.Where(o => o.idOferente == idOferente).Select(o => o.identificacion).SingleOrDefault().Trim();
+                var hostingEnvironment = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var carpetaCedula = Path.Combine(hostingEnvironment.WebRootPath, "ImagesEvaluaciones", identificacion);
+
+
+                // Buscar el archivo en el directorio
+                string[] archivos = Directory.GetFiles(carpetaCedula, idExperiencia + ".*");
+
+                if (archivos.Length > 0 && System.IO.File.Exists(archivos[0]))
+                {
+                    // Obtener la URL relativa al archivo
+                    var rutaRelativa = Path.Combine("ImagesEvaluaciones", identificacion, Path.GetFileName(archivos[0]));
+                    var urlImagen = Url.Content("~/" + rutaRelativa);
+
+                    // Ahora, urlImagen contiene la URL completa del archivo
+
+                    return Json(new { urlImagen });
+
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+
+
 
 
 

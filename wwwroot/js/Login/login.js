@@ -150,9 +150,9 @@ $(document).ready(function () {
 
         // Evitar la recarga de la página
         event.preventDefault();
-
+     
         $("#loader-container").show();  // Muestra el modal de carga
-
+     
         var identificacion = $("#identification").val();//obtener el valor de la cedula
 
         var tipoIdentificacionSeleccionado = $("#identificationType").val();//acceder al tipo de identificacion seleccionado
@@ -842,10 +842,10 @@ $(document).ready(function () {
 
                                 $("#msjInformativo").remove();
 
-                                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                                $("#btnIniciarSesion").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
                             }
                             else {
-                                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
+                                $("#btnIniciarSesion").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + data.mensaje + "</p>");
 
                             }
                         }
@@ -866,10 +866,10 @@ $(document).ready(function () {
 
                 $("#msjInformativo").remove();
 
-                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
+                $("#btnIniciarSesion").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
             }
             else {
-                $("#btnIniciarSesion").before("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
+                $("#btnIniciarSesion").after("<p class='alert alert-danger mt-2' id='msjInformativo'>" + "Debes de llenar los campos" + "</p>");
 
             }
         }
@@ -1088,7 +1088,16 @@ function CargarDatosPersona(identificacion, tipoIdentificacionSeleccionado) {
 
             if (data.error) { //si data.error contiene algo
 
-                console.log(data.error);
+                if ($("#msjFormulario").length) {
+
+                    $("#msjFormulario").remove();
+
+                    $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+                }
+                else {
+                    $("#botones").after("<p class='alert alert-danger mt-2' id='msjFormulario'>" + data.error + "</p>");
+
+                }
                 $("#loader-container").hide(); 
 
 

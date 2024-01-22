@@ -408,7 +408,7 @@ namespace AplicacionRHGit.Data
                     TIPO_TITULO = 1,
                     FECHA_INICIO = DateTime.Parse(form["fechaInicio"].FirstOrDefault()),
                     FECHA_FIN = DateTime.Parse(form["fechaFin"].FirstOrDefault()),
-                    ESTADO = 'P',
+                    ESTADO = 'I',
                     ESPECIALIDAD="Bachillerato Secundaria",
                     ID_INSTITUCION= int.Parse(form["instituto"].FirstOrDefault()),
                     TOMO=0,
@@ -522,7 +522,7 @@ namespace AplicacionRHGit.Data
                 {
                     ID_TITULO = idTitulo,
                     TIPO_TITULO = int.Parse(form["nivelEducacion"].FirstOrDefault()),
-                    ESTADO = 'P',
+                    ESTADO = 'I',
                     ESPECIALIDAD = form["textoCarrera"].FirstOrDefault(),
                     ID_INSTITUCION = int.Parse(form["instituto"].FirstOrDefault()),
                     TOMO = int.Parse(form["tomo"].FirstOrDefault()),

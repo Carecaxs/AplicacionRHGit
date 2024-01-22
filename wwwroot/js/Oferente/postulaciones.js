@@ -92,7 +92,9 @@
 
     if ($("#vistaActual").val() == "BuscarOfertasOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceBuscar").addClass("active");
+
+        $("#enlaceBuscar").addClass("btn-info active");
+        $("#enlaceBuscar").removeClass("btn-dark");
         CargarProvincia();
         CargarMaterias();
         //cargar ofertas 
@@ -175,7 +177,9 @@
 
     if ($("#vistaActual").val() == "CrearOfertaOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceCrear").addClass("active");
+
+        $("#enlaceCrear").addClass("btn-info active");
+        $("#enlaceCrear").removeClass("btn-dark");
         CargarProvincia();
         CargarMaterias();
         CargarGruposProfesionales();
@@ -321,7 +325,8 @@
     if ($("#vistaActual").val() == "VerOfertasOferente") {
 
         //poner activo al enlace de activo a esta vista
-        $("#enlaceVerMisOfertas").addClass("active");
+        $("#enlaceVerMisOfertas").addClass("btn-info active");
+        $("#enlaceVerMisOfertas").removeClass("btn-dark");
         CargarOfertasCreadasOferente();
 
     }
@@ -364,7 +369,8 @@
 
     if ($("#vistaActual").val() == "VerVacantesAplicadasOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceVerVacantesAplicadas").addClass("active");
+        $("#enlaceVerVacantesAplicadas").addClass("btn-info active");
+        $("#enlaceVerVacantesAplicadas").removeClass("btn-dark");
 
         //cargar ofertas 
         CargarOfertasAplicadas();

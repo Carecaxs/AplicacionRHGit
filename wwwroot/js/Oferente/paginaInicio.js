@@ -328,6 +328,19 @@
     });
 
 
+    $("#dropdownCerrarSesion").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        let url = ObtenerUrlSolicitud('Oferente', "MenuPrincipal/MenuAcceso");
+        window.location.href =url;
+
+      
+    });
+
+
 
 
     if ($("#nombreVista").length) {

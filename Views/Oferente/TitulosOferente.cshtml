@@ -25,34 +25,39 @@
             <form class="formEnlaces" method="post">
                 <input name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceDatosPersonales" class="btn-primary">Expediente Personal</button>
+                        <button id="enlaceDatosPersonales" class="btn-dark">Expediente Personal</button>
 
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpedienteAcademico" class="btn-primary">Expediente Academico</button>
+                        <button id="enlaceExpedienteAcademico" class="btn-dark">Expediente Academico</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceReferencias" class="btn-primary">Perfil Laboral</button>
+                        <button id="enlaceReferencias" class="btn-dark">Perfil Laboral</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceExpLaboral" class="btn-primary">Experiencia Laboral</button>
+                        <button id="enlaceExpLaboral" class="btn-dark">Experiencia Laboral</button>
 
                     </li>
 
                 </ul>
 
             </form>
-
-            <h4 class="text-center mt-3">Bachillerato Secundaria</h4>
+            <div class="instrucciones-cuadro mt-1">
+                <p class="text-center"><strong>Estados de Titulo</strong></p>
+                <hr />
+                <p><strong>I:</strong> Ingresado</p>
+                <p><strong>R:</strong> Revisado</p>
+                <p><strong>P:</strong> En proceso de certificación</p>
+                <p><strong>C:</strong> Certificado</p>
+            </div>
+            <h4 class="text-center">Bachillerato Secundaria</h4>
 
             <!-- Lista de Títulos Secundaria-->
             <table id="tablaTitulosSecundaria" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Titulo</th>
                         <th>Instituto</th>
                         <th>Año Inicio</th>
                         <th>Año Final</th>
@@ -63,18 +68,6 @@
                 <tbody id="listaTitulosSecundaria">
                 </tbody>
             </table>
-            <!-- Botón para Añadir titulo secundaria -->
-   @*          <div class="form-group col-sm-12">
-                <button id="abrirModalAgregarTituloSecundaria" type="button" class="btn btn-primary mt-1 w-100" data-toggle="modal" data-target="#agregarTituloSecundariaModal">
-                    Añadir Título
-                </button>
-            </div> *@
-
-
-
-
-
-
 
             <hr class="mt-5"/>
 
@@ -106,11 +99,11 @@
             <hr class="mt-5" />
 
 
-            <h4 class="text-center">Diplomas</h4>
+            <h4 class="text-center">Diplomas - Tecnicos</h4>
             <table id="tablaTitulosVarios" class="table table-bordered">
                 <thead class="tabla-head">
                     <tr class="text-center">
-                        <th>Titulo</th>
+
                         <th>Especialidad</th>
                         <th>Instituto</th>
                         <th>Año Inicio</th>

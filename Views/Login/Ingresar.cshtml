@@ -22,7 +22,7 @@
         <div class="contenedorCuenta" style="max-width:35rem;">
             <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
 
-            <button id="btnRegresar" class="btn btn-secondary mt-2" tabindex="12">Regresar</button>
+            <button id="btnRegresar" class="btn btn-secondary mt-2" tabindex="7">Regresar</button>
 
             <form id="formIngresar" method="post">
                 <div class="d-flex flex-column align-items-center">
@@ -53,23 +53,32 @@
                         </div>
 
                     </div>
-                    <button type="button" class="btn btn-link" id="abrirModalRestablecerClave" tabindex="4">
-                        ¿Olvidó su contraseña?
-                    </button>
+               
               
 
-                    <button id="btnIniciarSesion" class="btn btn-primary mt-1" tabindex="5">Iniciar sesión</button>
+                    <button id="btnIniciarSesion" class="btn btn-primary mt-2" tabindex="4">Iniciar sesión</button>
                 </div>
             </form>
-            <div class="d-flex flex-column align-items-center mt-2">
 
 
-                <form method="post" asp-controller="Login" asp-action="Crear">
-                    <input id="tipoUsuario" name="tipoUsuario" type="hidden" value="@ViewBag.tipoUsuario" />
-                    <button type="submit" class="btn btn-link">Registrarse</button>
-                </form>
+            <div class="row justify-content-between mt-3">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-link" id="abrirModalRestablecerClave" tabindex="5">
+                        ¿Olvidó su contraseña?
+                    </button>
+                </div>
 
+                <div class="col-auto">
+                    <form method="post" asp-controller="Login" asp-action="Crear">
+                        <input id="tipoUsuario" name="tipoUsuario" type="hidden" value="@ViewBag.tipoUsuario" />
+                        <button type="submit" class="btn btn-link" tabindex="6">Registrarse</button>
+                    </form>
+                </div>
             </div>
+
+
+   
+          
 
 
 

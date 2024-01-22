@@ -53,6 +53,7 @@
 
 
     if ($("#nombreVista").val() == "AñadirInstitutoReclutador") {
+
         CargarProvincias();
 
         Inputmask({ mask: '9999-9999' }).mask($('#contacto'));
@@ -120,8 +121,9 @@
 
 
     if ($("#nombreVista").val() == "ModificarInstitutoReclutador") {
+        $("#enlaceModificar").addClass("btn-info active");
+        $("#enlaceModificar").removeClass("btn-dark");
 
-        $("#enlaceModificar").addClass("active");
 
         CargarInstitutoReclutador();
         Inputmask({ mask: '9999-9999' }).mask($('#contacto'));
@@ -129,8 +131,10 @@
     }
 
     if ($("#nombreVista").val() == "AdministrarMateriasReclutador") {
+        $("#enlaceAdministrarMaterias").addClass("btn-info active");
+        $("#enlaceAdministrarMaterias").removeClass("btn-dark");
 
-        $("#enlaceAdministrarMaterias").addClass("active");
+
         CargarMaterias();
         MostrarMateriasReclutador();
 

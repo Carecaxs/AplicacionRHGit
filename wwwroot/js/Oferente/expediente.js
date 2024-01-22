@@ -150,7 +150,9 @@ $(document).ready(function () {
 
 
         //poner activo al enlace de los encabezados de datos personales
-        $("#enlaceDatosPersonales").addClass("active");
+
+        $("#enlaceDatosPersonales").addClass("btn-info active");
+        $("#enlaceDatosPersonales").removeClass("btn-dark");
 
         AgregarMascarasPaginaDatosPersonales();
         ObtenerDatosPersonales();
@@ -339,7 +341,9 @@ $(document).ready(function () {
     if ($("#vistaActual").val() == "TitulosOferente") {
 
         //poner activo al enlace de los encabezados de titulos
-        $("#enlaceExpedienteAcademico").addClass("active");
+
+        $("#enlaceExpedienteAcademico").addClass("btn-info active");
+        $("#enlaceExpedienteAcademico").removeClass("btn-dark");
 
         CargarProvincia();
 
@@ -1080,7 +1084,9 @@ $(document).ready(function () {
     //////////////////////////////////////////////  seccion de referencias //////////////////////////////////////////////////////////////
     if ($("#vistaActual").val() == "ReferenciasOferente") {
         //poner activo al enlace de los encabezados de referencias
-        $("#enlaceReferencias").addClass("active");
+
+        $("#enlaceReferencias").addClass("btn-info active");
+        $("#enlaceReferencias").removeClass("btn-dark");
 
         //al cargar la pagina por defecto va estar seleccionado referencia personal y no profesional
         //por lo que vamos a esconder los campos que solo se necesitan llenar cuando es refrencia profesional
@@ -1185,12 +1191,20 @@ $(document).ready(function () {
         var identificacion = $("#identification").val();
 
         MostrarEvaluacion(identificacion, idReferencia);
-       
-        
+
+    });
 
 
+    $("#listaReferenciasProfesionales").on("click", ".btnVerReferencia", function () {
 
+        // Obtener el id de la fila que va ser el id del titulo 
+        var fila = $(this).closest("tr");
 
+        var idReferencia = fila.attr("id");
+
+        var identificacion = $("#identification").val();
+
+        MostrarEvaluacion(identificacion, idReferencia);
 
     });
 
@@ -1233,7 +1247,9 @@ $(document).ready(function () {
         $('#fin').inputmask('9999', { placeholder: 'YYYY' });
 
         //poner activo al enlace de los encabezados de experiencia
-        $("#enlaceExpLaboral").addClass("active");
+  
+        $("#enlaceExpLaboral").addClass("btn-info active");
+        $("#enlaceExpLaboral").removeClass("btn-dark");
 
         //cargar experiencias en la tabla
         let url = ObtenerUrlSolicitud('Oferente', "Oferente/CargarExperiencias");
@@ -1493,11 +1509,7 @@ function agregarTituloALaTabla(titulo, num) {
         var row = tbody.insertRow(-1);
         row.id = titulo.idDetalleTitulo;
 
-        var cellEspecialidad = row.insertCell(0);
-        cellEspecialidad.textContent = titulo.especialidad;
-        cellEspecialidad.style.textAlign = "center";
-
-        var cellInstituto = row.insertCell(1);
+        var cellInstituto = row.insertCell(0);
         cellInstituto.textContent = titulo.institucion;
         cellInstituto.style.textAlign = "center";
 
@@ -1506,7 +1518,7 @@ function agregarTituloALaTabla(titulo, num) {
 
 
 
-        var cellInicio = row.insertCell(2);
+        var cellInicio = row.insertCell(1);
         cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
         cellInicio.style.textAlign = "center";
 
@@ -1514,24 +1526,28 @@ function agregarTituloALaTabla(titulo, num) {
         let partesFechaFin = fechaFin[0].split('-');
 
 
-        var cellFin = row.insertCell(3);
+        var cellFin = row.insertCell(2);
         cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
         cellFin.style.textAlign = "center";
 
-        var cellEstado = row.insertCell(4);
+        var cellEstado = row.insertCell(3);
         if (titulo.estado == 'P') {
-            cellEstado.textContent = "Pendiente";
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        } else if (titulo.estado == 'I') {
+            cellEstado.textContent = titulo.estado;
             cellEstado.classList.add('estado-pendiente');
         } else if (titulo.estado == 'R') {
-            cellEstado.textContent = "Revisado";
+            cellEstado.textContent = titulo.estado;
+
             cellEstado.classList.add('estado-revisado');
-        } else if (titulo.estado == 'V') {
-            cellEstado.textContent = "Verificado";
+        } else if (titulo.estado == 'C') {
+            cellEstado.textContent = titulo.estado;
             cellEstado.classList.add('estado-verificado');
         }
         cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
 
-        var cellAcciones = row.insertCell(5);
+        var cellAcciones = row.insertCell(4);
         cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
         var btnVer = document.createElement("button");
@@ -1553,12 +1569,6 @@ function agregarTituloALaTabla(titulo, num) {
         cellAcciones.appendChild(btnEliminar);
 
 
-
-
-
-
-
-
     } else if (num == 2) {
         var tbody = document.getElementById("listaTitulosUniversitarios");
 
@@ -1571,15 +1581,30 @@ function agregarTituloALaTabla(titulo, num) {
         var row = tbody.insertRow(-1);
         row.id = titulo.idDetalleTitulo;
 
-        var cellTipo = row.insertCell(0);
-        cellTipo.textContent = titulo.tipoTitulo;
-        cellTipo.style.textAlign = "center";
+        if (num == 2) {
+            var cellTipo = row.insertCell(0);
+            cellTipo.textContent = titulo.tipoTitulo;
+            cellTipo.style.textAlign = "center";
+        }
 
-        var cellEspecialidad = row.insertCell(1);
+        if (num == 2) {
+            var cellEspecialidad = row.insertCell(1);
+        }
+        else {
+            var cellEspecialidad = row.insertCell(0);
+
+        }
         cellEspecialidad.textContent = titulo.especialidad;
         cellEspecialidad.style.textAlign = "center";
 
-        var cellInstituto = row.insertCell(2);
+
+        if (num == 2) {
+            var cellInstituto = row.insertCell(2);
+        }
+        else {
+            var cellInstituto = row.insertCell(1);
+
+        }
         cellInstituto.textContent = titulo.institucion;
         cellInstituto.style.textAlign = "center";
 
@@ -1587,52 +1612,69 @@ function agregarTituloALaTabla(titulo, num) {
         let partesFechaInicio = fechaInicio[0].split('-');
 
 
+        if (num == 2) {
+            var cellInicio = row.insertCell(3);
+        }
+        else {
+            var cellInicio = row.insertCell(2);
 
-        var cellInicio = row.insertCell(3);
+        }
+
         cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
         cellInicio.style.textAlign = "center";
 
         let fechaFin = titulo.fechaFin.split('T');
         let partesFechaFin = fechaFin[0].split('-');
 
+        if (num == 2) {
+            var cellFin = row.insertCell(4);
+        }
+        else {
+            var cellFin = row.insertCell(3);
+        }
 
-        var cellFin = row.insertCell(4);
         cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
         cellFin.style.textAlign = "center";
 
-        var cellEstado = row.insertCell(5);
+        if (num == 2) {
+            var cellEstado = row.insertCell(5);
+        }
+        else {
+            var cellEstado = row.insertCell(4);
+        }
+
         if (titulo.estado == 'P') {
-            cellEstado.textContent = "Pendiente";
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        } else if (titulo.estado == 'I') {
+            cellEstado.textContent = titulo.estado;
             cellEstado.classList.add('estado-pendiente');
         } else if (titulo.estado == 'R') {
-            cellEstado.textContent = "Revisado";
+            cellEstado.textContent = titulo.estado;
+
             cellEstado.classList.add('estado-revisado');
-        } else if (titulo.estado == 'V') {
-            cellEstado.textContent = "Verificado";
+        } else if (titulo.estado == 'C') {
+            cellEstado.textContent = titulo.estado;
             cellEstado.classList.add('estado-verificado');
         }
         cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
 
-        var cellAcciones = row.insertCell(6);
+        if (num == 2) {
+            var cellAcciones = row.insertCell(6);
+        }
+        else {
+            var cellAcciones = row.insertCell(5);
+        }
+
         cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
 
         var btnVer = document.createElement("button");
-        btnVer.className = "btnVerTitulo btn btn-info btn-sm w-100";
+        btnVer.className = "btnVerTitulo btn btn-info btn-sm";
         btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
-
-        var btnEditar = document.createElement("button");
-        btnEditar.className = "btnEditarTitulo btn btn-primary mt-1 btn-sm w-100";
-        btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
-
-        var btnEliminar = document.createElement("button");
-        btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm mt-1 w-100";
-        btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
-
 
         // Agregar el contenedor div a la celda de acciones
         cellAcciones.appendChild(btnVer);
-        cellAcciones.appendChild(btnEditar);
-        cellAcciones.appendChild(btnEliminar);
+
     }
 
 
@@ -1953,10 +1995,10 @@ function agregarReferenciaALaTabla(referencia, num) {
 
     var cellEstado = row.insertCell(2);
     if (referencia.estado == false) {
-        cellEstado.textContent = "No Verificado";
+        cellEstado.textContent = "N/V";
         cellEstado.classList.add('estado-pendiente');
     } else {
-        cellEstado.textContent = "Verificado";
+        cellEstado.textContent = "V";
         cellEstado.classList.add('estado-verificado');
     }
     cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente

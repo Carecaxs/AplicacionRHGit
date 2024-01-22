@@ -23,19 +23,20 @@
             <form class="formEnlaces" method="post">
 
 
+
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceVervacantes" class="btn-primary">Ver Vacantes</button>
+                        <button id="enlaceVervacantes" class="btn-dark">Ver Vacantes</button>
 
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCrearVacante" class="btn-primary">Crear</button>
+                        <button id="enlaceCrearVacante" class="btn-dark">Crear</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceAdministrarVacante" class="btn-primary">Administrar</button>
+                        <button id="enlaceAdministrarVacante" class="btn-dark">Administrar</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCandidatos" class="btn-primary">Candidatos</button>
+                        <button id="enlaceCandidatos" class="btn-dark">Candidatos</button>
                     </li>
                 </ul>
 
@@ -106,6 +107,7 @@
                     <!-- Formulario para ver oferta -->
 
 
+
                     <input type="hidden" class="form-control" id="idOferta" />
 
                     <div class="form-group mt-1 col-sm-6">
@@ -131,6 +133,10 @@
                     <div class="form-group mt-1 col-sm-4">
                         <label class="label-custom-font" for="publicacionOferta">Publicado</label>
                         <input type="date" class="form-control" id="publicacionOferta" readonly tabindex="5" />
+                    </div>
+
+                    <div class="form-group d-flex justify-content-end">
+                        <button tabindex="6" id="btnVerPostulantes" class="btn btn-primary mt-2">Ver Postulantes</button>
                     </div>
 
                 </div>

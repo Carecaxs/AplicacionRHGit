@@ -8,10 +8,12 @@
     <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
     <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
     <input id="apellidosOferente" type="hidden" value="@ViewBag.apellidos" />
+    <input id="parametroIdOferta" type="hidden" value="@ViewBag.idOferta" />
+
 
 
     <div class="container">
-        <div class="contenedorCuenta">
+        <div class="contenedorExpediente">
             <form id="formRegresar" class="col-sm-6" method="post" asp-controller="Reclutador" asp-action="MenuPrincipalReclutador">
                 <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
@@ -25,29 +27,29 @@
 
                 <ul class="nav nav-tabs d-flex justify-content-center" id="myTabs">
                     <li class="nav-item">
-                        <button id="enlaceVervacantes" class="btn-primary">Ver Vacantes</button>
+                        <button id="enlaceVervacantes" class="btn-dark">Ver Vacantes</button>
 
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCrearVacante" class="btn-primary">Crear</button>
+                        <button id="enlaceCrearVacante" class="btn-dark">Crear</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceAdministrarVacante" class="btn-primary">Administrar</button>
+                        <button id="enlaceAdministrarVacante" class="btn-dark">Administrar</button>
                     </li>
                     <li class="nav-item">
-                        <button id="enlaceCandidatos" class="btn-primary">Candidatos</button>
+                        <button id="enlaceCandidatos" class="btn-dark">Candidatos</button>
                     </li>
                 </ul>
 
             </form>
 
             <div class="col-md-6">
-            <label for="nombreVacante">Vacante:</label>
-            <select id="nombreVacante" class="form-control">
-             
-                <option value="null">Seleccione una opción</option>
+                <label for="nombreVacante">Vacante:</label>
+                <select id="nombreVacante" class="form-control">
 
-            </select>
+                    <option value="null">Seleccione una opción</option>
+
+                </select>
             </div>
 
             <div class="text-center">
@@ -62,6 +64,7 @@
                             <th>Expediente</th>
                             <th>Referencias</th>
                             <th>Titulos</th>
+                            <th>Experiencia</th>
                             <th>Entrevista</th>
 
                         </tr>
@@ -83,6 +86,7 @@
                             <th>Expediente</th>
                             <th>Referencias</th>
                             <th>Titulos</th>
+                            <th>Experiencia</th>
                             <th>Entrevista</th>
 
                         </tr>
@@ -110,82 +114,127 @@
                     <div class="row">
                         <img id="fotoPerfil" class="img-fluid img-perfil" data-toggle="modal" data-target="#imagenModal" />
                     </div>
-                    <div class="row">
-                        <!-- Sección: Información Personal -->
-                        <div class="col">
-                            <fieldset class="border p-3 mt-2">
-                                <legend class="w-auto">Información Personal</legend>
-                                <hr />
-                                <!-- Agrega aquí los demás campos de Información Personal -->
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label for="nombre" class="col-sm-2">Nombre:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="nombre" name="nombre" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group col-sm-6">
-                                        <label for="apellidos" class="col-sm-2">Apellidos:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
-                                        </div>
-                                    </div>
+                    <fieldset class="border p-3 mt-2">
+                        <legend class="w-auto">Información Personal</legend>
+                        <hr />
+                        <!-- Agrega aquí los demás campos de Información Personal -->
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <label for="nombre" class="col-form-label text-right">Nombre:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="nombre" name="nombre" disabled>
                                 </div>
+                            </div>
 
-                                <div class="row mt-1">
-                                    <div class="form-group col-sm-6">
-                                        <label for="nacimiento" class="col-sm-4">Nacimiento:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="nacimiento" name="nacimiento" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group col-sm-6">
-                                        <label for="genero" class="col-sm-4">Género:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="genero" name="genero" disabled>
-                                        </div>
-                                    </div>
+                            <div class="form-group col-sm-3">
+                                <label for="apellidos" class="col-form-label text-right">Apellidos:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
                                 </div>
-                            </fieldset>
+                            </div>
+
+                            <div class="form-group col-sm-3">
+                                <label for="nacimiento" class="col-form-label text-right">Nacimiento:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="nacimiento" name="nacimiento" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-3">
+                                <label for="genero" class="col-form-label text-right">Género:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="genero" name="genero" disabled>
+                                </div>
+                            </div>
                         </div>
+                    </fieldset>
 
-                        <!-- Sección: Ubicación -->
+                    <div class="row">
+
                         <div class="col">
+                            <!-- Sección: Ubicación -->
                             <fieldset class="border p-3 mt-1">
                                 <legend class="w-auto">Ubicación</legend>
                                 <hr />
                                 <!-- Agrega aquí los demás campos de Ubicación -->
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label for="provincias" class="">Provincia:</label>
+
+                                <div class="form-group row mt-1">
+                                    <label for="provincias" class="col-sm-3 col-form-label">Provincia:</label>
+                                    <div class="col-sm-9">
                                         <input type="text" class="form-control" id="provincias" name="provincias" disabled>
-
                                     </div>
+                                </div>
 
-                                    <div class="form-group col-sm-4">
-                                        <label for="cantones" class="">Cantón:</label>
+                                <div class="form-group row mt-1">
+                                    <label for="cantones" class="col-sm-3 col-form-label">Cantón:</label>
+                                    <div class="col-sm-9">
                                         <input type="text" class="form-control" id="cantones" name="cantones" disabled>
-
                                     </div>
+                                </div>
 
-                                    <div class="form-group col-sm-4">
-                                        <label for="distritos" class="">Distritos:</label>
+                                <div class="form-group row mt-1">
+                                    <label for="distritos" class="col-sm-3 col-form-label">Distritos:</label>
+                                    <div class="col-sm-9">
                                         <input type="text" class="form-control" id="distritos" name="distritos" disabled>
-
                                     </div>
                                 </div>
 
                                 <div class="form-group row mt-1">
                                     <label for="direccion" class="col-sm-3 col-form-label">Dirección:</label>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-9">
                                         <textarea id="direccion" class="form-control" name="direccion" disabled></textarea>
                                     </div>
                                 </div>
                             </fieldset>
+
                         </div>
+
+                        <div class="col">
+
+
+                            <!-- Sección: Contacto -->
+                            <fieldset class="border p-3 mt-2">
+                                <legend class="w-auto">Contacto</legend>
+                                <hr />
+
+                                <div class="form-group row mt-1">
+                                    <label for="correo" class="col-sm-5 col-form-label text-right">Correo:</label>
+                                    <div class="col-sm-6">
+                                        <input type="email" class="form-control" id="correo" name="correo" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-1">
+                                    <label for="telefono" class="col-sm-5 col-form-label text-right">Teléfono:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="telefono" name="telefono" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-1">
+                                    <label for="correoOpcional" class="col-sm-5 col-form-label text-right">Correo Opcional:</label>
+                                    <div class="col-sm-6">
+                                        <input type="email" class="form-control" id="correoOpcional" name="correoOpcional" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-1">
+                                    <label for="telefonoOpcional" class="col-sm-5 col-form-label text-right">Teléfono Opcional:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="telefonoOpcional" name="telefonoOpcional" disabled>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+
                     </div>
+
+
+
+
+
+
 
                     <div class="row mt-2">
 
@@ -197,7 +246,7 @@
                                 <ul id="listaIdiomas" class="list-group">
                                     <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
                                 </ul>
-                              
+
                             </fieldset>
                         </div>
 
@@ -217,45 +266,66 @@
                     </div>
 
 
-                    <!-- Sección: Contacto -->
 
-                    <fieldset class="border p-3 mt-2">
-                        <legend class="w-auto">Contacto</legend>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* este input se va usar para almacenar el id del Oferente que se va estar consultando en el momento *@
+    <input id="idOferente" type="hidden" />
+
+
+    <!-- Modal para ver referencias -->
+    <div class="modal fade" id="verReferenciasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Referencias</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="instrucciones-cuadro">
+                        <p class="text-center"><strong>Estados de Referencias</strong></p>
                         <hr />
-                        <!-- Agrega aquí los demás campos de Contacto -->
-                        <div class="row">
-                            <div class="form-group col-sm-6">
-                                <label for="correo" class="col-sm-2">Correo:</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="correo" name="correo" value="@ViewBag.correo" disabled>
-                                </div>
-                            </div>
+                        <p><strong>N/V:</strong> No Verificado</p>
+                        <p><strong>V:</strong> Verificado</p>
+                    </div>
 
-                            <div class="form-group col-sm-6">
-                                <label for="correoOpcional" class="col-sm-4">Correo Opcional:</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="correoOpcional" name="correoOpcional" disabled>
-                                </div>
-                            </div>
-                        </div>
+                    <h4 class="text-center">Referencias Personales</h4>
 
-                        <div class="row mt-1">
-                            <div class="form-group col-sm-6">
-                                <label for="telefono" class="col-sm-4">Teléfono:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="telefono" name="telefono" disabled>
-                                </div>
-                            </div>
+                    <table id="tablaReferenciasPersonales" class="table table-bordered">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Persona que Refiere</th>
+                                <th>Teléfono</th>
+                                <th>Estado Referencia</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaReferenciasPersonales">
+                        </tbody>
+                    </table>
 
-                            <div class="form-group col-sm-6">
-                                <label for="telefonoOpcional" class="col-sm-4">Teléfono Opcional:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="telefonoOpcional" name="telefonoOpcional" disabled>
-                                </div>
-                            </div>
-                        </div>
+                    <h4 class="text-center mt-5">Referencias Profesionales</h4>
+                    <table id="tablaReferenciasProfesionales" class="table table-bordered">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Nombre Empresa</th>
+                                <th>Teléfono</th>
+                                <th>Estado Referencia</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaReferenciasProfesionales">
+                        </tbody>
+                    </table>
 
-                    </fieldset>
+
+
+
 
 
 
@@ -264,9 +334,128 @@
         </div>
     </div>
 
+
+    <!-- Modal para ver Titulos -->
+    <div class="modal fade" id="verTitulosModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Formación Academica</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Cuadro de instrucciones -->
+                    <div class="instrucciones-cuadro">
+                        <p class="text-center"><strong>Estados de Titulo</strong></p>
+                        <hr />
+                        <p><strong>I:</strong> Ingresado</p>
+                        <p><strong>R:</strong> Revisado</p>
+                        <p><strong>P:</strong> En proceso de certificación</p>
+                        <p><strong>C:</strong> Certificado</p>
+                    </div>
+
+                    <h4 class="text-center">Bachillerato Secundaria</h4>
+
+                    <!-- Lista de Títulos Secundaria-->
+                    <table id="tablaTitulosSecundaria" class="table table-bordered">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Instituto</th>
+                                <th>Año Inicio</th>
+                                <th>Año Final</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaTitulosSecundaria">
+                        </tbody>
+                    </table>
+
+                    <hr class="mt-5" />
+
+
+                    <!-- Lista de Títulos Universitarios-->
+                    <h4 class="text-center">Titulos Universitarios</h4>
+                    <table id="tablaTitulosUniversitarios" class="table table-bordered">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Titulo</th>
+                                <th>Especialidad</th>
+                                <th>Instituto</th>
+                                <th>Año Inicio</th>
+                                <th>Año Final</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaTitulosUniversitarios">
+                        </tbody>
+
+                    </table>
+
+                    <hr class="mt-5" />
+
+
+                    <h4 class="text-center">Diplomas - Tecnicos</h4>
+                    <table id="tablaTitulosVarios" class="table table-bordered">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Especialidad</th>
+                                <th>Instituto</th>
+                                <th>Año Inicio</th>
+                                <th>Año Final</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaTitulosVarios">
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal para ver Experiencia -->
+    <div class="modal fade" id="verExperienciaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Experiencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table id="tablaExperiencias" class="table table-bordered mt-2">
+                        <thead class="tabla-head">
+                            <tr class="text-center">
+                                <th>Institución</th>
+                                <th>Teléfono</th>
+                                <th>Puesto</th>
+                                <th>Años</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaExperiencias">
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para la imagen ampliada -->
     <div class="modal fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
 
@@ -276,7 +465,46 @@
                 </div>
                 <div class="modal-body">
                     <img id="imagenAmpliada" class="img-fluid" />
+
+                    <div id="datosImagenTitulo" class="row mt-1">
+                        <!-- Tomo -->
+                        <div class="col-sm-4">
+                            <div class="form-group row">
+                                <label for="tomo" class="col-sm-4 col-form-label">Tomo:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="tomo" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Folio -->
+                        <div class="col-sm-4">
+                            <div class="form-group row">
+                                <label for="folio" class="col-sm-4 col-form-label">Folio:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="folio" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Asiento -->
+                        <div class="col-sm-4">
+                            <div class="form-group row">
+                                <label for="asiento" class="col-sm-4 col-form-label">Asiento:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="asiento" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
                 </div>
+
             </div>
         </div>
     </div>
