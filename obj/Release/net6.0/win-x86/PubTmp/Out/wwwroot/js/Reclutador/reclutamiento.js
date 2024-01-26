@@ -76,12 +76,40 @@
     });
 
 
+    $("#enlaceCandidatos").click(function (event) {
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/VerCandidatosReclutador");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+
+        var form = $(".formEnlaces");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+        var identificacion = $("#identification").val();
+        var clave = $("#clave").val();
+
+        form.append('<input type="hidden" name="identification" value="' + identificacion + '">');
+        form.append('<input type="hidden" name="clave" value="' + clave + '">');
+
+
+        form.submit();
+    });
+
+
 
 
 
     // seccion CrearOfertaReclutador
     if ($("#nombreVista").val() == "CrearOfertaReclutador") {
-        $("#enlaceCrearVacante").addClass("active");
+
+        $("#enlaceCrearVacante").addClass("btn-info active");
+        $("#enlaceCrearVacante").removeClass("btn-dark");
+
         CargarMaterias();
         CargarGruposProfesionales();
 
@@ -110,20 +138,23 @@
 
     if ($("#nombreVista").val() == "VerVacantesReclutador") {
 
-        CargarOfertas();
+        CargarMisVacantes(1);
         CargarProvincia();
         CargarMaterias();
 
-        $("#enlaceVervacantes").addClass("active");
 
+        $("#enlaceVervacantes").addClass("btn-info active");
+        $("#enlaceVervacantes").removeClass("btn-dark");
 
 
         $('#btnVerMisVacantes').click(function (e) {
-            CargarMisVacantes();
+
             $("#provincias").val('null');
             $("#materias").val('null');
             $("#cantones").find("option:not(:first)").remove();
 
+            //se envia 1 para que muestre todas las activas
+            CargarMisVacantes(1);
         });
 
 
@@ -132,8 +163,8 @@
             $("#provincias").val('null');
             $("#materias").val('null');
             $("#cantones").find("option:not(:first)").remove();
-            CargarOfertas();
-
+            //se envia 2 para que muestre todas hasta las que ya estan cerradas
+            CargarMisVacantes(2);
         });
 
 
@@ -158,16 +189,24 @@
 
 
             }
-            CargarOfertas();
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
 
         });
 
         $("#cantones").change(function () {
-            CargarOfertas();
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
         });
 
         $("#materias").change(function () {
-            CargarOfertas();
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
+        });
+
+        $("#horario").change(function () {
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
         });
 
         $("#listaOfertas").on("click", ".btnVerOferta", function () {
@@ -183,13 +222,42 @@
 
         });
 
+        $("#btnVerPostulantes").click(function (event) {
+
+            event.preventDefault();
+
+            let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/VerCandidatosReclutador");
+
+            var actionUrl = url;
+
+            // Tu lógica para enviar el formulario
+
+            var form = $(".formEnlaces");
+
+            //asignar la accion al formulario
+            form.prop('action', actionUrl);
+            var identificacion = $("#identification").val();
+            var clave = $("#clave").val();
+            var idOferta = $("#idOferta").val();
+
+            form.append('<input type="hidden" name="identification" value="' + identificacion + '">');
+            form.append('<input type="hidden" name="clave" value="' + clave + '">');
+            form.append('<input type="hidden" name="idOferta" value="' + idOferta + '">');
+
+
+
+            form.submit();
+        });
+
     }
 
 
 
     if ($("#nombreVista").val() == "AdministrarOfertasReclutador") {
-        CargarMisVacantes();
-        $("#enlaceAdministrarVacante").addClass("active");
+        CargarMisVacantes(1);
+
+        $("#enlaceAdministrarVacante").addClass("btn-info active");
+        $("#enlaceAdministrarVacante").removeClass("btn-dark");
 
         $("#listaOfertas").on("click", ".btnEliminarOferta", function () {
             //obtener fila donde se dio click
@@ -230,28 +298,43 @@
 
             if ($('#tituloOferta').val() != '' && $('#descripcionOferta').val() != '' &&
                 $('#cantidadVacantes').val() != '') {
-                ActualizarOferta();  
+                ActualizarOferta();
             }
         });
 
 
 
-        
-        
+
+
 
     }
 
     if ($("#nombreVista").val() == "VerCandidatosReclutador") {
-        CargarSelectMisvacantes();
-        $("#enlaceCandidatos").addClass("active");
 
+        $("#enlaceCandidatos").addClass("btn-info active");
+        $("#enlaceCandidatos").removeClass("btn-dark");
+
+
+        //escondo campos de info del titulo del modal que muestra imagen ampliada ya que solo en la seccion de titulo
+        //me interesa que se muestre 
+        $("#datosImagenTitulo").hide();
+
+        //se espera que cargue las ofertas del reclutador
+        CargarSelectMisvacantes().then(function () {
+            //se comprueba si la vista recibio un parametro de alguna oferta
+            if ($("#parametroIdOferta").val() != 0) {
+                let idOferta = $("#parametroIdOferta").val();
+                $("#nombreVacante").val(idOferta);
+                $("#nombreVacante").change();
+            }
+        });
 
         $("#nombreVacante").change(function () {
             if ($(this).val() != 'null') {
 
                 CargarListaCandidatosSugeridos($(this).val());
                 CargarListaCandidatosPostulados($(this).val());
-               
+
             }
         });
 
@@ -269,17 +352,16 @@
             CargarIdiomasOferente(idOferente);
             MostrarGruposProfesionalesOferente(idOferente);
             cargarImagenPerfil(idOferente);
-  
 
-            //evento para mostrar en tamanio grande la foto de perfil
-            $("#fotoPerfil").on("click", function () {
-                // Obtener la URL de la imagen original
-                var urlImagenOriginal = $(this).attr("src");
+        });
 
-                // Asignar la URL de la imagen original al modal
-                $("#imagenAmpliada").attr("src", urlImagenOriginal);
-            });
-           
+        //evento para mostrar en tamanio grande la foto de perfil
+        $("#fotoPerfil").on("click", function () {
+            // Obtener la URL de la imagen original
+            var urlImagenOriginal = $(this).attr("src");
+
+            // Asignar la URL de la imagen original al modal
+            $("#imagenAmpliada").attr("src", urlImagenOriginal);
         });
 
         $("#listaCandidatosSugerencias").on("click", ".btnVerExpedienteSugeridos", function () {
@@ -288,8 +370,179 @@
             var fila = $(this).closest("tr");
 
             var idOferente = fila.attr("id");
-            $("#verExpedienteModal").show();
+            $("#verExpedienteModal").modal("show");
+
+
+            ObtenerDatosPersonales(idOferente);
+            CargarIdiomasOferente(idOferente);
+            MostrarGruposProfesionalesOferente(idOferente);
+            cargarImagenPerfil(idOferente);
+
         });
+
+
+        $("#listaCandidatosPostulados").on("click", ".btnVerReferenciasPostulados", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verReferenciasModal").modal("show");
+
+            CargarReferencias(idOferente, 1);
+            CargarReferencias(idOferente, 2);
+            $("#idOferente").val(idOferente);
+
+
+
+        });
+
+        $("#listaCandidatosSugerencias").on("click", ".btnVerReferenciasSugeridos", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verReferenciasModal").modal("show");
+
+            CargarReferencias(idOferente, 1);
+            CargarReferencias(idOferente, 2);
+            $("#idOferente").val(idOferente);
+
+        });
+
+
+        $("#listaReferenciasPersonales").on("click", ".btnVerReferencia", function () {
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idReferencia = fila.attr("id");
+
+            MostrarEvaluacion($("#idOferente").val(), idReferencia);
+
+        });
+
+
+        $("#listaReferenciasProfesionales").on("click", ".btnVerReferencia", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idReferencia = fila.attr("id");
+
+            MostrarEvaluacion($("#idOferente").val(), idReferencia);
+
+
+        });
+
+
+        $("#listaCandidatosPostulados").on("click", ".btnVerTitulosPostulados", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verTitulosModal").modal("show");
+
+            CargarTitulos(idOferente, 1);
+            CargarTitulos(idOferente, 2);
+            CargarTitulos(idOferente, 3);
+            $("#idOferente").val(idOferente);
+
+
+        });
+
+        $("#listaCandidatosSugerencias").on("click", ".btnVerTitulosSugeridos", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verTitulosModal").modal("show");
+
+
+            CargarTitulos(idOferente, 1);
+            CargarTitulos(idOferente, 2);
+            CargarTitulos(idOferente, 3);
+            $("#idOferente").val(idOferente);
+
+        });
+
+        //evento del boton de ver titulo en la tabla de secundaria
+        $("#listaTitulosSecundaria").on("click", ".btnVerTitulo", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idTitulo = fila.attr("id");
+            MostrarTitulo($("#idOferente").val(), idTitulo);
+        });
+
+        //evento del boton de ver titulo en la tabla de universitarios
+        $("#listaTitulosUniversitarios").on("click", ".btnVerTitulo", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idTitulo = fila.attr("id");
+            MostrarTitulo($("#idOferente").val(), idTitulo);
+        });
+
+        //evento del boton de ver titulo en la tabla de diplomas
+        $("#listaTitulosVarios").on("click", ".btnVerTitulo", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idTitulo = fila.attr("id");
+            MostrarTitulo($("#idOferente").val(), idTitulo);
+        });
+
+        //evento al selecciones ver experiencia
+        $("#listaCandidatosPostulados").on("click", ".btnVerExperienciaPostulados", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verExperienciaModal").modal("show");
+            $("#idOferente").val(idOferente);
+            CargarExperiencias(idOferente);
+
+
+        });
+
+        $("#listaCandidatosSugerencias").on("click", ".btnVerExperienciaSugeridos", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idOferente = fila.attr("id");
+            $("#verExperienciaModal").modal("show");
+            $("#idOferente").val(idOferente);
+            CargarExperiencias(idOferente);
+
+        });
+
+
+        //evento ver foto experiencia
+        $("#listaExperiencias").on("click", ".btnVerExperiencia", function () {
+
+            // Obtener el id de la fila que va ser el id del titulo 
+            var fila = $(this).closest("tr");
+
+            var idExperiencia = fila.attr("id");
+
+
+            MostrarExperiencia($("#idOferente").val(), idExperiencia);
+
+        });
+
+        //evento que detecta cierre de modal de imagen ampliada
+        $('#imagenModal').on('hidden.bs.modal', function () {
+            $('#datosImagenTitulo').hide();
+        });
+
     }
 
 
@@ -534,35 +787,6 @@ function procesarRespuestaOfertas(data) {
 
 }
 
-function CargarOfertas() {
-    let url = ObtenerUrlSolicitud('Reclutador', "Oferente/CargarOfertas");
-
-    $.ajax({
-        type: "GET",
-        url: url,
-        data: {
-            provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
-            canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
-            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0)
-
-        },
-        success: function (data) {
-
-            if (data.error) {
-
-                console.log(data.error);
-
-            } else {
-
-                procesarRespuestaOfertas(data);
-            }
-
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
 
 
 function MostrarDetallesOferta(id) {
@@ -583,14 +807,23 @@ function MostrarDetallesOferta(id) {
             } else {
 
                 let fecha = data.publicacionOferta.split('T');
-
+                
 
                 $("#idOferta").val(data.idOferta);
                 $("#tituloOferta").val(data.nombreOferta);
                 $("#nombreInstitucion").val(data.nombreInstitucion);
                 $("#nombreMateria").val(data.nombreMateria);
                 $("#descripcionOferta").val(data.descripcionOferta);
-                $("#publicacionOferta").val(fecha[0]);
+                $("#publicacionOferta").val(fecha[0]);          
+ 
+
+
+                if ($("#nombreVista").val() == "AdministrarOfertasReclutador") {
+                    $("#horario").val(data.horario);
+                }
+                else {
+                    $("#horarioDetalle").val(data.horario == 1 ? "Diurno" : "Nocturno");
+                }
 
                 if ($("#nombreVista").val() == "AdministrarOfertasReclutador") {
                     $("#cantidadVacantes").val(data.cantidadVacantes);
@@ -692,13 +925,20 @@ function CargarCanton(idProvincia) {
 }
 
 
-function CargarMisVacantes() {
+function CargarMisVacantes(num) {
     let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarMisVacantes");
 
     $.ajax({
         type: "GET",
         url: url,
-        data: { identification: $("#identification").val() },
+        data: {
+            identification: $("#identification").val(),
+            num,
+            provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
+            canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
+            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0),
+            horario: (num==2 || num == 1 ? -1 : $("#horario").val())
+        },
         success: function (data) {
 
             if (data.error) {
@@ -740,12 +980,14 @@ function EliminarVacante(idOferta) {
 
                 if (data.error) {
                     alert('Hubo un problema al eliminar la vacante');
+                console.error(data.error);
+
                 }
                 else {
 
                     ///recargar la lista 
                     $("#confirmacionEliminarModal").modal("hide");
-                    CargarMisVacantes();
+                    CargarMisVacantes(1);
 
                 }
             },
@@ -768,7 +1010,8 @@ function ActualizarOferta() {
             titulo: $('#tituloOferta').val(),
             descripcion: $('#descripcionOferta').val(),
             cantidadVacantes: $('#cantidadVacantes').val(),
-            idOferta: $('#idOferta').val()
+            idOferta: $('#idOferta').val(),
+            horario: $('#horario').val()
         },
         success: function (data) {
             if (data.error) {
@@ -791,29 +1034,35 @@ function ActualizarOferta() {
 //funciones seccion VerCandidatosReclutador
 
 function CargarSelectMisvacantes() {
-    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarMisVacantes");
 
-    $.ajax({
-        type: "GET",
-        url: url,
-        data: { identification: $("#identification").val() },
-        success: function (data) {
+    return new Promise(function (resolve, reject) {
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarMisVacantes");
 
-            if (data.error) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: { identification: $("#identification").val() },
+            success: function (data) {
 
-                console.log(data.error);
+                if (data.error) {
 
-            } else {
+                    console.log(data.error);
+                    resolve();
 
-                data.forEach(consulta => {
-                    $("#nombreVacante").append($("<option>").val(consulta.idOferta).text(consulta.nombreOferta));
-                });
+                } else {
+
+                    data.forEach(consulta => {
+                        $("#nombreVacante").append($("<option>").val(consulta.idOferta).text(consulta.nombreOferta));
+                    });
+                    resolve();
+
+                }
+
+            },
+            error: function (error) {
+                console.log(error);
             }
-
-        },
-        error: function (error) {
-            console.log(error);
-        }
+        });
     });
 }
 
@@ -838,7 +1087,7 @@ function agregarCandidatoALaTabla(candidato, tipoCandidato) {
     var cellExpediente = row.insertCell(1);
     // Crea un elemento de botón
     var btnVerExpediente = document.createElement("button");
-    btnVerExpediente.className = (tipoCandidato == 1 ? "btnVerExpedientePostulados" : "btnVerExpedienteSugeridos")+ " btn btn-link";
+    btnVerExpediente.className = (tipoCandidato == 1 ? "btnVerExpedientePostulados" : "btnVerExpedienteSugeridos") + " btn btn-link";
     btnVerExpediente.textContent = 'Ver';
 
     cellExpediente.appendChild(btnVerExpediente);
@@ -862,13 +1111,22 @@ function agregarCandidatoALaTabla(candidato, tipoCandidato) {
     var btnVerTitulos = document.createElement("button");
     btnVerTitulos.className = (tipoCandidato == 1 ? "btnVerTitulosPostulados" : "btnVerTitulosSugeridos") + " btn btn-link";
     btnVerTitulos.textContent = 'Ver';
-
     cellTitulos.appendChild(btnVerTitulos);
     cellTitulos.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
     cellTitulos.className = "text-sm";
 
+    var cellExperiencia = row.insertCell(4);
+    // Crea un elemento de botón
+    var btnVerExperiencia = document.createElement("button");
+    btnVerExperiencia.className = (tipoCandidato == 1 ? "btnVerExperienciaPostulados" : "btnVerExperienciaSugeridos") + " btn btn-link";
+    btnVerExperiencia.textContent = 'Ver';
 
-    var cellEntrevista = row.insertCell(4);
+    cellExperiencia.appendChild(btnVerExperiencia);
+    cellExperiencia.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+    cellExperiencia.className = "text-sm";
+
+
+    var cellEntrevista = row.insertCell(5);
     // Crea un elemento de botón
     var btnAgendarEntrevista = document.createElement("button");
     btnAgendarEntrevista.className = (tipoCandidato == 1 ? "btnAgendarEntrevistaPostulados" : "btnAgendarEntrevistaSugeridos") + " btn btn-link";
@@ -884,7 +1142,7 @@ function agregarCandidatoALaTabla(candidato, tipoCandidato) {
 //en tipoCandidato recibe 1 si es postulantes, 2 si es sugerido
 function procesarRespuestaCandidatos(data, tipoCandidato) {
 
-  
+
     if (tipoCandidato == 1) {
         var tbody = document.getElementById("listaCandidatosPostulados");
     }
@@ -901,7 +1159,7 @@ function procesarRespuestaCandidatos(data, tipoCandidato) {
         //no hay titulos para mostrar
         var mensajeTr = document.createElement("tr");
         var mensajeTd = document.createElement("td");
-        mensajeTd.colSpan = 5;
+        mensajeTd.colSpan = 6;
         mensajeTd.className = "text-center";
         mensajeTd.textContent = "No hay Candidatos disponibles";
 
@@ -962,7 +1220,7 @@ function CargarListaCandidatosSugeridos(idOferta) {
                 console.log(data.error);
 
             } else {
-   
+
                 procesarRespuestaCandidatos(data, 2);
             }
 
@@ -1192,8 +1450,6 @@ function cargarImagenPerfil(idOferente) {
                 $("#fotoPerfil").hide();
             }
             else if (data.urlImagen) {
-                console.log(data.urlImagen);
-
                 //si se obtiene la url se carga la imagen
                 var imagen = document.getElementById('fotoPerfil');
                 imagen.src = data.urlImagen;
@@ -1209,7 +1465,583 @@ function cargarImagenPerfil(idOferente) {
 
 }
 
+function CargarReferencias(idOferente, tipo) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarReferencias");
 
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+            idOferente,
+            tipoReferencia: tipo
+        },
+        success: function (data) {
+
+            //recargar refrencias
+            procesarRespuestaReferencia(data, tipo);
+        },
+        error: function (error) {
+            console.log("Error al cargar referencias: " + error);
+        }
+    });
+}
+
+
+function agregarReferenciaALaTabla(referencia, num) {
+    var tbody = num == 1 ? document.getElementById("listaReferenciasPersonales") : document.getElementById("listaReferenciasProfesionales");
+
+    var row = tbody.insertRow(-1);
+    row.id = referencia.iD_DETALLE_REFERENCIA;
+
+    var cellReferente = row.insertCell(0);
+    cellReferente.textContent = num == 1 ? referencia.nombrE_APELLIDOS : referencia.nombrE_EMPRESA;
+    cellReferente.style.textAlign = "center";
+
+    var cellContacto = row.insertCell(1);
+    cellContacto.textContent = referencia.contacto.replace(/(\d{4})(\d{4})/, '$1-$2');
+    cellContacto.style.textAlign = "center";
+
+    var cellEstado = row.insertCell(2);
+    if (referencia.estado == false) {
+        cellEstado.textContent = "N/V";
+        cellEstado.classList.add('estado-pendiente');
+    } else {
+        cellEstado.textContent = "V";
+        cellEstado.classList.add('estado-verificado');
+    }
+    cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(3);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+
+    var btnVer = document.createElement("button");
+    btnVer.className = "btnVerReferencia btn btn-info btn-sm w-100";
+    btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVer);
+
+
+
+
+}
+
+
+//el num va ser para indicar cual referencia quiere cargar, 1 personales, 2 profesionales
+function procesarRespuestaReferencia(data, num) {
+    var tbody = num == 1 ? document.getElementById("listaReferenciasPersonales") : document.getElementById("listaReferenciasProfesionales");
+    tbody.innerHTML = "";
+
+    // Verificar si se retorno refrencias en el data
+    if (data.vacio) {
+        // No hay experiencias, mostrar el mensaje
+        // Crear el elemento tr con su contenido
+        var mensajeTr = document.createElement("tr");
+
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = num == 1 ? "No hay referencias personales." : "No hay referencias profesionales.";
+
+        // Agregar la celda al elemento tr
+        mensajeTr.appendChild(mensajeTd);
+
+        tbody.appendChild(mensajeTr);
+
+
+    } else {
+        data.forEach(function (referencias) {
+            agregarReferenciaALaTabla(referencias, num);
+        });
+
+    }
+
+}
+
+
+function MostrarEvaluacion(idOferente, idReferencia) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ObtenerUrlEvaluacion");
+
+    $.ajax({
+        url: url,  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            idOferente,
+            idReferencia: idReferencia
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                //abrir modal
+                $('#imagenModal').modal('show');
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+}
+
+
+function CargarTitulos(idOferente, tipoTitulo) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarTitulos");
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+            idOferente,
+            tipo: tipoTitulo
+        },
+        success: function (data) {
+            procesarRespuestaTitulos(data, tipoTitulo);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function agregarTituloALaTabla(titulo, num) {
+    if (num == 1) {
+        var tbody = document.getElementById("listaTitulosSecundaria");
+
+        var row = tbody.insertRow(-1);
+        row.id = titulo.idDetalleTitulo;
+
+        var cellInstituto = row.insertCell(0);
+        cellInstituto.textContent = titulo.institucion;
+        cellInstituto.style.textAlign = "center";
+
+        let fechaInicio = titulo.fechaInicio.split('T');
+        let partesFechaInicio = fechaInicio[0].split('-');
+
+
+
+        var cellInicio = row.insertCell(1);
+        cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
+        cellInicio.style.textAlign = "center";
+
+        let fechaFin = titulo.fechaFin.split('T');
+        let partesFechaFin = fechaFin[0].split('-');
+
+
+        var cellFin = row.insertCell(2);
+        cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
+        cellFin.style.textAlign = "center";
+
+        var cellEstado = row.insertCell(3);
+        if (titulo.estado == 'P') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        } else if (titulo.estado == 'I') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-pendiente');
+        } else if (titulo.estado == 'R') {
+            cellEstado.textContent = titulo.estado;
+
+            cellEstado.classList.add('estado-revisado');
+        } else if (titulo.estado == 'C') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        }
+        cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+        var cellAcciones = row.insertCell(4);
+        cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+        var btnVer = document.createElement("button");
+        btnVer.className = "btnVerTitulo btn btn-info btn-sm w-100";
+        btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
+        var btnEditar = document.createElement("button");
+        btnEditar.className = "btnEditarTitulo btn btn-primary btn-sm w-100 mt-1";
+        btnEditar.innerHTML = 'Editar <i class="fas fa-pencil-alt"></i>';
+
+        var btnEliminar = document.createElement("button");
+        btnEliminar.className = "btnEliminarTitulo btn btn-danger btn-sm mt-1 w-100";
+        btnEliminar.innerHTML = 'Eliminar <i class="fas fa-trash-alt"></i>';
+
+
+        // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnVer);
+        cellAcciones.appendChild(btnEditar);
+        cellAcciones.appendChild(btnEliminar);
+
+
+    } else if (num == 2) {
+        var tbody = document.getElementById("listaTitulosUniversitarios");
+
+
+    } else {
+        var tbody = document.getElementById("listaTitulosVarios");
+    }
+
+    if (num != 1) {
+        var row = tbody.insertRow(-1);
+        row.id = titulo.idDetalleTitulo;
+
+        if (num == 2) {
+            var cellTipo = row.insertCell(0);
+            cellTipo.textContent = titulo.tipoTitulo;
+            cellTipo.style.textAlign = "center";
+        }
+
+        if (num == 2) {
+            var cellEspecialidad = row.insertCell(1);
+        }
+        else {
+            var cellEspecialidad = row.insertCell(0);
+
+        }
+        cellEspecialidad.textContent = titulo.especialidad;
+        cellEspecialidad.style.textAlign = "center";
+
+
+        if (num == 2) {
+            var cellInstituto = row.insertCell(2);
+        }
+        else {
+            var cellInstituto = row.insertCell(1);
+
+        }
+        cellInstituto.textContent = titulo.institucion;
+        cellInstituto.style.textAlign = "center";
+
+        let fechaInicio = titulo.fechaInicio.split('T');
+        let partesFechaInicio = fechaInicio[0].split('-');
+
+
+        if (num == 2) {
+            var cellInicio = row.insertCell(3);
+        }
+        else {
+            var cellInicio = row.insertCell(2);
+
+        }
+
+        cellInicio.textContent = ObtenerMes(partesFechaInicio[1]) + "/" + partesFechaInicio[0];
+        cellInicio.style.textAlign = "center";
+
+        let fechaFin = titulo.fechaFin.split('T');
+        let partesFechaFin = fechaFin[0].split('-');
+
+        if (num == 2) {
+            var cellFin = row.insertCell(4);
+        }
+        else {
+            var cellFin = row.insertCell(3);
+        }
+
+        cellFin.textContent = ObtenerMes(partesFechaFin[1]) + "/" + partesFechaFin[0];
+        cellFin.style.textAlign = "center";
+
+        if (num == 2) {
+            var cellEstado = row.insertCell(5);
+        }
+        else {
+            var cellEstado = row.insertCell(4);
+        }
+
+        if (titulo.estado == 'P') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        } else if (titulo.estado == 'I') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-pendiente');
+        } else if (titulo.estado == 'R') {
+            cellEstado.textContent = titulo.estado;
+
+            cellEstado.classList.add('estado-revisado');
+        } else if (titulo.estado == 'C') {
+            cellEstado.textContent = titulo.estado;
+            cellEstado.classList.add('estado-verificado');
+        }
+        cellEstado.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+        if (num == 2) {
+            var cellAcciones = row.insertCell(6);
+        }
+        else {
+            var cellAcciones = row.insertCell(5);
+        }
+
+        cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+        var btnVer = document.createElement("button");
+        btnVer.className = "btnVerTitulo btn btn-info btn-sm";
+        btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
+        // Agregar el contenedor div a la celda de acciones
+        cellAcciones.appendChild(btnVer);
+
+    }
+
+
+
+}
+
+
+//el num va indicar cual tipo de titulo se va cargar, 1 secundaria, 2 universitario, 3 otros
+function procesarRespuestaTitulos(data, num) {
+    if (num == 1) {
+
+        var tbody = document.getElementById("listaTitulosSecundaria");
+    } else if (num == 2) {
+
+        var tbody = document.getElementById("listaTitulosUniversitarios");
+    } else {
+
+
+        var tbody = document.getElementById("listaTitulosVarios");
+    }
+
+    tbody.innerHTML = "";
+
+    //verificar si se retorno algo en el data
+    if (data.vacio) {
+
+
+        //no hay titulos para mostrar
+        var mensajeTr = document.createElement("tr");
+        var mensajeTd = document.createElement("td");
+        if (num != 1) {
+            mensajeTd.colSpan = 7;
+        } else {
+            mensajeTd.colSpan = 6;
+        }
+
+
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay titulos";
+
+        mensajeTr.appendChild(mensajeTd);
+        tbody.appendChild(mensajeTr);
+    }
+    else {
+
+
+        data.forEach(function (titulo) {
+            agregarTituloALaTabla(titulo, num);
+        });
+
+    }
+
+}
+
+function MostrarTitulo(idOferente, idTitulo) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ObtenerUrlTitulo");
+
+    $.ajax({
+        url: url,  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            idOferente,
+            idTitulo: idTitulo
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+                // Configuración de OpenSeaDragon
+
+
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                CargarDatostituloImagen(idTitulo)
+                    .then(function () {
+                        $('#imagenModal').modal('show');
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        $('#imagenModal').modal('show');
+
+                    });
+             
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+}
+
+
+function CargarExperiencias(idOferente) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarExperiencias");
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+            idOferente
+        },
+        success: function (data) {
+
+            if (data.error) {
+
+                console.log(data.error);
+
+            } else {
+
+                //cargar experiencias
+                procesarRespuestaExperiencia(data);
+            }
+
+        },
+        error: function (error) {
+            console.log("Error al cargar títulos: " + error);
+        }
+    });
+}
+
+
+function agregarExperienciaALaTabla(experiencia) {
+    var tbody = document.getElementById("listaExperiencias");
+
+    var row = tbody.insertRow(-1);
+    row.id = experiencia.iD_DETALLE_EXPERIENCIA;
+
+    var cellEmpresa = row.insertCell(0);
+    cellEmpresa.textContent = experiencia.nombrE_EMPRESA;
+    cellEmpresa.style.textAlign = "center";
+
+    var cellTelefono = row.insertCell(1);
+    cellTelefono.textContent = experiencia.telefono.replace(/(\d{4})(\d{4})/, '$1-$2');
+    cellTelefono.style.textAlign = "center";
+
+    var cellPuesto = row.insertCell(2);
+    cellPuesto.textContent = experiencia.descripcioN_LABORES;
+    cellPuesto.style.textAlign = "center";
+
+    var cellYears = row.insertCell(3);
+    cellYears.textContent = experiencia.inicio + " / " + experiencia.fin;
+    cellYears.style.textAlign = "center"; // Estilo en línea para centrar verticalmente
+
+    var cellAcciones = row.insertCell(4);
+    cellAcciones.style.textAlign = "center"; // Estilo en línea para centrar horizontalmente
+
+
+    var btnVer = document.createElement("button");
+    btnVer.className = "btnVerExperiencia btn btn-info btn-sm w-100";
+    btnVer.innerHTML = 'Ver <i class="fas fa-eye"></i>';
+
+
+    // Agregar el contenedor div a la celda de acciones
+    cellAcciones.appendChild(btnVer);
+}
+
+
+function MostrarExperiencia(idOferente, idExperiencia) {
+    let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ObtenerUrlExperiencia");
+
+    $.ajax({
+        url: url,  // Reemplaza con la URL correcta de tu controlador
+        type: 'GET',
+        data: {
+            idOferente,
+            idExperiencia: idExperiencia
+        },
+        success: function (data) {
+
+            if (data.urlImagen) {
+
+                $("#imagenAmpliada").attr("src", data.urlImagen);
+
+                //abrir modal
+                $('#imagenModal').modal('show');
+
+            }
+            else if (data.error) {
+                console.log(data.error);
+            }
+        },
+        error: function (error) {
+            // Manejar errores si es necesario
+            console.log(error);
+        }
+    });
+}
+
+
+function procesarRespuestaExperiencia(data) {
+    var tbody = document.getElementById("listaExperiencias");
+    tbody.innerHTML = "";
+
+    // Verificar si se retorno experiencias en el data
+    if (data.vacio) {
+        // No hay experiencias, mostrar el mensaje
+        // Crear el elemento tr con su contenido
+        var mensajeTr = document.createElement("tr");
+
+        var mensajeTd = document.createElement("td");
+        mensajeTd.colSpan = 4;
+        mensajeTd.className = "text-center";
+        mensajeTd.textContent = "No hay experiencias disponibles.";
+
+        // Agregar la celda al elemento tr
+        mensajeTr.appendChild(mensajeTd);
+
+        // Agregar el elemento tr al tbody
+        tbody.appendChild(mensajeTr);
+
+
+    } else {
+        // Hay experiencias
+
+
+        data.forEach(function (experiencia) {
+            agregarExperienciaALaTabla(experiencia);
+        });
+
+    }
+
+}
+
+
+function ObtenerMes(numeroMes) {
+    switch (numeroMes) {
+        case '01':
+            return 'Enero';
+        case '02':
+            return 'Febrero';
+        case '03':
+            return 'Marzo';
+        case '04':
+            return 'Abril';
+        case '05':
+            return 'Mayo';
+        case '06':
+            return 'Junio';
+        case '07':
+            return 'Julio';
+        case '08':
+            return 'Agosto';
+        case '09':
+            return 'Septiembre';
+        case '10':
+            return 'Octubre';
+        case '11':
+            return 'Noviembre';
+        case '12':
+            return 'Diciembre';
+        default:
+            return 'Mes no válido';
+    }
+}
 
 function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
     //proceso para obtener el valor de la url que esta atras del nombre del controlador donde se encuentra la vista en esta caso Login
@@ -1223,4 +2055,38 @@ function ObtenerUrlSolicitud(controllerVistaActual, solicitudAjax) {
 
     // ruta relativa al controlador
     return baseUrl + solicitudAjax;
+}
+
+
+
+function CargarDatostituloImagen(idTitulo) {
+    return new Promise(function (resolve, reject) {
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/CargarTituloEspecifico");
+
+        $.ajax({
+            url: url,  // Reemplaza con la URL correcta de tu controlador
+            type: 'GET',
+            data: {
+                idTitulo
+            },
+            success: function (data) {
+                if (data.error) {
+                    reject(data.error);
+                } else {
+
+                    $('#tomo').val(data.tomo);
+                    $('#folio').val(data.folio);
+                    $('#asiento').val(data.asiento);
+                    $('#datosImagenTitulo').show();
+                    resolve();
+                }
+
+            },
+            error: function (error) {
+                // Manejar errores si es necesario
+                reject(error);
+            }
+        });
+    });
 }

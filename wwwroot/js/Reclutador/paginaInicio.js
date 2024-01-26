@@ -120,6 +120,55 @@
 
         form.submit();
     });
+
+    $("#dropdownCerrarSesion").click(function (event) {
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "MenuPrincipal/MenuAcceso");
+        window.location.href = url;
+
+
+    });
+
+    $("#dropdownExpedientes").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/ExpedientesEmpleado");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
+
+
+    $("#dropdownEditarEmpleados").click(function (event) {
+
+
+        event.preventDefault();
+
+        let url = ObtenerUrlSolicitud('Reclutador', "Reclutador/AgregarEditarEmpleado");
+
+        var actionUrl = url;
+
+        // Tu lógica para enviar el formulario
+        var form = $("#formPaginaInicioReclutador");
+
+        //asignar la accion al formulario
+        form.prop('action', actionUrl);
+
+        form.submit();
+    });
   
 
 });

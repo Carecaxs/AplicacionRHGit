@@ -23,6 +23,13 @@ body {
     width: 52rem; /* Puedes ajustar el valor según tus necesidades */
 }
 
+.formEnlaces h1 {
+    color: #333; /* Color del texto */
+    font-size: 24px; /* Tamaño del texto */
+    font-weight: bold; /* Peso de la fuente */
+    text-transform: uppercase; /* Convertir el texto a mayúsculas */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+}
 
 .tituloInicio {
     font-family: "Arial", sans-serif; /* Cambia la fuente a tu elección */
@@ -49,10 +56,27 @@ body {
 
 
 .fondoImg {
-    background-image: url('../Images/fondo.jpg'); /* Reemplaza 'ruta-de-la-imagen.jpg' con la ruta real de tu imagen */
+    background-image: url('../Images/fondo.jpg'); 
     background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
     background-repeat: no-repeat; /* Evita que la imagen se repita */
     background-attachment: fixed; /* Fija la imagen de fondo al desplazarse */
+}
+
+.fondoImgReclutador {
+    background-image: url('../Images/reclutamiento.png'); 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center; /* Centra la imagen horizontal y verticalmente */
+
+}
+
+.fondoImgOferente {
+    background-image: url('../Images/fondoOferente.png'); /* Reemplaza 'ruta-de-la-imagen.jpg' con la ruta real de tu imagen */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center; /* Centra la imagen horizontal y verticalmente */
 }
 
 button.card-link {
@@ -78,7 +102,7 @@ button.card-link {
 }
 
 .contenedorExpediente {
-    background-color: rgba(248, 249, 250, 0.7); /*#f8f9fa;*/
+    background-color: rgba(248, 249, 250, 0.9); /* Valor de alfa disminuido para hacerlo menos transparente y más oscuro */
     margin-top: 4rem;
     padding: 3rem;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
@@ -86,10 +110,11 @@ button.card-link {
     max-width: 60rem; /*Ajusta el ancho máximo según tus necesidades */
     margin-right: auto;
     margin-left: auto;
+    overflow: hidden;
 }
 
 .contenedorCuenta {
-    background-color: rgba(248, 249, 250, 0.7); /*#f8f9fa;*/
+    background-color: rgba(248, 249, 250, 0.9); /*#f8f9fa;*/
     margin-top: 4rem;
     padding: 3rem;
     box-shadow: 15px 15px 10px #808080; /* Sombra ligera */
@@ -115,6 +140,8 @@ button.card-link {
 .contenedorExpediente label {
     margin-right: 2rem;
 }
+
+
 
 
 .cartas-header {
@@ -192,7 +219,7 @@ fieldset {
 
 
 tbody {
-    background-color: aliceblue; /* Establece el color de fondo para el cuerpo de la tabla */
+    background-color: #FFFAF0; /* Establece el color de fondo para el cuerpo de la tabla */
 }
 
 .cantonesCheckBox, provinciasCheck {
@@ -286,16 +313,12 @@ input[type="checkbox"] {
 }*/
 
 #loader-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
     display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Valor alto para asegurar que esté encima de otros elementos */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }
 
 #loader-content {
@@ -304,7 +327,107 @@ input[type="checkbox"] {
     border-radius: 5px;
     text-align: center;
 }
+
     #loader-content i {
         font-size: 24px;
         margin-right: 10px;
+    }
+
+
+/*.contenedorExpediente ul {
+    width: calc(100% + 6rem);*/ /* Ajusta el valor según tus necesidades */
+    /*margin-left: -3rem;*/ /* Ajusta la mitad del valor utilizado en width */
+/*}*/
+
+.instrucciones-cuadro {
+    width: 15rem;
+    top: 10px;
+    right: 10px;
+    background-color: cornsilk;
+    padding: 10px;
+    border: 1px solid #d1d3e2;
+    border-radius: 5px;
+}
+
+    .instrucciones-cuadro p {
+        margin: 0;
+    }
+
+/*.tabs {
+    display: flex;
+}
+
+.tab {
+  padding: 1px 10px;
+  margin: 0;
+  cursor: pointer;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 8px 8px 0 0;
+  transition: background-color 0.3s, transform 0.3s; 
+
+}
+
+    .tab:not(.active):hover {
+        background-color: #1f6690;
+        border-bottom: 3px solid white;
+    }
+
+    .tab.active {
+        background-color: #1f6690;
+        color: #fff;
+        border-bottom: 3px ridge white;
+        position: relative;
+        transform: scale(1.00);
+
+    }
+
+        .tab.active:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+        }*/
+
+
+.tabs {
+    display: flex;
+}
+
+.tab {
+    padding: 1px 10px;
+    margin: 0;
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s;
+}
+
+    .tab:not(.active):hover {
+        background-color: #1f6690;
+        color: #fff;
+        border-bottom: 3px ridge white;
+        /*position: relative;
+        transform: scale(1.2);
+        z-index: 1;
+        margin-right: 3px;*/ /* Ajusta el margen derecho según sea necesario */
+        /*margin-left: 3px;*/ /* Ajusta el margen izquierdo según sea necesario */
+        /*margin-bottom: 2px;*/
+    }
+
+    .tab.active {
+        background-color: #1f6690;
+        color: #fff;
+        /*border-bottom: 3px ridge white;*/
+        position: relative;
+        transform: scale(1.2);
+        z-index: 1;
+        margin-right: 3px; /* Ajusta el margen derecho según sea necesario */
+        margin-left: 3px; /* Ajusta el margen izquierdo según sea necesario */
+
     }

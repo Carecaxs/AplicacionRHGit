@@ -189,19 +189,24 @@
 
 
             }
-            //se envia 1 para que muestre todas las activas
-            CargarMisVacantes(1);
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
 
         });
 
         $("#cantones").change(function () {
-            //se envia 1 para que muestre todas las activas
-            CargarMisVacantes(1);
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
         });
 
         $("#materias").change(function () {
-            //se envia 1 para que muestre todas las activas
-            CargarMisVacantes(1);
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
+        });
+
+        $("#horario").change(function () {
+            //se envia 3 para que muestre las vacantes pararametro
+            CargarMisVacantes(3);
         });
 
         $("#listaOfertas").on("click", ".btnVerOferta", function () {
@@ -365,7 +370,8 @@
             var fila = $(this).closest("tr");
 
             var idOferente = fila.attr("id");
-            $("#verExpedienteModal").show();
+            $("#verExpedienteModal").modal("show");
+
 
             ObtenerDatosPersonales(idOferente);
             CargarIdiomasOferente(idOferente);
@@ -391,13 +397,13 @@
 
         });
 
-        $("#listaCandidatosSugerencias").on("click", ".btnVerReferenciasPostulados", function () {
+        $("#listaCandidatosSugerencias").on("click", ".btnVerReferenciasSugeridos", function () {
 
             // Obtener el id de la fila que va ser el id del titulo 
             var fila = $(this).closest("tr");
 
             var idOferente = fila.attr("id");
-            $("#verReferenciasModal").show();
+            $("#verReferenciasModal").modal("show");
 
             CargarReferencias(idOferente, 1);
             CargarReferencias(idOferente, 2);
@@ -407,7 +413,6 @@
 
 
         $("#listaReferenciasPersonales").on("click", ".btnVerReferencia", function () {
-            console.log('hola');
             // Obtener el id de la fila que va ser el id del titulo 
             var fila = $(this).closest("tr");
 
@@ -447,13 +452,13 @@
 
         });
 
-        $("#listaCandidatosSugerencias").on("click", ".btnVerTitulosPostulados", function () {
+        $("#listaCandidatosSugerencias").on("click", ".btnVerTitulosSugeridos", function () {
 
             // Obtener el id de la fila que va ser el id del titulo 
             var fila = $(this).closest("tr");
 
             var idOferente = fila.attr("id");
-            $("#verTitulosModal").show();
+            $("#verTitulosModal").modal("show");
 
 
             CargarTitulos(idOferente, 1);
@@ -507,13 +512,13 @@
 
         });
 
-        $("#listaCandidatosSugerencias").on("click", ".btnVerExperienciaPostulados", function () {
+        $("#listaCandidatosSugerencias").on("click", ".btnVerExperienciaSugeridos", function () {
 
             // Obtener el id de la fila que va ser el id del titulo 
             var fila = $(this).closest("tr");
 
             var idOferente = fila.attr("id");
-            $("#verExperienciaModal").show();
+            $("#verExperienciaModal").modal("show");
             $("#idOferente").val(idOferente);
             CargarExperiencias(idOferente);
 
@@ -802,14 +807,23 @@ function MostrarDetallesOferta(id) {
             } else {
 
                 let fecha = data.publicacionOferta.split('T');
-
+                
 
                 $("#idOferta").val(data.idOferta);
                 $("#tituloOferta").val(data.nombreOferta);
                 $("#nombreInstitucion").val(data.nombreInstitucion);
                 $("#nombreMateria").val(data.nombreMateria);
                 $("#descripcionOferta").val(data.descripcionOferta);
-                $("#publicacionOferta").val(fecha[0]);
+                $("#publicacionOferta").val(fecha[0]);          
+ 
+
+
+                if ($("#nombreVista").val() == "AdministrarOfertasReclutador") {
+                    $("#horario").val(data.horario);
+                }
+                else {
+                    $("#horarioDetalle").val(data.horario == 1 ? "Diurno" : "Nocturno");
+                }
 
                 if ($("#nombreVista").val() == "AdministrarOfertasReclutador") {
                     $("#cantidadVacantes").val(data.cantidadVacantes);
@@ -922,7 +936,8 @@ function CargarMisVacantes(num) {
             num,
             provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
             canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
-            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0)
+            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0),
+            horario: (num==2 || num == 1 ? -1 : $("#horario").val())
         },
         success: function (data) {
 
@@ -965,6 +980,8 @@ function EliminarVacante(idOferta) {
 
                 if (data.error) {
                     alert('Hubo un problema al eliminar la vacante');
+                console.error(data.error);
+
                 }
                 else {
 
@@ -993,7 +1010,8 @@ function ActualizarOferta() {
             titulo: $('#tituloOferta').val(),
             descripcion: $('#descripcionOferta').val(),
             cantidadVacantes: $('#cantidadVacantes').val(),
-            idOferta: $('#idOferta').val()
+            idOferta: $('#idOferta').val(),
+            horario: $('#horario').val()
         },
         success: function (data) {
             if (data.error) {
@@ -1432,8 +1450,6 @@ function cargarImagenPerfil(idOferente) {
                 $("#fotoPerfil").hide();
             }
             else if (data.urlImagen) {
-                console.log(data.urlImagen);
-
                 //si se obtiene la url se carga la imagen
                 var imagen = document.getElementById('fotoPerfil');
                 imagen.src = data.urlImagen;

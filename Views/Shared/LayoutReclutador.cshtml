@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-"
           crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -27,7 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
-<body class="fondoImg">
+<body class="fondoImgReclutador">
     <header>
 
         <!-- Navbar -->
@@ -43,20 +43,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav text-white">
-                        <li class="nav-item active">
-                            <div class="nav-link dropdown">
-                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Institucion
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="">
-                                    <button id="dropdownCrearInstitucion" class="dropdown-item">Crear</button>
-                                    <button id="dropdownModificarInstitucion" class="dropdown-item">Modificar</button>
-                                    <button id="dropdownAdministrarMaterias" class="dropdown-item">Administrar Materias</button>
-                                 
-
-                                </div>
-                            </div>
-                        </li>
+            
                         @* personal *@
                         <li class="nav-item active">
                             <div class="nav-link dropdown">
@@ -103,15 +90,21 @@
                                 </div>
                             </div>
                         </li>
-                        @* pagos *@
+ 
+
+
+                        @* Institucion *@
                         <li class="nav-item active">
                             <div class="nav-link dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Pagos
+                                    Institucion
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="">
-                                    <button id="" class="dropdown-item">Agregar Tarjeta</button>
-                                    <button id="" class="dropdown-item">Eliminar Tarjeta</button>
+                                    <button id="dropdownCrearInstitucion" class="dropdown-item">Crear</button>
+                                    <button id="dropdownModificarInstitucion" class="dropdown-item">Modificar</button>
+                                    <button id="dropdownAdministrarMaterias" class="dropdown-item">Administrar Materias</button>
+
+
                                 </div>
                             </div>
                         </li>
@@ -129,6 +122,20 @@
                             </div>
                         </li>
 
+                        @* pagos *@
+                        <li class="nav-item active">
+                            <div class="nav-link dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Pagos
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="">
+                                    <button id="" class="dropdown-item">Agregar Tarjeta</button>
+                                    <button id="" class="dropdown-item">Eliminar Tarjeta</button>
+                                </div>
+                            </div>
+                        </li>
+
+
                         @* aplicacion *@
                         <li class="nav-item active">
                             <div class="nav-link dropdown">
@@ -141,6 +148,8 @@
                             </div>
                         </li>
 
+                      
+
                         @* cuenta *@
                         <li class="nav-item active">
                             <div class="nav-link dropdown">
@@ -149,7 +158,7 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="">
                                     <button id="" class="dropdown-item">Cambiar contraseña</button>
-                                    <button id="" class="dropdown-item">Cerrar sesion</button>
+                                    <button id="dropdownCerrarSesion" class="dropdown-item">Cerrar sesion</button>
                                 </div>
                             </div>
                         </li>

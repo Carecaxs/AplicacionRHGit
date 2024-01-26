@@ -92,7 +92,9 @@
 
     if ($("#vistaActual").val() == "BuscarOfertasOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceBuscar").addClass("active");
+
+        $("#enlaceBuscar").addClass("btn-info active");
+        $("#enlaceBuscar").removeClass("btn-dark");
         CargarProvincia();
         CargarMaterias();
         //cargar ofertas 
@@ -141,7 +143,13 @@
         if ($("#vistaActual").val() == "BuscarOfertasOferente") {
             CargarOfertas();
         }
+    });
 
+    $("#horario").change(function () {
+
+        if ($("#vistaActual").val() == "BuscarOfertasOferente") {
+            CargarOfertas();
+        }
 
     });
 
@@ -175,7 +183,9 @@
 
     if ($("#vistaActual").val() == "CrearOfertaOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceCrear").addClass("active");
+
+        $("#enlaceCrear").addClass("btn-info active");
+        $("#enlaceCrear").removeClass("btn-dark");
         CargarProvincia();
         CargarMaterias();
         CargarGruposProfesionales();
@@ -321,7 +331,8 @@
     if ($("#vistaActual").val() == "VerOfertasOferente") {
 
         //poner activo al enlace de activo a esta vista
-        $("#enlaceVerMisOfertas").addClass("active");
+        $("#enlaceVerMisOfertas").addClass("btn-info active");
+        $("#enlaceVerMisOfertas").removeClass("btn-dark");
         CargarOfertasCreadasOferente();
 
     }
@@ -364,7 +375,8 @@
 
     if ($("#vistaActual").val() == "VerVacantesAplicadasOferente") {
         //poner activo al enlace de activo a esta vista
-        $("#enlaceVerVacantesAplicadas").addClass("active");
+        $("#enlaceVerVacantesAplicadas").addClass("btn-info active");
+        $("#enlaceVerVacantesAplicadas").removeClass("btn-dark");
 
         //cargar ofertas 
         CargarOfertasAplicadas();
@@ -497,8 +509,8 @@ function CargarOfertas() {
         data: {
             provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
             canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
-            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0)
-
+            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0),
+            horario: $("#horario").val()
         },
         success: function (data) {
 
@@ -549,9 +561,7 @@ function MostrarDetallesOferta(id) {
                 $("#nombreMateria").val(data.nombreMateria);
                 $("#descripcionOferta").val(data.descripcionOferta);
                 $("#publicacionOferta").val(fecha[0]);
-
-
-
+                $("#horarioDetalle").val(data.horario == 1 ? "Diurno" : "Nocturno");
 
             }
 

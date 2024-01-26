@@ -2094,7 +2094,7 @@ namespace AplicacionRHGit.Controllers
 
 
         [HttpGet]
-        public JsonResult CargarOfertas(int provincia, int canton, int idMateria)
+        public JsonResult CargarOfertas(int provincia, int canton, int idMateria, int horario)
         {
             try
             {
@@ -2106,6 +2106,7 @@ namespace AplicacionRHGit.Controllers
                                join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
 
                                where (provincia == 0 || centroEducativo.Cod_Pro == provincia) &&
+                                     (horario == 0 || oferta.horario == horario) &&
                                      (canton == 0 || centroEducativo.Cod_Cant == canton) &&
                                      (idMateria == 0 || oferta.id_materia == idMateria) &&
                                      (oferta.estado == false) &&
@@ -2165,7 +2166,8 @@ namespace AplicacionRHGit.Controllers
                                     publicacionOferta = oferta.fecha_publicacion,
                                     nombreInstitucion = centroEducativo.Nombre_Institucion,
                                     nombreMateria = materia.Nombre,
-                                    cantidadVacantes=oferta.cantidadVacantes
+                                    cantidadVacantes=oferta.cantidadVacantes,
+                                    oferta.horario
                                 }).FirstOrDefault();
 
 
@@ -2281,10 +2283,11 @@ namespace AplicacionRHGit.Controllers
                 int idMateria = int.Parse(form["materia"].FirstOrDefault());
                 string descripcion = form["descripcion"].FirstOrDefault();
                 string identificacion = form["identificacion"].FirstOrDefault();
+                int horario= int.Parse(form["horario"].FirstOrDefault());
 
                 OferentesDAO oferentesDAO = new OferentesDAO(_context);
 
-                int retorno = oferentesDAO.CrearOferta(identificacion, descripcion, listaUbicaciones, listaGrupos, idMateria);
+                int retorno = oferentesDAO.CrearOferta(identificacion, descripcion, listaUbicaciones, listaGrupos, idMateria,horario);
 
                 if (retorno > 0)
                 {
@@ -2467,7 +2470,8 @@ namespace AplicacionRHGit.Controllers
 
 
                 var ListaColegios = (from ofertasColegios in _context.Oferta_Laboral
-                                     where ofertasColegios.id_materia == oferta.id_Materia
+                                     where ofertasColegios.id_materia == oferta.id_Materia &&
+                                     (oferta.horario==0 || ofertasColegios.horario==oferta.horario)
                                      join colegioUnion in _context.Reclutador_Institucion
                                     on ofertasColegios.id_reclutador_institucion equals colegioUnion.ID_RECLUTADOR_INSTITUCION
                                     join centrosEducativos in _context.CentrosEducativos on colegioUnion.ID_INSTITUCION equals centrosEducativos.Cod_Presupuestario

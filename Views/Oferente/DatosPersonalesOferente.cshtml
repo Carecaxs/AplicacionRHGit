@@ -10,17 +10,17 @@
 
     <div class="container">
 
-        <div class="contenedorExpediente d-flex justify-content-center" style="max-width: 70rem;">
+        <div class="contenedorExpediente animate__animated animate__zoomIn d-flex justify-content-center" style="max-width: 70rem;">
 
             <div class="">
-      
+
                 <div class="row">
                     <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
                         <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
                         <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
-               
-                            <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
-              
+
+                        <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
                     </form>
 
                     <div class="col-sm-6">
@@ -60,92 +60,132 @@
 
                 <form id="expedienteForm">
                     <input name="identificacion" type="hidden" value="@ViewBag.identificacion" />
+                    <fieldset class="border p-3">
+                        <legend class="w-auto">Información Personal</legend>
+                        <hr />
+                        <!-- Agrega aquí los demás campos de Información Personal -->
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <label for="nombre">Nombre:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="nombre" name="nombre" disabled>
+                                </div>
+                            </div>
 
-                    <div class="row">
-                        <!-- Sección: Información Personal -->
-                        <div class="col">
-                            <fieldset class="border p-3 mt-1">
-                                <legend class="w-auto">Información Personal</legend>
-                                <hr />
-                                <!-- Agrega aquí los demás campos de Información Personal -->
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label for="nombre" class="col-sm-2">Nombre:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="nombre" name="nombre" disabled>
-                                        </div>
-                                    </div>
+                            <div class="form-group col-sm-3">
+                                <label for="apellidos" >Apellidos:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
+                                </div>
+                            </div>
 
-                                    <div class="form-group col-sm-6">
-                                        <label for="apellidos" class="col-sm-2">Apellidos:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
-                                        </div>
-                                    </div>
+                            <div class="form-group col-sm-3">
+                                <label for="nacimiento">Nacimiento:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="nacimiento" name="nacimiento" tabindex="1">
                                 </div>
 
-                                <div class="row mt-1">
-                                    <div class="form-group col-sm-6">
-                                        <label for="nacimiento" class="col-sm-4">Nacimiento:</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="nacimiento" name="nacimiento" tabindex="1">
-                                        </div>
-                                    </div>
+                            </div>
 
-                                    <div class="form-group col-sm-6">
-                                        <label for="genero" class="col-sm-4">Género:</label>
-                                        <div class="col-sm-10">
-                                            <select id="genero" name="genero" class="form-control" tabindex="2">
-                                                <option value="0">Seleccione una opción</option>
-                                                <option value="1">M</option>
-                                                <option value="2">F</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                            <div class="form-group col-sm-3">
+                                <label for="genero">Género:</label>
+                                <div class="col-sm-12">
+                                    <select id="genero" name="genero" class="form-control" tabindex="2">
+                                        <option value="0">Seleccione una opción</option>
+                                        <option value="1">M</option>
+                                        <option value="2">F</option>
+                                    </select>
                                 </div>
-                            </fieldset>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="border p-3 mt-1">
+                        <legend class="w-auto">Ubicación</legend>
+                        <hr />
+                        <!-- Agrega aquí los demás campos de Ubicación -->
+                        <div class="row">
+                            <div class="form-group col-sm-2">
+                                <label for="provincias">Provincia:</label>
+                                <div class="col-sm-12">
+                                    <select id="provincias" name="provincias" class="form-control" tabindex="3">
+                                        <option value="0">Seleccione una opción</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-2">
+                                <label for="cantones">Cantón:</label>
+                                <div class="col-sm-12">
+                                    <select id="cantones" name="cantones" class="form-control" tabindex="4">
+                                        <option value="0">Seleccione una opción</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-2">
+                                <label for="distritos">Distritos:</label>
+                                <div class="col-sm-12">
+                                    <select id="distritos" name="distritos" class="form-control" tabindex="5">
+                                        <option value="0">Seleccione una opción</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="direccion">Dirección:</label>
+                                <div class="col-sm-12">
+                                    <textarea id="direccion" class="form-control" name="direccion" placeholder="Ingrese la dirección" tabindex="6"></textarea>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Sección: Ubicación -->
-                        <div class="col">
-                            <fieldset class="border p-3 mt-1">
-                                <legend class="w-auto">Ubicación</legend>
-                                <hr />
-                                <!-- Agrega aquí los demás campos de Ubicación -->
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label for="provincias" class="">Provincia:</label>
-                                        <select id="provincias" name="provincias" class="form-control" tabindex="3">
-                                            <option value="0">Seleccione una opción</option>
-                                        </select>
-                                    </div>
 
-                                    <div class="form-group col-sm-4">
-                                        <label for="cantones" class="">Cantón:</label>
-                                        <select id="cantones" name="cantones" class="form-control cantones" tabindex="4">
-                                            <option value="0">Seleccione una opción</option>
-                                        </select>
-                                    </div>
 
-                                    <div class="form-group col-sm-4">
-                                        <label for="distritos" class="">Distritos:</label>
-                                        <select id="distritos" name="distritos" class="form-control" tabindex="5">
-                                            <option value="0">Seleccione una opción</option>
-                                        </select>
-                                    </div>
+                    </fieldset>
+
+
+                    <!-- Sección: Contacto -->
+                    <fieldset class="border p-3 mt-1">
+                        <legend class="w-auto">Contacto</legend>
+                        <hr />
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <label for="correo">Correo:</label>
+                                <div class="col-sm-12">
+                                    <input type="email" class="form-control" id="correo" name="correo" value="@ViewBag.correo" disabled>
                                 </div>
+                            </div>
 
-                                <div class="form-group row mt-1">
-                                    <label for="direccion" class="col-sm-2 col-form-label">Dirección:</label>
-                                    <div class="col-sm-8">
-                                        <textarea id="direccion" class="form-control" name="direccion" placeholder="Ingrese la dirección" tabindex="6"></textarea>
-                                    </div>
+                            <div class="form-group col-sm-3">
+                                <label for="telefono">Teléfono:</label>
+                                <div class="col-sm-12">
+
+                                    <input type="text" class="form-control" id="telefono" name="telefono" value="@ViewBag.telefono" disabled>
+
                                 </div>
-                            </fieldset>
+                            </div>
+
+                            <div class="form-group col-sm-3">
+                                <label for="correoOpcional">Correo Opcional:</label>
+                                <div class="col-sm-12">
+
+                                    <input type="email" class="form-control" id="correoOpcional" name="correoOpcional" placeholder="abc@gmail.com" tabindex="9">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-3">
+                                <label for="telefonoOpcional">Teléfono Opcional:</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="telefonoOpcional" name="telefonoOpcional" tabindex="10">
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    <div class="row mt-2">
+      
+                    <div class="row mt-1">
 
                         <!-- Sección: Idiomas -->
                         <div class="col">
@@ -153,7 +193,6 @@
                                 <legend class="w-auto">Idiomas</legend>
                                 <hr />
                                 <ul id="listaIdiomas" class="list-group">
-                                    <!-- Agrega aquí los elementos de la lista de idiomas si es necesario -->
                                 </ul>
                                 <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#agregarIdiomaModal" tabindex="7">Añadir</button>
                             </fieldset>
@@ -166,7 +205,6 @@
                                 <legend class="w-auto">Grupo Profesional</legend>
                                 <hr />
                                 <ul id="listaGrupoProfesional" class="list-group">
-                                    <!-- Agrega aquí los elementos de la lista de grupos profesionales si es necesario -->
                                 </ul>
                                 <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#agregarGrupoProfesionalModal" tabindex="8">
                                     Añadir
@@ -176,49 +214,6 @@
 
 
                     </div>
-
-
-                    <!-- Sección: Contacto -->
-
-                    <fieldset class="border p-3 mt-2">
-                        <legend class="w-auto">Contacto</legend>
-                        <hr />
-                        <!-- Agrega aquí los demás campos de Contacto -->
-                        <div class="row">
-                            <div class="form-group col-sm-6">
-                                <label for="correo" class="col-sm-2">Correo:</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="correo" name="correo" value="@ViewBag.correo" disabled>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-sm-6">
-                                <label for="correoOpcional" class="col-sm-4">Correo Opcional:</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="correoOpcional" name="correoOpcional" placeholder="abc@gmail.com" tabindex="9">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="form-group col-sm-6">
-                                <label for="telefono" class="col-sm-4">Teléfono:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="telefono" name="telefono" value="@ViewBag.telefono" disabled>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-sm-6">
-                                <label for="telefonoOpcional" class="col-sm-4">Teléfono Opcional:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="telefonoOpcional" name="telefonoOpcional" tabindex="10">
-                                </div>
-                            </div>
-                        </div>
-
-                    </fieldset>
-
-
 
                     <!-- Sección: subir dimex -->
 

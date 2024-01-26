@@ -143,7 +143,13 @@
         if ($("#vistaActual").val() == "BuscarOfertasOferente") {
             CargarOfertas();
         }
+    });
 
+    $("#horario").change(function () {
+
+        if ($("#vistaActual").val() == "BuscarOfertasOferente") {
+            CargarOfertas();
+        }
 
     });
 
@@ -503,8 +509,8 @@ function CargarOfertas() {
         data: {
             provincia: ($("#provincias").val() != null ? $("#provincias").val() : 0),
             canton: ($("#cantones").val() != null ? $("#cantones").val() : 0),
-            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0)
-
+            idMateria: ($("#materias").val() != null ? $("#materias").val() : 0),
+            horario: $("#horario").val()
         },
         success: function (data) {
 
@@ -555,9 +561,7 @@ function MostrarDetallesOferta(id) {
                 $("#nombreMateria").val(data.nombreMateria);
                 $("#descripcionOferta").val(data.descripcionOferta);
                 $("#publicacionOferta").val(fecha[0]);
-
-
-
+                $("#horarioDetalle").val(data.horario == 1 ? "Diurno" : "Nocturno");
 
             }
 

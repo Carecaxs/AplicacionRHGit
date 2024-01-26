@@ -1,8 +1,10 @@
 ﻿using AplicacionRHGit.Data;
+using AplicacionRHGit.Models;
 using AplicacionRHGit.Models.Expedientes;
 using AplicacionRHGit.Models.InstitucionesEducativas;
 using AplicacionRHGit.Models.Ubicaciones;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
@@ -217,9 +219,6 @@ namespace AplicacionRHGit.Controllers
                     ViewBag.tipoUsuario = "Reclutador";
                     ViewBag.VistaActual = "CrearOfertaReclutador";
 
-
-
-
                     return View();
                 }
                 else
@@ -282,7 +281,7 @@ namespace AplicacionRHGit.Controllers
         }
 
 
-        public IActionResult AdministrarOfertasReclutador(string identification="0117860836", string clave="123")
+        public IActionResult AdministrarOfertasReclutador(string identification, string clave)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -327,7 +326,7 @@ namespace AplicacionRHGit.Controllers
 
 
 
-        public IActionResult VerCandidatosReclutador(string identification, string clave, int idOferta=0)
+        public IActionResult VerCandidatosReclutador(string identification = "0117860836", string clave = "123", int idOferta = 0)
         {
 
             identification = identification.Replace("-", "").Replace("_", "");
@@ -368,7 +367,86 @@ namespace AplicacionRHGit.Controllers
 
         }
 
+        public IActionResult AgregarEditarEmpleado(string identification = "0117860836", string clave = "123")
+        {
 
+            identification = identification.Replace("-", "").Replace("_", "");
+
+
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Reclutador", clave);
+
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.tipoUsuario = "Reclutador";
+                    ViewBag.VistaActual = "AgregarEditarEmpleado";
+
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+                }
+            }
+            else
+            {
+
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+            }
+
+
+        }
+
+
+        public IActionResult ExpedientesEmpleado(string identification = "0117860836", string clave = "123")
+        {
+
+            identification = identification.Replace("-", "").Replace("_", "");
+
+
+            if (!string.IsNullOrEmpty(identification) && !string.IsNullOrEmpty(clave))
+            {
+                ConsultasGeneralesDAO acceso = new ConsultasGeneralesDAO(_context);
+                var persona = acceso.ObtenerDatosPersonaPorCedula(identification, "Reclutador", clave);
+
+
+                if (persona != null)
+                {
+                    ViewBag.nombre = persona.nombre;
+                    ViewBag.identificacion = identification;
+                    ViewBag.clave = clave;
+                    ViewBag.tipoUsuario = "Reclutador";
+                    ViewBag.VistaActual = "ExpedientesEmpleado";
+
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+                }
+            }
+            else
+            {
+
+                return RedirectToAction("MenuAcceso", "MenuPrincipal");
+
+
+            }
+
+
+        }
 
 
         // metodos pagina principal
@@ -727,9 +805,9 @@ namespace AplicacionRHGit.Controllers
 
         //este metodo carga la vacantes del reclutador
         //recibe la identificacion del reclutador 
-        //recibe 1 si quiere mostrar las activas o 2 si todas
+        //recibe 1 si quiere mostrar las activas o 2 si todas, 3 si es por parametros
         [HttpGet]
-        public JsonResult CargarMisVacantes(string identification, int num, int provincia, int canton, int idMateria)
+        public JsonResult CargarMisVacantes(string identification, int num, int provincia, int canton, int idMateria, int horario)
         {
             try
             {
@@ -743,10 +821,12 @@ namespace AplicacionRHGit.Controllers
                                join centroEducativo in _context.CentrosEducativos on institucion.ID_INSTITUCION equals centroEducativo.Cod_Presupuestario
                                join materia in _context.Materia on oferta.id_materia equals materia.ID_Materia
 
-                               where (num==1 || oferta.estado == false) &&
+                               where (num == 2 || oferta.estado == false) &&
+                                     (num != 3 || oferta.horario == 1 && oferta.horario == 2) &&
                                      (provincia == 0 || centroEducativo.Cod_Pro == provincia) &&
                                      (canton == 0 || centroEducativo.Cod_Cant == canton) &&
                                      (idMateria == 0 || oferta.id_materia == idMateria) &&
+                                     (horario == -1 || horario == 0 || oferta.horario == horario) &&
                                      (oferta.cantidadVacantes > 0) &&
                                      (institucion.ID_RECLUTADOR == idReclutador)
 
@@ -806,14 +886,14 @@ namespace AplicacionRHGit.Controllers
         }
 
         [HttpPut]
-        public JsonResult ActualizarOferta(string titulo, string descripcion, int cantidadVacantes, int idOferta)
+        public JsonResult ActualizarOferta(string titulo, string descripcion, int cantidadVacantes, int idOferta, int horario)
         {
 
             try
             {
                 ReclutadorDAO acceso = new ReclutadorDAO(_context);
 
-                acceso.ActualizarOferta(titulo, descripcion, cantidadVacantes, idOferta);
+                acceso.ActualizarOferta(titulo, descripcion, cantidadVacantes, idOferta, horario);
 
                 return Json(new { exito = true });
 
@@ -886,7 +966,8 @@ namespace AplicacionRHGit.Controllers
                                      select new
                                      {
                                          materia = materia.ID_Materia,
-                                         idCanton = institucion.Cod_Cant
+                                         idCanton = institucion.Cod_Cant,
+                                         o.horario
                                      }).SingleOrDefault();
 
                 var candidatos = (from ofertasOferente in _context.Oferta_Creada_Oferente
@@ -895,7 +976,8 @@ namespace AplicacionRHGit.Controllers
                                   join ubicacionOfertaOferente in _context.Ubicacion_Oferta_Creada_Oferente
                                   on ofertasOferente.id equals ubicacionOfertaOferente.id_Ofertas_Creadas_Oferentes
                                   where ubicacionOfertaOferente.idCanton == ofertaLaboral.idCanton &&
-                                  ofertasOferente.id_Materia == ofertaLaboral.materia
+                                  ofertasOferente.id_Materia == ofertaLaboral.materia &&
+                                  (ofertasOferente.horario == 0 || ofertasOferente.horario == ofertaLaboral.horario)
                                   && !(
                                     from postulacion in _context.Postulaciones_Oferente
                                     where postulacion.idOferente == oferente.idOferente
@@ -990,9 +1072,9 @@ namespace AplicacionRHGit.Controllers
 
 
             var idioma = (from oi in _context.OferenteIdioma
-                           join i in _context.Idioma on oi.idIdioma equals i.idIdioma
-                           where oi.ID_EXPEDIENTE == idExpediente
-                           select i).ToList();
+                          join i in _context.Idioma on oi.idIdioma equals i.idIdioma
+                          where oi.ID_EXPEDIENTE == idExpediente
+                          select i).ToList();
 
             try
             {
@@ -1032,9 +1114,9 @@ namespace AplicacionRHGit.Controllers
 
 
             var grupos = (from gpo in _context.GrupoProfesionalOferente
-                           join g in _context.GrupoProfesional on gpo.id_grupoProfesional equals g.idGrupoProfesional
-                           where gpo.ID_EXPEDIENTE == idExpediente
-                           select g).ToList();
+                          join g in _context.GrupoProfesional on gpo.id_grupoProfesional equals g.idGrupoProfesional
+                          where gpo.ID_EXPEDIENTE == idExpediente
+                          select g).ToList();
 
             try
             {
@@ -1048,7 +1130,7 @@ namespace AplicacionRHGit.Controllers
                     return Json(new { vacio = true });
 
                 }
-      
+
 
             }
             catch (Exception ex)
@@ -1338,7 +1420,7 @@ namespace AplicacionRHGit.Controllers
                 return Json(new { error = ex.Message });
 
             }
-           
+
 
         }
 
@@ -1467,9 +1549,424 @@ namespace AplicacionRHGit.Controllers
 
 
 
+        // metodos seccion AgregarEditarEmpleados
+
+        [HttpGet]
+        public JsonResult GetEmpleado(string identificacion, string identificacionReclutador)
+        {
 
 
 
+            identificacion = identificacion.Replace("-", "").Replace("_", "");
+
+
+            try
+            {
+                var idReclutador = _context.Reclutador
+                  .Where(o => o.identificacion == identificacionReclutador.Replace("-", ""))
+                  .Select(o => o.idReclutador)
+                  .FirstOrDefault();
+
+                var idInstitucion = _context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+                var empleado = _context.EmpleadoExterno.SingleOrDefault(e => e.identificacion == identificacion && e.ID_INSTITUCION.Equals(idInstitucion));
+                if (empleado != null)
+                {
+
+                    return Json(empleado);
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejo de excepciones de SQL Server
+                return Json(new { error = "Error en la base de datos: " + sqlEx.Message });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de otras excepciones
+                return Json(new { error = "Error desconocido: " + ex.Message });
+            }
+
+
+        }
+
+        [HttpGet]
+        public JsonResult GetPersona(string identificacion)
+        {
+
+
+
+            if (identificacion != null && identificacion != "")
+            {
+
+
+
+                identificacion = identificacion.Replace("-", "").Replace("_", "");
+
+                try
+                {
+
+                    LoginDAO DA = new LoginDAO(_context);
+                    var persona = DA.ObtenerDatosPersonaPorCedula(identificacion);
+
+                    if (persona != null)
+                    {
+
+                        return Json(persona);
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+                    }
+
+                }
+                catch (SqlException sqlEx)
+                {
+                    // Manejo de excepciones de SQL Server
+                    return Json(new { error = "Error en la base de datos: " + sqlEx.Message });
+                }
+                catch (Exception ex)
+                {
+                    // Manejo de otras excepciones
+                    return Json(new { error = "Error desconocido: " + ex.Message });
+                }
+            }
+            else
+            {
+
+                return Json(new { error = "Debes de ingresar la cédula" });
+            }
+
+        }
+
+
+        [HttpPost]
+        public JsonResult AgregarEmpleado(IFormCollection formData)
+        {
+
+            try
+            {
+
+                var idReclutador = _context.Reclutador
+                 .Where(o => o.identificacion == formData["identificacionReclutador"].FirstOrDefault().Replace("-", ""))
+                 .Select(o => o.idReclutador)
+                 .FirstOrDefault();
+
+                var idInstitucion = _context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+                string identificacionEmpleado = formData["identificacion"].FirstOrDefault().Replace("-", "");
+
+
+                //se comprueba si ya existe el usuario 
+                var existeEmpleadoExterno = _context.EmpleadoExterno
+                                .Where(e => e.identificacion == identificacionEmpleado && e.ID_INSTITUCION.Equals(idInstitucion))
+                                .Any();
+
+
+                var idOferente = _context.Oferente
+                       .Where(o => o.identificacion == formData["identificacion"].FirstOrDefault().Replace("-", ""))
+                       .Select(o => o.idOferente)
+                       .FirstOrDefault();
+
+                var existeEmpleadoOferente = _context.EmpleadoOferente
+                    .Where(e => e.idOferente.Equals(idOferente) && e.id_INSTITUCION.Equals(idInstitucion))
+                    .Any();
+
+                //si no existe el empleado se agrega
+                if (!existeEmpleadoExterno && !existeEmpleadoOferente)
+                {
+                    ReclutadorDAO acceso = new ReclutadorDAO(_context);
+
+                    acceso.AgregarEmpleado(formData);
+
+                    return Json(new { exito = true });
+                }
+                else
+                {
+                    return Json(new { existe = "Empleado ya existe" });
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+        [HttpPut]
+        public JsonResult EditarEmpleado(IFormCollection formData)
+        {
+
+            try
+            {
+
+                ReclutadorDAO acceso = new ReclutadorDAO(_context);
+
+                acceso.EditarEmpleado(formData);
+
+                return Json(new { exito = true });
+
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+
+            }
+        }
+
+
+        //metodos seccion expedientesEmpleado
+        public JsonResult GetEmpleadosListaGeneral(string identificacionReclutador)
+        {
+            try
+            {
+                var idReclutador = _context.Reclutador
+                    .Where(o => o.identificacion == identificacionReclutador.Replace("-", ""))
+                    .Select(o => o.idReclutador)
+                    .FirstOrDefault();
+
+                var idInstitucion = _context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+                var empleadoExterno = _context.EmpleadoExterno.Where(e => e.ID_INSTITUCION.Equals(idInstitucion))
+                      .Select(e => new
+                      {
+                          id = e.idEmpleadoExterno,
+                          identificacion=e.identificacion
+                      })
+                    .ToList();
+
+                var empleadoOferente = (from empleado in _context.EmpleadoOferente where empleado.id_INSTITUCION == idInstitucion
+                                        join oferente in _context.Oferente on empleado.idOferente equals oferente.idOferente
+                                        select new
+                                        {
+                                            id=empleado.idEmpleadoOferente,
+                                            identificacion=oferente.identificacion
+                                        }).ToList();
+
+                if (empleadoExterno != null && empleadoExterno.Any() && empleadoOferente != null && empleadoOferente.Any())
+                {
+
+
+                    return Json(new { empleadoExterno, empleadoOferente });
+
+                }
+                else if(empleadoExterno != null && empleadoExterno.Any() )
+                {
+                    return Json(new { empleadoExterno });
+
+                }
+                else if (empleadoOferente != null && empleadoOferente.Any())
+                {
+                    return Json(new { empleadoOferente });
+
+                }
+                else
+                {
+                    return Json(new { vacio = true });
+
+                }
+
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejo de excepciones de SQL Server
+                return Json(new { error = "Error en la base de datos: " + sqlEx.Message });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de otras excepciones
+                return Json(new { error = "Error desconocido: " + ex.Message });
+            }
+
+
+        }
+
+        [HttpGet]
+        public JsonResult GetEmpleadoGeneral(string identificacion, string identificacionReclutador)
+        {
+
+
+
+            identificacion = identificacion.Replace("-", "").Replace("_", "");
+
+
+            try
+            {
+                var idReclutador = _context.Reclutador
+                  .Where(o => o.identificacion == identificacionReclutador.Replace("-", ""))
+                  .Select(o => o.idReclutador)
+                  .FirstOrDefault();
+
+                var idInstitucion = _context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+                //primero se busca si la identificacion se encuentra en los empleados registrados externamente
+
+                var empleadoExterno = _context.EmpleadoExterno.Where(e => e.ID_INSTITUCION.Equals(idInstitucion))
+                   .Select(e => new
+                   {
+                       id = e.idEmpleadoExterno,
+                       identificacion = e.identificacion
+                   }).SingleOrDefault();
+
+
+                if (empleadoExterno != null)
+                {
+                    //se encontro en los empleados externos
+
+                    return Json(new { empleadoExterno });
+
+                }
+                else 
+                {
+                    //se busca si la identificacion se encuentra en los empleados registrados como Oferentes
+                    var idOferente = _context.Oferente
+                       .Where(o => o.identificacion == identificacion)
+                       .Select(o => o.idOferente)
+                       .FirstOrDefault();
+
+                    var empleadoOferente = (from empleado in _context.EmpleadoOferente
+                                            where empleado.id_INSTITUCION == idInstitucion
+                                            join oferente in _context.Oferente on empleado.idOferente equals oferente.idOferente
+                                            select new
+                                            {
+                                                id = empleado.idEmpleadoOferente,
+                                                identificacion = oferente.identificacion
+                                            }).SingleOrDefault();
+
+                    if (empleadoOferente != null)
+                    {
+                        //se encontro en los empleados oferentes
+
+                        return Json(new { empleadoOferente });
+
+                    }
+                    else
+                    {
+                        return Json(new { vacio = true });
+                    }
+
+
+                }
+      
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejo de excepciones de SQL Server
+                return Json(new { error = "Error en la base de datos: " + sqlEx.Message });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de otras excepciones
+                return Json(new { error = "Error desconocido: " + ex.Message });
+            }
+
+
+        }
+
+
+
+        [HttpGet]
+        public JsonResult GetDatosPersonalesEmpleado(int idEmpleado)
+        {
+       
+            try
+            {
+                var empleadoExterno = _context.EmpleadoExterno.Where(e => e.idEmpleadoExterno.Equals(idEmpleado))
+                  .Select(e => new
+                  {
+                      identificacion = e.identificacion,
+                      nombre=e.nombre,
+                      apellidos=e.apellido1+" "+e.apellido2,
+                      genero=(e.genero==1?"Masculino":"Femenino"),
+                      fechaNacimiento=e.fechaNacimiento,
+                      telefono=e.telefono,
+                      correo=e.correo,
+                      idProvincia=e.idProvincia,
+                      idCanton=e.idCanton,
+                      idDistrito=e.idDistrito,
+                      direccion=e.direccion,
+                      tipoEmpleado=e.tipoEmpleado,
+                      estado= (e.estado == true ? '1' : '0')
+                  }).SingleOrDefault();
+
+
+                if (empleadoExterno != null)
+                {
+                    return Json(new { empleado=empleadoExterno });
+
+                }
+                else
+                {
+                    var empleadoOferente = (from empleado in _context.EmpleadoOferente
+                                            where empleado.idEmpleadoOferente == idEmpleado
+                                            join oferente in _context.Oferente on empleado.idOferente equals oferente.idOferente
+                                            join ex in _context.Expediente on oferente.idOferente equals ex.idOferente
+                                            select new
+                                            {
+                                                identificacion = oferente.identificacion.Trim(),
+                                                nombre = oferente.nombre,
+                                                apellidos = oferente.apellido1 + " " + oferente.apellido2,
+                                                genero = (ex.genero == 1 ? "Masculino" : "Femenino"),
+                                                fechaNacimiento = ex.nacimiento,
+                                                telefono = oferente.telefono,
+                                                correo = oferente.correo,
+                                                idProvincia = ex.IdProvincia,
+                                                idCanton = ex.IdCanton,
+                                                idDistrito = ex.IdDistrito,
+                                                direccion = ex.direccion,
+                                                tipoEmpleado = empleado.tipoEmpleado,
+                                                estado = empleado.estado
+                                            }).SingleOrDefault();
+
+                    if (empleadoOferente != null)
+                    {
+                        return Json(new { empleado=empleadoOferente });
+
+                    }
+                    else
+                    {
+                        return Json(new { exito=false });
+
+                    }
+
+                }
+
+            }
+            catch (SqlException sqlEx)
+            {
+                // Manejo de excepciones de SQL Server
+                return Json(new { error = "Error en la base de datos: " + sqlEx.Message });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de otras excepciones
+                return Json(new { error = "Error desconocido: " + ex.Message });
+            }
+
+
+        }
 
 
     }

@@ -13,7 +13,7 @@
 
 
     <div class="container">
-        <div class="contenedorExpediente">
+        <div class="contenedorExpediente animate__animated animate__zoomIn">
             <form id="formRegresar" class="col-sm-6" method="post" asp-controller="Reclutador" asp-action="MenuPrincipalReclutador">
                 <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
                 <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
@@ -42,15 +42,21 @@
                 </ul>
 
             </form>
+            <fieldset class="border p-3">
+                <legend class="w-auto">Buscar</legend>
+                <hr />
+                <div class="col-md-6">
+                    <label for="nombreVacante">Vacante:</label>
+                    <select id="nombreVacante" class="form-control">
 
-            <div class="col-md-6">
-                <label for="nombreVacante">Vacante:</label>
-                <select id="nombreVacante" class="form-control">
+                        <option value="null">Seleccione una opción</option>
 
-                    <option value="null">Seleccione una opción</option>
+                    </select>
+                </div>
 
-                </select>
-            </div>
+
+            </fieldset>
+
 
             <div class="text-center">
                 <h5 class="mt-2">Postulados</h5>
@@ -193,7 +199,7 @@
 
 
                             <!-- Sección: Contacto -->
-                            <fieldset class="border p-3 mt-2">
+                            <fieldset class="border p-3 mt-1">
                                 <legend class="w-auto">Contacto</legend>
                                 <hr />
 

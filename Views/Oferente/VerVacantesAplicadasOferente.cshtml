@@ -7,7 +7,7 @@
 
 
     <div class="container mt-5">
-        <div class="contenedorExpediente">
+        <div class="contenedorExpediente animate__animated animate__zoomIn">
 
             <div class="row">
                 <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
@@ -48,7 +48,7 @@
 
 
 
-            <div class="table-responsive mt-5">
+            <div class="table-responsive">
                 <table id="" class="table table-bordered">
                     <thead class="tabla-head">
                         <tr class="text-center">
@@ -101,6 +101,11 @@
                     <div class="form-group mt-1 col-sm-6">
                         <label class="label-custom-font" for="nombreMateria">Materia</label>
                         <input type="text" class="form-control" id="nombreMateria" readonly tabindex="3" />
+                    </div>
+
+                    <div class="form-group mt-1 col-sm-6">
+                        <label class="label-custom-font" for="horarioDetalle">Horario</label>
+                        <input type="text" class="form-control" id="horarioDetalle" readonly />
                     </div>
 
                     <div class="form-group mt-1 col-sm-12">

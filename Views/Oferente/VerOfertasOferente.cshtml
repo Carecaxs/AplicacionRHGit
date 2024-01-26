@@ -7,7 +7,7 @@
 
 
     <div class="container mt-5">
-        <div class="contenedorExpediente">
+        <div class="contenedorExpediente animate__animated animate__zoomIn">
 
             <div class="row">
                 <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
@@ -47,7 +47,7 @@
             </form>
 
 
-            <fieldset class="border p-3 mt-1">
+            <fieldset class="border p-3">
                 <legend class="w-auto">Ofertas Activas</legend>
                 <hr />
                 <div class="form-group">
@@ -127,7 +127,7 @@
 
     <!-- Modal para mostrar lista de colegios que pueden solicitar esta oferta -->
     <div class="modal fade" id="modalVerColegios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="">Colegios que coinciden con esta oferta</h5>

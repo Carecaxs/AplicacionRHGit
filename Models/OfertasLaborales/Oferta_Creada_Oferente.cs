@@ -13,6 +13,8 @@ namespace AplicacionRHGit.Models.OfertasLaborales
         public bool? estado { get; set; }
         public int? idOferente { get; set; }
         public int? id_Materia { get; set; }
+        public int? horario { get; set; }
+
 
 
 

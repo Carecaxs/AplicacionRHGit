@@ -1,7 +1,10 @@
-﻿using AplicacionRHGit.Models.InstitucionesEducativas;
+﻿using AplicacionRHGit.Clases;
+using AplicacionRHGit.Models;
+using AplicacionRHGit.Models.InstitucionesEducativas;
 using AplicacionRHGit.Models.OfertasLaborales;
 using AplicacionRHGit.Models.Ubicaciones;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Globalization;
 
 namespace AplicacionRHGit.Data
 {
@@ -131,7 +134,8 @@ namespace AplicacionRHGit.Data
                     id_reclutador_institucion=idReclutadorInstitucion,
                     id_materia= int.Parse(form["materias"].FirstOrDefault()),
                     idGrupoProf = int.Parse(form["grupoProfesional"].FirstOrDefault()),
-                    cantidadVacantes = int.Parse(form["numVacantes"].FirstOrDefault())
+                    cantidadVacantes = int.Parse(form["numVacantes"].FirstOrDefault()),
+                    horario = int.Parse(form["horario"].FirstOrDefault())
                 };
 
                 _context.Oferta_Laboral.Add(oferta);
@@ -144,7 +148,7 @@ namespace AplicacionRHGit.Data
             }
         }
 
-        public void ActualizarOferta(string titulo, string descripcion, int cantidadVacantes, int idOferta)
+        public void ActualizarOferta(string titulo, string descripcion, int cantidadVacantes, int idOferta, int horario)
         {
             try
             {
@@ -154,9 +158,103 @@ namespace AplicacionRHGit.Data
                     oferta.titulo = titulo;
                     oferta.descripcion = descripcion;
                     oferta.cantidadVacantes = cantidadVacantes;
+                    oferta.horario = horario;
                 }
 
                 _context.SaveChanges();                    
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        //metodos seccion agregarEditarEmpleados
+
+        public void AgregarEmpleado(IFormCollection form)
+        {
+            try
+            {
+                var idReclutador = _context.Reclutador
+                     .Where(o => o.identificacion == form["identificacionReclutador"].FirstOrDefault().Replace("-", ""))
+                     .Select(o => o.idReclutador)
+                     .FirstOrDefault();
+
+                var idInstitucion =_context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+
+                string[] arregloApellidos = form["apellidos"].FirstOrDefault().Split(' ');
+                EmpleadoExterno empleadoExterno = new EmpleadoExterno()
+                {
+                    identificacion= form["identificacion"].FirstOrDefault().Replace("-", ""),
+                    nombre= form["nombre"].FirstOrDefault(),
+                    apellido1 = arregloApellidos[0],
+                    apellido2 = arregloApellidos[1],
+                    genero = char.Parse(form["genero"].FirstOrDefault()),
+                    fechaNacimiento = DateTime.ParseExact(form["nacimiento"].FirstOrDefault(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                    telefono = form["telefono"].FirstOrDefault().Replace("-", ""),
+                    correo = form["correo"].FirstOrDefault(),
+                    idProvincia = int.Parse(form["provincias"].FirstOrDefault()),
+                    idCanton = int.Parse(form["cantones"].FirstOrDefault()),
+                    idDistrito = int.Parse(form["distritos"].FirstOrDefault()),
+                    direccion = form["direccion"].FirstOrDefault(),
+                    tipoEmpleado = form["tipoEmpleado"].FirstOrDefault(),
+                    estado = true,
+                    ID_INSTITUCION=idInstitucion
+                };
+         
+                _context.EmpleadoExterno.Add(empleadoExterno);
+
+                _context.SaveChanges();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public void EditarEmpleado(IFormCollection form)
+        {
+            try
+            {
+                var idReclutador = _context.Reclutador
+                 .Where(o => o.identificacion == form["identificacionReclutador"].FirstOrDefault().Replace("-", ""))
+                 .Select(o => o.idReclutador)
+                 .FirstOrDefault();
+
+                var idInstitucion = _context.Reclutador_Institucion
+                    .Where(r => r.ID_RECLUTADOR == idReclutador)
+                    .Select(r => r.ID_INSTITUCION)
+                    .SingleOrDefault();
+
+                string identificacionEmpleado = form["identificacion"].FirstOrDefault().Replace("-", "");
+                int estado= int.Parse(form["estado"].FirstOrDefault());
+
+                var empleado = _context.EmpleadoExterno
+                    .Where(e => e.identificacion.Equals(identificacionEmpleado) && e.ID_INSTITUCION.Equals(idInstitucion)).SingleOrDefault();
+
+                if(empleado != null) {
+
+                    empleado.telefono = form["telefono"].FirstOrDefault().Replace("-", "");
+                    empleado.correo = form["correo"].FirstOrDefault();
+                    empleado.idProvincia = int.Parse(form["provincias"].FirstOrDefault());
+                    empleado.idCanton = int.Parse(form["cantones"].FirstOrDefault());
+                    empleado.idDistrito = int.Parse(form["distritos"].FirstOrDefault());
+                    empleado.direccion = form["direccion"].FirstOrDefault();
+                    empleado.tipoEmpleado = form["tipoEmpleado"].FirstOrDefault();
+                    empleado.estado = estado==1 ? true:false;
+                }
+
+                _context.SaveChanges();
+
 
             }
             catch (Exception ex)

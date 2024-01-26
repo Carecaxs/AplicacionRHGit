@@ -1,0 +1,271 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutReclutador.cshtml";
+}
+
+
+
+<main role="main" class="pb-3">
+    <input id="nombreVista" type="hidden" value="@ViewBag.VistaActual" />
+    <input id="nombreOferente" type="hidden" value="@ViewBag.nombre" />
+    <input id="apellidosOferente" type="hidden" value="@ViewBag.apellidos" />
+
+
+    <div class="container">
+        <div class="contenedorExpediente animate__animated animate__zoomIn">
+            <form id="formRegresar" class="col-sm-6" method="post" asp-controller="Reclutador" asp-action="MenuPrincipalReclutador">
+                <input id="identification" name="identification" type="hidden" value="@ViewBag.identificacion" />
+                <input id="clave" name="clave" type="hidden" value="@ViewBag.clave" />
+
+                <button id="btnRegresar" class="btn btn-secondary mt-2">Regresar</button>
+
+            </form>
+
+            <form class="formEnlaces" style="margin-left:0.5rem;" method="post">
+                <h1 class="text-center">Sección Personal</h1>
+                <ul class="mt-3 nav nav-tabs" id="tabs">
+                    <li class="nav-item">
+                        <button id="enlaceVerExpedientes" class="tab">Expedientes</button>
+
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceSubirEvaluacion" class="tab">Evaluaciones</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceSubirContrato" class="tab">Contratos</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="enlaceAgregarEditarEmpleado" class="tab">Empleados</button>
+                    </li>
+                </ul>
+
+            </form>
+            <fieldset class="border p-3">
+                <legend class="w-auto">Buscar</legend>
+                <hr />
+
+                <div class="row">
+                    <div class="form-group col-sm-5 mt-2">
+                        <label for="identificationType">Tipo de Identificación</label>
+                        <select id="identificationType" class="form-control" tabindex="1">
+                            <option value="Cedula">Cédula de Identidad</option>
+                            <option value="Dimex">DIMEX</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-sm-7 mt-2">
+                        <label for="idEmpleado">Identificación</label>
+                        <div class="input-group">
+                            <input type="text" id="idEmpleado" name="idEmpleado" class="form-control" tabindex="2" />
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                            <div class="input-group-append">
+                                <button id="btnBuscarEmpleado" class="btn btn-primary" type="button" style="margin-left: 5px;" tabindex="3">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btnVerTodo" class="btn btn-sm btn-info mt-2">Ver Todo</button>
+            </fieldset>
+
+
+
+            <div class="table-responsive">
+                <table id="" class="table table-bordered">
+                    <thead class="tabla-head">
+                        <tr class="text-center">
+                            <th>Identificación</th>
+                            <th>Datos Personales</th>
+                            <th>Evaluación</th>
+                            <th>Contrato</th>
+                            <th>Entrevista</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaEmpleados">
+                    </tbody>
+                </table>
+            </div>
+
+    
+
+
+
+        </div>
+    </div>
+
+
+    <!-- Modal para ver expediente -->
+    <div class="modal fade" id="verExpedienteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Datos Personales</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form >
+
+                        <fieldset class="border p-3">
+                            <legend class="w-auto">Información Personal</legend>
+                            <hr />
+                            <!-- Agrega aquí los demás campos de Información Personal -->
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <label for="nombre">Nombre:</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="nombre" name="nombre" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="apellidos">Apellidos:</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="apellidos" name="apellidos" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="nacimiento">Nacimiento:</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="nacimiento" name="nacimiento" disabled>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="genero">Género:</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="genero" name="genero" disabled>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="border p-3 mt-1">
+                            <legend class="w-auto">Ubicación</legend>
+                            <hr />
+                            <!-- Agrega aquí los demás campos de Ubicación -->
+                            <div class="row">
+                                <div class="form-group col-sm-2">
+                                    <label for="provincias">Provincia:</label>
+                                    <div class="col-sm-12">
+                                        <select id="provincias" name="provincias" class="form-control" disabled>
+                                            <option value="0"></option>
+                                        </select>
+                   
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-2">
+                                    <label for="cantones">Cantón:</label>
+                                    <div class="col-sm-12">
+                                        <select id="cantones" name="cantones" class="form-control" disabled>
+                                            <option value="0"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-2">
+                                    <label for="distritos">Distritos:</label>
+                                    <div class="col-sm-12">
+                                        <select id="distritos" name="distritos" class="form-control" disabled>
+                                            <option value="0"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-6">
+                                    <label for="direccion">Dirección:</label>
+                                    <div class="col-sm-12">
+                                        <textarea id="direccion" class="form-control" name="direccion" disabled></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </fieldset>
+
+
+                        <!-- Sección: Contacto -->
+                        <div class="row">
+                            <div class="col-6">
+
+                                <fieldset class="border p-3 mt-1">
+                                    <legend class="w-auto">Contacto</legend>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <label for="correo">Correo:</label>
+                                            <div class="col-sm-12">
+                                                <input type="email" class="form-control" id="correo" name="correo" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-6">
+                                            <label for="telefono">Teléfono:</label>
+                                            <div class="col-sm-12">
+
+                                                <input type="text" class="form-control" id="telefono" name="telefono" disabled>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-6">
+                                <fieldset class="border p-3 mt-1">
+                                    <legend class="w-auto">Laboral</legend>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <label for="tipoEmpleado">Función:</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" id="tipoEmpleado" name="tipoEmpleado" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div id="divEstado" class="form-group col-sm-6">
+                                            <label for="estado">Estado:</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" id="estado" name="estado" disabled>
+
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="loader-container">
+        <div id="loader-content">
+            <i class="fas fa-spinner fa-spin"></i> Cargando...
+        </div>
+    </div>
+
+
+    <script src="@Url.Content("~/js/reclutador/seccionempleados.js")"></script>
+
+</main>
+
+

@@ -37,6 +37,10 @@
       "PackagePath": "staticwebassets\\Images\\fondo.jpg"
     },
     {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondoOferente.png",
+      "PackagePath": "staticwebassets\\Images\\fondoOferente.png"
+    },
+    {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCodigo.png",
       "PackagePath": "staticwebassets\\Images\\msjCodigo.png"
     },
@@ -91,6 +95,10 @@
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\reclutamiento.js",
       "PackagePath": "staticwebassets\\js\\Reclutador\\reclutamiento.js"
+    },
+    {
+      "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\seccionEmpleados.js",
+      "PackagePath": "staticwebassets\\js\\Reclutador\\seccionEmpleados.js"
     },
     {
       "Id": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\site.js",

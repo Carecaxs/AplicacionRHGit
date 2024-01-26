@@ -958,7 +958,7 @@ namespace AplicacionRHGit.Data
         ///////////////////////////////////////////////////// seccion de crear oferta ////////////////////////////////////////////////////////////////
 
         public int CrearOferta(string identificacion, string descripcion, List<int> listaUbicaciones, 
-            List<int> listaGrupos, int idMateria)
+            List<int> listaGrupos, int idMateria, int horario)
         {
 
             try
@@ -977,7 +977,8 @@ namespace AplicacionRHGit.Data
                     estado = false,
                     descripcion = descripcion,
                     fecha_publicacion = DateTime.Now,
-                    id_Materia= idMateria
+                    id_Materia= idMateria,
+                    horario=horario
                 };
 
                 // Agregar la oferta principal a la base de datos

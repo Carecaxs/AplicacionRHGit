@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SbZhaPVDlRR5qRsmWt63eAV85IPLHdYarNGHtmzAPqg=",
+  "Hash": "CZHrfjxd+sv9rdrkN3cUQZ9BTav1maQtcc1H+/OYCMo=",
   "Source": "AplicacionRHGit",
   "BasePath": "_content/AplicacionRHGit",
   "Mode": "Default",
@@ -100,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Images\\fondo.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\fondoOferente.png",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "Images/fondoOferente.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\fondoOferente.png"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\Images\\msjCodigo.png",
@@ -406,6 +423,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Reclutador\\reclutamiento.js"
+    },
+    {
+      "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\seccionEmpleados.js",
+      "SourceId": "AplicacionRHGit",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\",
+      "BasePath": "_content/AplicacionRHGit",
+      "RelativePath": "js/Reclutador/seccionEmpleados.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Reclutador\\seccionEmpleados.js"
     },
     {
       "Identity": "C:\\Users\\Oscar\\Desktop\\Rogus\\AplicacionRHGit\\AplicacionRHGit\\wwwroot\\js\\Reclutador\\SeccionInstitucionReclutador.js",

@@ -96,12 +96,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxBZG1pbmlzdHJhck9mZXJ0YXNSZWNsdXRhZG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/AgregarEditarEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxBZ3JlZ2FyRWRpdGFyRW1wbGVhZG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/AñadirInstitutoReclutador.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxBw7FhZGlySW5zdGl0dXRvUmVjbHV0YWRvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/CrearOfertaReclutador.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxDcmVhck9mZXJ0YVJlY2x1dGFkb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/ExpedientesEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjbHV0YWRvclxFeHBlZGllbnRlc0VtcGxlYWRvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Oscar/Desktop/Rogus/AplicacionRHGit/AplicacionRHGit/Views/Reclutador/MenuPrincipalReclutador.cshtml]

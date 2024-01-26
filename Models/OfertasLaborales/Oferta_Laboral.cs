@@ -19,8 +19,6 @@ namespace AplicacionRHGit.Models.OfertasLaborales
         public int? id_materia { get; set; }
         public int? cantidadVacantes { get; set; }
         public int? idGrupoProf { get; set; }
-
-
-
+        public int? horario { get; set; }
     }
 }

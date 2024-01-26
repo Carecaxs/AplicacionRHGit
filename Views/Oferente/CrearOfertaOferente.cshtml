@@ -9,7 +9,7 @@
 
 
     <div class="container mt-5">
-        <div class="contenedorExpediente">
+        <div class="contenedorExpediente animate__animated animate__zoomIn">
 
             <div class="row">
                 <form class="col-sm-6" method="post" asp-controller="Oferente" asp-action="MenuPrincipalOferente">
@@ -53,7 +53,7 @@
                 <input name="identificacion" type="hidden" value="@ViewBag.identificacion" />
 
 
-                <fieldset class="border p-3 mt-1">
+                <fieldset class="border p-3">
                     <legend class="w-auto">Descripción</legend>
                     <hr />
                     <div class="form-group">
@@ -64,7 +64,7 @@
    
 
                 <div class="row mt-2">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <fieldset class="border p-3">
                             <legend class="w-auto">Materias</legend>
                             <hr />
@@ -80,7 +80,29 @@
 
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
+
+                        <fieldset class="border p-3">
+                            <legend class="w-auto">Horarios</legend>
+                            <hr />
+                            <div class="form-group">
+
+                                <label for="horario">Horario:</label>
+                                <select class="form-control" id="horario" name="horario" tabindex="5">
+                                    <option value="0">Cualquiera</option>
+                                    <option value="1">Diurno</option>
+                                    <option value="2">Nocturno</option>
+                                </select>
+
+                            </div>
+                        </fieldset>
+
+                    </div>
+   
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
 
                         <fieldset class="border p-3">
                             <legend class="w-auto">Grupos Profesionales</legend>
@@ -102,14 +124,14 @@
                     </div>
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
 
                         <fieldset class="border p-3">
                             <legend class="w-auto">Ubicaciones</legend>
                             <hr />
                             <div class="form-group">
 
-                         
+
                                 <button id="" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSeleccionUbicaciones">
                                     Elegir
                                 </button>
@@ -253,8 +275,11 @@
                             <!-- Checkboxes de estados y ciudades se cargarán dinámicamente desde el servidor -->
                         </div>
                  
+              
+
+                    <div class="form-group d-flex justify-content-end">
                         <button id="btnCerrarModalubicaciones" class="btn-sm btn-primary mt-2">Confirmar</button>
-         
+                    </div>
                
                 </div>
             </div>
