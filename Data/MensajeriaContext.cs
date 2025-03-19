@@ -17,7 +17,7 @@ namespace AplicacionRHGit.Data
             {
         
 
-                optionsBuilder.UseSqlServer("Data Source=201.237.248.149;Initial Catalog=CentroMensajeria;User ID=carlosr;Password=rkrw48uk;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Data Source=;Initial Catalog=;User ID=;Password=;TrustServerCertificate=True");
             }
         }
     }
